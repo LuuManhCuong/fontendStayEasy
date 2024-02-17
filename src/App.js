@@ -1,36 +1,15 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { counterSelector } from "./redux-tookit/selector";
-import { useDispatch, useSelector } from "react-redux";
-
-import { counterSlice } from "./redux-tookit/reducer/counterSlice";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Explore from "./pages/Explore";
+import Experience from "./pages/Experience";
 
 function App() {
-  const dispatch = useDispatch();
-  const value = useSelector(counterSelector);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
-      <div>counter : {value.value} </div>
-
-      <button
-        onClick={() => {
-          dispatch(counterSlice.actions.increase());
-        }}
-      >
-        increase
-      </button>
-
-      <button
-        onClick={() => {
-          dispatch(counterSlice.actions.descrease());
-        }}
-      >
-        descrease
-      </button>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home></Home>}></Route>
+      <Route path="/experience" element={<Experience></Experience>}></Route>
+      <Route path="/explore" element={<Explore></Explore>}></Route>
+    </Routes>
   );
 }
 
