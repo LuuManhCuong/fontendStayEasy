@@ -54,3 +54,8 @@ li {
 .search-text {
   color: var(--primary-color);
 }
+
+svg {
+  stroke: unset;
+  stroke-width: 30px;
+}
