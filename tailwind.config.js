@@ -1,18 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      colors: {
-        'fav-icon': '#rgba(0, 0, 0, 0.5)',
-        'fav-icon-active': '#ff385c',
+      backdropBlur: {
+        xs: "2px",
+        sm: "4px",
+        DEFAULT: "5px",
+        lg: "8px",
+        xl: "16px",
       },
-      boxShadow: {
-        'checkout-shadow': 'rgba(0, 0, 0, 0.12) 0px 6px 16px;',
-      }
     },
   },
   plugins: [],
-}
+};
