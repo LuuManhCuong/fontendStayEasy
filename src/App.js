@@ -4,6 +4,8 @@ import Explore from "./pages/Explore";
 import Experience from "./pages/Experience";
 import Detail from './pages/detail/Detail';
 import './App.css';
+import Inbox from "./pages/Inbox/Inbox";
+import InboxGuest from "./components/InboxGuest/InboxGuest";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
       <Route path="/experience" element={<Experience></Experience>}></Route>
       <Route path="/explore" element={<Explore></Explore>}></Route>
       <Route path="/detail/:id" element={<Detail />} />
+      <Route path="/inbox" element={<Inbox> </Inbox>} />
+      <Route path="/inbox/:roomId" element={<Inbox> <InboxGuest></InboxGuest> </Inbox>} />
     </Routes>
   );
 }
