@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import SearchIcon from "@mui/icons-material/Search";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import axios from "axios";
 
 function Header({ page }) {
   const today = new Date();
@@ -19,6 +20,8 @@ function Header({ page }) {
   let timeStamp = today.getTime() + 86400000;
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
   const [showHistory, setShowHistory] = React.useState(false);
+
+  const [dataSearch, setDataSearch] = React.useState();
 
   React.useEffect(() => {
     setCheckout(new Date(checkin.getTime() + 86400000));
@@ -32,14 +35,24 @@ function Header({ page }) {
   function handleSearch() {
     let url;
     if (page === "home") {
-      url = `/search/${page}?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
+      url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
     } else if (page === "experience") {
-      url = `/search/${page}?keySearch=${keySearch}`;
+      url = `${page}/search?keySearch=${keySearch}`;
     } else {
-      url = `/search/${page}?keySearch=${keySearch}`;
+      url = `${page}/search?keySearch=${keySearch}`;
     }
 
     console.log("fetch api: ", url);
+    axios
+      .get(`http://localhost:8080/${url}`)
+      .then(function (response) {
+        // handle success
+        setDataSearch(response.data);
+        console.log("Data search: ", response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   return (

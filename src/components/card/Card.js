@@ -11,9 +11,9 @@ function Card(props) {
   };
   const handleDetail = () => {
     navigate(`/detail/${props.item.propertyId}`);
-    window.location.reload();
+    // window.location.reload();
   };
-  console.log(props.item);
+  // console.log(props.item);
   return (
     <div
       onClick={handleDetail}
