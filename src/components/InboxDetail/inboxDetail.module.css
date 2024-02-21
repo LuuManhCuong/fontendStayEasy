@@ -3,6 +3,10 @@
     transition: all 0.4s;
     width: 25%;
 }
+.detail_hide{
+    width: 0%;
+    transform: translateX(100%);
+}
 .detail_box:hover{
     border: 1px solid #222222;
 }

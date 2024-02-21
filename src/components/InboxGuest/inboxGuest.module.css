@@ -1,6 +1,10 @@
 .thread_box{
-    width: 40%;border: 1px solid #DDDDDD;
+    width: 40%;
+    border: 1px solid #DDDDDD;
     transition: all 0.4s;
+}
+.thread_active{
+    width: 65%;
 }
 .thread_box:hover{
     border: 1px solid #222222;

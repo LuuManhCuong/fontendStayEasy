@@ -4,15 +4,16 @@ import HeaderInbox from '../../components/HeaderInbox/HeaderInbox'
 import InboxDetail from "../../components/InboxDetail/InboxDetail";
 import InboxListMessage from "../../components/InboxListMessage/InboxListMessage";
 export default function Inbox({children}) {
+  
   return (
     <>
       <HeaderInbox></HeaderInbox>
       <div className={style.box_message}>
-        <InboxListMessage></InboxListMessage>
-        
+        <InboxListMessage ></InboxListMessage>
+
         {children}
 
-        <InboxDetail  ></InboxDetail>
+        <InboxDetail ></InboxDetail>
       </div>
     </>
   )
