@@ -13,9 +13,10 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { dataExploreSlice } from "../../redux-tookit/reducer/dataExploreSlice";
-
+import { useNavigate } from "react-router-dom";
 function Header({ page }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const today = new Date();
   const [keySearch, setKeySearch] = React.useState("");
   const [checkin, setCheckin] = React.useState(new Date());
@@ -60,6 +61,7 @@ function Header({ page }) {
   }, [keySearch]);
 
   function handleSearch() {
+    // navigate("/explore");
     setShowHistory(false);
     let url;
     if (page === "home") {
@@ -252,13 +254,28 @@ function Header({ page }) {
                     <Link
                       className="suggest-item"
                       key={i}
-                      to={`/detail/${e.propertyId}`}
+                      to={`/explore/detail/${e.propertyId}`}
+                      onClick={() => setShowHistory(false)}
                     >
                       <img src={e.thumbnail} alt="thumbnail" />
                       <h3>{e.propertyName}</h3>
                     </Link>
                   ))}
                 </ul>
+              </div>
+            ) : (
+              ""
+            )}
+
+            {suggest?.length === 0 ? (
+              <div
+                tabindex="1"
+                className="search-history"
+                onBlur={() => {
+                  setShowHistory(false);
+                }}
+              >
+                <h2>Không tìm thấy thông tin</h2>
               </div>
             ) : (
               ""
