@@ -5,14 +5,14 @@ export class BaseService {
             method: 'GET',
           });
       
-          console.log('Response:', response);
+          
       
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
       
           const jsonData = await response.json();
-          console.log('Data:', jsonData);
+          
       
           return jsonData;
         } catch (error) {
