@@ -1,17 +1,20 @@
-import Carousal from "@itseasy21/react-elastic-carousel";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useParams, useLocation } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Header from "../components/header/Header";
 import React from "react";
+import axios from "axios";
 import DatePicker from "react-datepicker";
-import { useSelector, useDispatch } from "react-redux";
-import { getPropertyById, getPropertyImageById } from "../../redux/actions/PropertyAction";
-import NumGuest from "../../components/numguest/NumGuest";
+import Slider from "react-slick";
+import NumGuest from "../components/numguest/NumGuest";
+import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
+import { dataDetailSelector } from "../redux-tookit/selector";
 function Detail() {
-  const { detail } = useSelector(state => state.propertyReducer);
   const { id } = useParams();
   const dispatch = useDispatch();
+  const { dataDetail } = useSelector(dataDetailSelector);
   const location = useLocation();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
@@ -67,30 +70,79 @@ function Detail() {
   }
 
   useEffect(() => {
+    setTotalGuests(adults + children);
+  }, [adults, children]);
+
+  useEffect(() => {
     setCheckout(new Date(checkin.getTime() + 86400000));
   }, [checkin]);
 
   useEffect(() => {
-    const action = getPropertyById(id);
-    dispatch(action);
+    const fetchData = async () => {
+      try {
+        dispatch(dataDetailSlice.actions.getDataDetailRequest());
+        const response = await axios.get(`http://localhost:8080/api/property/${id}`);
+        dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
+      } catch (error) {
+        dispatch(dataDetailSlice.actions.getDataDetailFailure());
+        console.log(error);
+      }
+    };
+  
+    fetchData();
   }, []);
-  const style = {
-    width: "1200px",
-    height: "500px",
-    objectFit: "contain",
-  };
+
   const styleImg = {
     width: "100%",
     height: "600px",
     objectFit: "contain",
   }
 
+  var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+    autoplay: true,
+  };
+
+  function SampleNextArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, display: "block", width: "40px", height: "40px", marginRight: "-40px"}}
+        onClick={onClick}
+      />
+    );
+  }
+  
+  function SamplePrevArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, display: "block", width: "40px", height: "40px", marginLeft: "-40px"}}
+        onClick={onClick}
+      />
+    );
+  }
+
   return (
-    <div className="w-full box-border pl-20 pr-20">
-      <div className="w-full h-[500px] flex justify-center" key={id}>
-        <Carousal style={style}>
-          {detail.imagesList?.map(item => <img style={styleImg} key={item.id} src={item.url} />)}
-        </Carousal>
+    <>
+      <Header page={"home"}></Header>
+      <div className="w-full box-border pl-20 pr-20">
+      <div className="w-full h-[500px] flex justify-center mb-4 slider_detail" key={id}>
+      <Slider {...settings} className="w-[80%]">
+        {dataDetail.imagesList?.map((item, index) => (
+          <div key={index} className=" h-[450px]">
+            <img style={styleImg} src={item.url} alt="" />
+          </div>
+        ))}
+      </Slider>
       </div>
       <div className="w-full flex justify-between ml-24 mr-24">
         {/* left */}
@@ -98,30 +150,30 @@ function Detail() {
           {/* info */}
           <div className="pt-6 pb-6 border-b-2">
             <div className="text-4xl font-medium">
-              <p>{detail.propertyName}</p>
+              <p>{dataDetail.propertyName}</p>
             </div>
             <div className="text-3xl font-medium mt-2">
-              <p>{detail.address}</p>
+              <p>{dataDetail.address}</p>
             </div>
             <div className="flex mt-2 text-[17px] font-normal justify-between w-[38rem]">
               <p>
-                {detail.numGuests} khách
+                {dataDetail.numGuests} khách
               </p>
               <span>-</span>
               <p>
-                {detail.numBedrooms} phòng ngủ
+                {dataDetail.numBedrooms} phòng ngủ
               </p>
               <span>-</span>
               <p>
-                {detail.numBeds} giường
+                {dataDetail.numBeds} giường
               </p>
               <span>-</span>
               <p>
-                {detail.numBathrooms} phòng tắm
+                {dataDetail.numBathrooms} phòng tắm
               </p>
             </div>
             <div className="rating text-lg font-semibold flex pt-4">
-              <p className="text-4xl">{detail.rating}</p>
+              <p className="text-4xl">{dataDetail.rating}</p>
               <FontAwesomeIcon className=" text-yellow-300 stroke-black ml-[2px]" size="2x" icon={icon({name: 'star', family: 'classic', style: 'solid'})} />
             </div>
           </div>
@@ -129,11 +181,11 @@ function Detail() {
           {/* info-host */}
             <div className="w-full pt-6 pb-6 flex justify-items-center border-b-2">
               <div className="w-[4.8rem] h-[4.8rem]">
-                <img src={detail.owner?.avatar} alt="" />
+                <img src={dataDetail.owner?.avatar} alt="" />
               </div>
               <div className="ml-3">
                 <div className="text-base font-semibold">
-                  <p className="text-[17px]">Hosted by {detail.owner?.firstName} {detail.owner?.lastName}</p>
+                  <p className="text-[17px]">Hosted by {dataDetail.owner?.firstName} {dataDetail.owner?.lastName}</p>
                 </div>
                 <div className="text-base">
                   <p className="text-[17px]">Chủ nhà siêu cấp 4 năm kinh nghiệm đón tiếp khách</p>
@@ -169,7 +221,7 @@ function Detail() {
           {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 ">
               <div>
-                <p className="text-[17px]">{detail.description}</p>
+                <p className="text-[17px]">{dataDetail.description}</p>
               </div>
           </div>
             
@@ -181,10 +233,10 @@ function Detail() {
           <div className="w-[350px] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
               <div className="p-5 pt-4">
                   <div className="flex justify-items-center">
-                      <p className="text-[2.4rem] font-semibold">${detail.price}</p>
+                      <p className="text-[2.4rem] font-semibold">${dataDetail.price}</p>
                       <span className="pt-[6px] ml-1 text-[17px]">/ đêm</span>
                   </div>
-                  <div className="pt-6 pb-6 flex flex-col relative h-[20rem]">
+                  <div className="pt-6 pb-6 flex flex-col relative h-[15rem]">
                     <div className="flex border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
                         <div className="checkin w-[45%] ml-4 border-r-2 overflow-hidden">
                           <label htmlFor="">Nhận phòng</label>
@@ -207,10 +259,10 @@ function Detail() {
                           />
                         </div>
                     </div>
-                    <div onClick={onChangeDropdown} className="h-[5.8rem] border-solid border-2 border-black/30 rounded-b-2xl p-2 flex justify-between relative">
+                    <div onClick={onChangeDropdown} className="h-[5.8rem] border-solid border-2 border-black/30 rounded-b-2xl p-2 flex justify-between relative cursor-pointer">
                         <div className="ml-4">
                           <p className="mb-0 font-medium text-lg">KHÁCH</p>
-                          <p className="text-2xl">{totalGuests} khách</p>
+                          <p className="text-2xl">{totalGuests} khách { infants>0 ? ", " + infants + " em bé" : ""} { pet>0 ? ", " + pet + " thú cưng": ""}</p>
                         </div>
                         <div className="text-4xl mr-2 mt-3 h-9 w-9">
                           {showDropdown 
@@ -218,7 +270,7 @@ function Detail() {
                           : <FontAwesomeIcon icon={icon({name: 'chevron-down', family: 'classic', style: 'solid'})} />}
                         </div>
                     </div>
-                    <div className="absolute w-[290px] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10">
+                    <div className={` ${showDropdown ? "" : "hidden"} absolute w-[290px] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}>
                             <div className="flex justify-between p-2">
                               <NumGuest type="adult" totalGuest={adults} setTotalGuest={setAdults} onChangeTotalFinal={onChangeTotalFinal} />
                             </div>
@@ -238,17 +290,17 @@ function Detail() {
                   </div>
                   <div className="pt-6 pb-4 border-b-2" >
                     <div className="flex justify-between text-lg">
-                      <p className="text-[17px]">{detail.price} x {totalDays}</p>
-                      <p className="text-[17px]">{detail.price*totalDays}</p>
+                      <p className="text-[17px]">{dataDetail.price} x {totalDays}</p>
+                      <p className="text-[17px]">{dataDetail.price*totalDays}$</p>
                     </div>
                     <div className="flex justify-between text-lg">
                       <p className="text-[17px]">Phí dịch vụ StayEasy</p>
-                      <p className="text-[17px]">$10</p>
+                      <p className="text-[17px]">10$</p>
                     </div>
                   </div>
                   <div className="flex justify-between text-lg pt-6 font-semibold">
                       <p className="text-[17px]">Tổng trước thuế</p>
-                      <p className="text-[17px]">$60</p>
+                      <p className="text-[17px]">{dataDetail.price*totalDays+10}$</p>
                     </div>
               </div>
              
@@ -256,6 +308,7 @@ function Detail() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

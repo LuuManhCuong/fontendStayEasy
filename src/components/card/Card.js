@@ -1,8 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-import {useState} from 'react';
-import  history  from '../../App';
-import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 function Card(props) {
     const [active, setActive] = useState(false);
     const checkin = new Date()
@@ -15,7 +14,6 @@ function Card(props) {
     }
     const handleDetail = () => {
       navigate(`/detail/${props.item.propertyId}?checkin=${checkin}&checkout=${checkout}&adults=1&children=0&infants=0&pet=0`);
-      window.location.reload();
     }
     return (
       <div onClick={handleDetail} className="w-full h-auto cursor-pointer flex-initial mb-[2rem]" key={props.index}>
@@ -25,12 +23,11 @@ function Card(props) {
           <FontAwesomeIcon icon={icon({name: 'heart', family: 'classic', style: 'solid'})} />
           </div>
         </div>
-        <div className="mt-2">
-          <div ><b>{props.item.propertyName}</b></div>
-          <div >{props.item.address}</div>
-          <div ><b>{props.item.price}</b> / đêm</div>
+        <div>{props.item.address}</div>
+        <div>
+          <b>{props.item.price}</b> / đêm
         </div>
       </div>
-    );
+  );
 }
 export default Card;

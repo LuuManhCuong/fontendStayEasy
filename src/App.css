@@ -15,3 +15,7 @@ svg {
   stroke-width: 30px;
 }
 
+.slider_detail .slick-next:before, .slider_detail .slick-prev:before {
+  font-size: 40px;
+}
+

@@ -1,8 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       screens: {
@@ -14,10 +12,17 @@ module.exports = {
         'fav-icon-active': '#ff385c',
         'checkout-bg': 'rgb(221, 221, 221)',
       },
+      backdropBlur: {
+        xs: "2px",
+        sm: "4px",
+        DEFAULT: "5px",
+        lg: "8px",
+        xl: "16px",
+      },
       boxShadow: {
         'checkout-shadow': 'rgba(0, 0, 0, 0.12) 0px 6px 16px;',
       }
     },
   },
   plugins: [],
-}
+};

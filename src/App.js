@@ -2,8 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Experience from "./pages/Experience";
-import Detail from './pages/detail/Detail';
-import './App.css';
+import Detail from "./pages/Detail";
+
 
 function App() {
   return (
