@@ -2,17 +2,17 @@ import Footer from "../components/footer/Footer";
 import Header from "../components/header/Header";
 import ListView from "../components/listView/ListView";
 import Filter from "../components/filter/Filter";
-
+import Stack from "@mui/material/Stack";
+import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { counterSelector, dataHomeSelector } from "../redux-tookit/selector";
+import { dataHomeSelector } from "../redux-tookit/selector";
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
 
 function Home() {
   const dispatch = useDispatch();
-  const { dataHome } = useSelector(dataHomeSelector);
-  console.log("dataHome: ", { dataHome });
+  const { dataHome, isLoading } = useSelector(dataHomeSelector);
 
   useEffect(() => {
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
@@ -32,7 +32,15 @@ function Home() {
     <>
       <Header page="home"></Header>
       <Filter page="home"></Filter>
-      <ListView data={dataHome}></ListView>
+
+      {isLoading && (
+        <Stack sx={{ width: "100%", color: "grey.500" }} spacing={2}>
+          <LinearProgress color="secondary" />
+        </Stack>
+      )}
+      {dataHome.length > 0 && <ListView data={dataHome}></ListView>}
+      {!isLoading && dataHome.length === 0 && <h3>Không tìm thấy dữ liệu</h3>}
+
       <Footer></Footer>
     </>
   );

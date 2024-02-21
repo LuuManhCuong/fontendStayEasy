@@ -6,7 +6,7 @@ import Avatar from "@mui/material/Avatar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DatePicker from "react-datepicker";
-
+import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import SearchIcon from "@mui/icons-material/Search";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -25,6 +25,7 @@ function Header({ page }) {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [suggest, setSuggest] = useState();
 
   React.useEffect(() => {
     setCheckout(new Date(checkin.getTime() + 86400000));
@@ -35,7 +36,8 @@ function Header({ page }) {
       setShowHistory(false);
     }
   }, [keySearch]);
-  function handleSearch() {
+
+  React.useEffect(() => {
     let url;
     if (page === "home") {
       url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
@@ -44,16 +46,39 @@ function Header({ page }) {
     } else {
       url = `${page}/search?keySearch=${keySearch}`;
     }
+    axios
+      .get(
+        `http://localhost:8080/explore/search/suggest?keySearch=${keySearch}`
+      )
+      .then(function (response) {
+        setSuggest(response.data);
+        console.log("Data suggest: ", response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [keySearch]);
 
-    console.log("fetch api: ", url);
+  function handleSearch() {
+    setShowHistory(false);
+    let url;
+    if (page === "home") {
+      url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
+    } else if (page === "experience") {
+      url = `${page}/search?keySearch=${keySearch}`;
+    } else {
+      url = `${page}/search?keySearch=${keySearch}`;
+    }
+    dispatch(dataExploreSlice.actions.getDataExploreRequest());
     axios
       .get(`http://localhost:8080/explore/search?keySearch=${keySearch}`)
       .then(function (response) {
-        // handle success
         dispatch(dataExploreSlice.actions.getDataExploreSuccess(response.data));
-        console.log("Data search: ", response.data);
+        // console.log("Data search: ", response.data);
       })
       .catch(function (error) {
+        dispatch(dataExploreSlice.actions.getDataExploreFailure());
+
         console.log(error);
       });
   }
@@ -212,7 +237,7 @@ function Header({ page }) {
               name="keySearch"
               placeholder="Tìm kiếm..."
             />
-            {showHistory && (
+            {showHistory & (suggest?.length > 0) ? (
               <div
                 tabindex="1"
                 className="search-history"
@@ -221,19 +246,22 @@ function Header({ page }) {
                 }}
               >
                 <h2>Gợi ý</h2>
-                <ul className="history-item">
-                  <li>kết quả 1</li>
-                  <li>kết quả 2</li>
-                  <li>kết quả 3</li>
-                </ul>
-
-                <h2>Lịch sử tìm kiếm</h2>
-                <ul className="history-item">
-                  <li>kết quả 1</li>
-                  <li>kết quả 2</li>
-                  <li>kết quả 3</li>
+                <ul className="suggest">
+                  {suggest.map((e, i) => (
+                    // <li key={i}> {e.propertyName} </li>
+                    <Link
+                      className="suggest-item"
+                      key={i}
+                      to={`/detail/${e.propertyId}`}
+                    >
+                      <img src={e.thumbnail} alt="thumbnail" />
+                      <h3>{e.propertyName}</h3>
+                    </Link>
+                  ))}
                 </ul>
               </div>
+            ) : (
+              ""
             )}
           </div>
 
