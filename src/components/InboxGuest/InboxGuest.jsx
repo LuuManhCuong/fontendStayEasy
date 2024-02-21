@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import style from './inboxGuest.module.css'
 import { useParams } from 'react-router-dom';
 import Message from './Message/Message';
 import Stomp from 'stompjs';
+import { ShowContext } from '../../pages/Inbox/ShowComponent'
 import SockJS from 'sockjs-client';
 import EmojiPicker from 'emoji-picker-react';
 export default function InboxGuest() {
-
+    const active = useContext(ShowContext).active
+    const changeActive = useContext(ShowContext).changeActive
     const roomId = useParams().roomId
     const [messages, setMessages] = useState([])
     const [stompClient, setStompClient] = useState(null);
@@ -80,19 +82,21 @@ export default function InboxGuest() {
     function offEmoji() {
         setPickkerVisible(false)
     }
+
     return (
-        <div className={style.thread_box}>
+
+        <div className={active ? style.thread_box : `${style.thread_box} ${style.thread_active}`}>
             <div className={style.thread_top}>
                 <div className={style.thread_name}>
                     <h2>Chat Box</h2>
                 </div>
                 <div className={style.thread_button}>
-                    <button>Hide details</button>
+                    <button onClick={changeActive}>Hide details</button>
                 </div>
             </div>
 
-            <div className={style.thread_center}>
-                <ul>
+            <div className={style.thread_center} >
+                <ul >
                     {messages.map(e => <Message key={e.messageId} data={e}></Message>)}
                     <div ref={messagesEndRef} />
                 </ul>

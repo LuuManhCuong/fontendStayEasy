@@ -7,17 +7,26 @@ import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useSelector, useDispatch } from "react-redux";
 import ListView from "../components/listView/ListView";
-import { dataExploreSelector } from "../redux-tookit/selector";
+import {
+  counterSelector,
+  dataExploreSelector,
+  keySearchSelector,
+} from "../redux-tookit/selector";
 
 import { dataExploreSlice } from "../redux-tookit/reducer/dataExploreSlice";
 
 function Explore() {
   const dispatch = useDispatch();
+  const { keySearch } = useSelector(keySearchSelector);
+  const counter = useSelector(counterSelector);
+  console.log("get counter: ", counter);
   const { dataExplore, isLoading } = useSelector(dataExploreSelector);
   useEffect(() => {
     dispatch(dataExploreSlice.actions.getDataExploreRequest());
     axios
-      .get("http://localhost:8080/explore")
+      // .get("http://localhost:8080/explore")
+      .get(`http://localhost:8080/explore/search?keySearch=${keySearch}`)
+
       .then(function (response) {
         dispatch(dataExploreSlice.actions.getDataExploreSuccess(response.data));
       })
@@ -25,8 +34,7 @@ function Explore() {
         dispatch(dataExploreSlice.actions.getDataExploreFailure());
         console.log(error);
       });
-  }, []);
-
+  }, [counter]);
 
   return (
     <>

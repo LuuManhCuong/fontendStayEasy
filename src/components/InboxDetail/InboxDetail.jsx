@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import style from './inboxDetail.module.css'
+import { ShowContext } from '../../pages/Inbox/ShowComponent'
 
 export default function InboxDetail() {
-  return (
-    <div className={style.detail_box}>
+  const active = useContext(ShowContext).active
+    const changeActive = useContext(ShowContext).changeActive
+    return (
+    <div className={active?style.detail_box: `${style.detail_box} ${style.detail_hide}`}>
           <div className={style.detail_box_top}>
             <h2>Detail</h2>
             <div>
-              <i className="fa-solid fa-xmark"></i>
+              <i onClick={changeActive} className="fa-solid fa-xmark"></i>
             </div>
           </div>
 

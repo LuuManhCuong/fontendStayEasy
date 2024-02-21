@@ -14,11 +14,16 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { dataExploreSlice } from "../../redux-tookit/reducer/dataExploreSlice";
 import { useNavigate } from "react-router-dom";
+import { keySearchSelector } from "../../redux-tookit/selector";
+import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
+import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 function Header({ page }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { keySearch } = useSelector(keySearchSelector);
   const today = new Date();
-  const [keySearch, setKeySearch] = React.useState("");
+
+  // const [keySearch, setKeySearch] = React.useState("");
   const [checkin, setCheckin] = React.useState(new Date());
   let timeStamp = today.getTime() + 86400000;
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
@@ -61,7 +66,6 @@ function Header({ page }) {
   }, [keySearch]);
 
   function handleSearch() {
-    // navigate("/explore");
     setShowHistory(false);
     let url;
     if (page === "home") {
@@ -71,10 +75,12 @@ function Header({ page }) {
     } else {
       url = `${page}/search?keySearch=${keySearch}`;
     }
+    console.log("keysearch: ", keySearch);
     dispatch(dataExploreSlice.actions.getDataExploreRequest());
     axios
       .get(`http://localhost:8080/explore/search?keySearch=${keySearch}`)
       .then(function (response) {
+        navigate("/explore");
         dispatch(dataExploreSlice.actions.getDataExploreSuccess(response.data));
         // console.log("Data search: ", response.data);
       })
@@ -192,7 +198,9 @@ function Header({ page }) {
               type="text"
               className="search-text"
               value={keySearch}
-              onChange={(e) => setKeySearch(e.target.value)}
+              onChange={(e) =>
+                dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
+              }
               id="keySerch"
               name="keySearch"
               placeholder="Tìm kiếm địa điểm..."
@@ -232,7 +240,10 @@ function Header({ page }) {
               className="search-text"
               value={keySearch}
               onChange={(e) => {
-                setKeySearch(e.target.value);
+                //                 dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
+
+                dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
+
                 setShowHistory(true);
               }}
               id="keySerch"
@@ -255,7 +266,10 @@ function Header({ page }) {
                       className="suggest-item"
                       key={i}
                       to={`/explore/detail/${e.propertyId}`}
-                      onClick={() => setShowHistory(false)}
+                      onClick={() => {
+                        setShowHistory(false);
+                        // dispatch(keySearchSlice.actions.setKeySearch(""));
+                      }}
                     >
                       <img src={e.thumbnail} alt="thumbnail" />
                       <h3>{e.propertyName}</h3>
@@ -282,7 +296,13 @@ function Header({ page }) {
             )}
           </div>
 
-          <div className="clear" onClick={() => setKeySearch("")}>
+          <div
+            className="clear"
+            onClick={() => {
+              dispatch(keySearchSlice.actions.setKeySearch(""));
+              dispatch(counterSlice.actions.increase());
+            }}
+          >
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
           <SearchIcon
@@ -299,7 +319,8 @@ function Header({ page }) {
               className="search-text"
               value={keySearch}
               onChange={(e) => {
-                setKeySearch(e.target.value);
+                dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
+
                 setShowHistory(true);
               }}
               id="keySerch"
@@ -331,7 +352,10 @@ function Header({ page }) {
             )}
           </div>
 
-          <div className="clear" onClick={() => setKeySearch("")}>
+          <div
+            className="clear"
+            onClick={() => dispatch(keySearchSlice.actions.setKeySearch(""))}
+          >
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
           <SearchIcon
