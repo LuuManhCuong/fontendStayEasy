@@ -4,14 +4,13 @@ export default function HeaderInbox() {
     const idUser = localStorage.getItem('id_user')
     const [user, setUser] = useState()
     useEffect(() => {
-        fetch(`http://localhost:8080/api/user/get/${idUser}`)
+        fetch(`http://localhost:8080/api/v1/user/${idUser}`)
             .then(data => data.json())
             .then(data => {
                 setUser(data)
             })
     }, [idUser])
   return (
-    
     <header>
         <div className={style.header_logo}>
             <img src="/images/logo.png" alt=""></img>

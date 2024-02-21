@@ -23,7 +23,7 @@ export default function InboxGuest() {
         scrollToBottom();
     }, [messages]);
     useEffect(() => {
-        fetch(`http://localhost:8080/api/chatroom/get/all/${roomId}`)
+        fetch(`http://localhost:8080/api/v1/chatroom/get/all/${roomId}`)
             .then(data => data.json())
             .then(data => {
                 setMessages(data)
@@ -74,10 +74,10 @@ export default function InboxGuest() {
             }
         }
     }
-    const handleEmojiClick = (emojiData ) => {
-        setMessage(message+ emojiData.emoji)
+    const handleEmojiClick = (emojiData) => {
+        setMessage(message + emojiData.emoji)
     };
-    function offEmoji(){
+    function offEmoji() {
         setPickkerVisible(false)
     }
     return (
@@ -105,7 +105,7 @@ export default function InboxGuest() {
                 {
                     isPickkerVisible ?
                         <div className={style.thread_emoji}>
-                            
+
                             <EmojiPicker onEmojiClick={handleEmojiClick}></EmojiPicker>
                         </div> :
                         <></>

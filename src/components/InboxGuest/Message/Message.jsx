@@ -4,7 +4,7 @@ import moment from 'moment'
 export default function Message({ data }) {
     const [user, setUser] = useState()
     useEffect(() => {
-        fetch(`http://localhost:8080/api/user/get/${data.userId}`)
+        fetch(`http://localhost:8080/api/v1/user/${data.userId}`)
             .then(data => data.json())
             .then(user => {
                 setUser(user)
@@ -17,7 +17,7 @@ export default function Message({ data }) {
             </div>
             <div className={style.inbox_content}>
                 <div className={style.inbox_infor}>
-                    <h3>{user ? user.userName : ''}</h3>
+                    <h3>{user ? user.firstName+" "+user.lastName : ''}</h3>
                     <span>{moment(data.createAt, 'YYYY-MM-DDTHH:mm:ss').fromNow()}</span>
                 </div>
                 <div className={style.inbox_mess}>

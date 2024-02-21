@@ -7,7 +7,7 @@ export default function Room({ data }) {
     const [host, setHost] = useState()
     const hostId = data.userId === idUser ? data.hostId : data.userId
     useEffect(() => {
-        fetch(`http://localhost:8080/api/user/get/${hostId}`)
+        fetch(`http://localhost:8080/api/v1/user/${hostId}`)
             .then(data => data.json())
             .then(data => {
                 setHost(data)
@@ -21,7 +21,7 @@ export default function Room({ data }) {
                 </div>
                 <div className={style.content_box}>
                     <div>
-                        <span className={style.name_user}>{host ? host.userName : ''}</span>
+                        <span className={style.name_user}>{host ? host.firstName+" "+host.lastName : ''}</span>
                          {/* <span>.</span><span className={style.sub_content}>Gia Vien District</span> */}
                     </div>
                     {/* <div>

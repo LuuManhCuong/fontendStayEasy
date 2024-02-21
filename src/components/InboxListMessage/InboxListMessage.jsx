@@ -5,7 +5,7 @@ export default function InboxListMessage() {
   const [listRoom, setListRoom] = useState([])
   const idUser = localStorage.getItem('id_user')
   useEffect(()=>{
-    fetch(`http://localhost:8080/api/chatroom/get/all/room/user/${idUser}`)
+    fetch(`http://localhost:8080/api/v1/chatroom/get/all/room/user/${idUser}`)
     .then(data=>data.json())
     .then(data=>{
       setListRoom(data)
