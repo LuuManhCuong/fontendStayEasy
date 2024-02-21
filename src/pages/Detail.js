@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getPropertyById } from "../redux/actions/PropertyAction";
 import Header from "../components/header/Header";
+import Booking from "./Booking";
 
 function Detail() {
   const { id } = useParams();
@@ -166,7 +167,7 @@ function Detail() {
                 </div>
                 <div className="flex flex-col justify-between">
                   <button className="h-12 bg-red-600 rounded-xl" type="submit">
-                    <p className="text-white font-medium">Đặt phòng</p>
+                    <a href="/booking" className="text-white font-medium">Đặt phòng</a>
                   </button>
                 </div>
                 <div className="pt-6 pb-4 border-b-2">
