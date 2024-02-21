@@ -5,7 +5,6 @@ import Filter from "../components/filter/Filter";
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProperty } from "../redux/actions/PropertyAction";
 import { counterSelector, dataHomeSelector } from "../redux-tookit/selector";
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
@@ -16,12 +15,15 @@ function Home() {
   console.log("dataHome: ", { dataHome });
 
   useEffect(() => {
+    dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
       .get(`http://localhost:8080/api/property`)
       .then(function (response) {
         dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
       })
       .catch(function (error) {
+        dispatch(dataHomeSlice.actions.getDataHomeFailure());
+
         console.log(error);
       });
   }, []);

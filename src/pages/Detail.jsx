@@ -4,17 +4,13 @@ import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getPropertyById } from "../redux/actions/PropertyAction";
+// import { getPropertyById } from "../redux/actions/PropertyAction";
 import Header from "../components/header/Header";
 
 function Detail() {
-  const { id } = useParams();
   const dispatch = useDispatch();
   const { detail } = useSelector((state) => state.propertyReducer);
-  useEffect(() => {
-    const action = getPropertyById(id);
-    dispatch(action);
-  }, []);
+
   const style = {
     width: "1200px",
     height: "500px",
