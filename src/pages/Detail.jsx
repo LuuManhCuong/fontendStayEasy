@@ -27,11 +27,11 @@ function Detail() {
 
   const [totalGuests, setTotalGuests] = useState(1);
   const [checkin, setCheckin] = useState(urlParams.get('checkin') ? new Date(urlParams.get('checkin')) : today);
-  const [checkout, setCheckout] = useState(urlParams.get('checkout') ? new Date(urlParams.get('checkout')) : new Date(timeStamp));
-  const [adults, setAdults] = useState(parseInt(urlParams.get('adults')));
-  const [children, setChildren] = useState(parseInt(urlParams.get('children')));
-  const [infants, setInfants] = useState(parseInt(urlParams.get('infants')));
-  const [pet, setPet] = useState(parseInt(urlParams.get('pet')));
+  const [checkout, setCheckout] = useState( urlParams.get('checkout') ? new Date(urlParams.get('checkout')) : new Date(timeStamp));
+  const [adults, setAdults] = useState( parseInt( urlParams.get('adults'))!==0 ? parseInt( urlParams.get('adults')) : 1);
+  const [children, setChildren] = useState( parseInt( urlParams.get('children')) !==0 ? parseInt( urlParams.get('children')) : 0);
+  const [infants, setInfants] = useState( parseInt( urlParams.get('infants')) !==0 ? parseInt( urlParams.get('infants')) : 0);
+  const [pet, setPet] = useState( parseInt( urlParams.get('pet'))!==0 ? parseInt( urlParams.get('pet')) : 0);
   const [totalDays, setTotalDays] = useState(1);
   const [showDropdown, setShowDropdown] = useState(false);
   
