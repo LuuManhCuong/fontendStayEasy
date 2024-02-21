@@ -23,6 +23,7 @@ function Card(props) {
           <FontAwesomeIcon icon={icon({name: 'heart', family: 'classic', style: 'solid'})} />
           </div>
         </div>
+        <div className="text-3xl font-bold">{props.item.propertyName}</div>
         <div>{props.item.address}</div>
         <div>
           <b>{props.item.price}</b> / đêm

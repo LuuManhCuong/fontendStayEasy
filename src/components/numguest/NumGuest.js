@@ -1,4 +1,4 @@
-
+import {memo} from 'react';
 function NumGuest({type, totalGuest, setTotalGuest}) {
     
     if(type === "adult") {
@@ -58,4 +58,4 @@ function NumGuest({type, totalGuest, setTotalGuest}) {
     )
 }
 }
-export default NumGuest;
+export default memo(NumGuest);

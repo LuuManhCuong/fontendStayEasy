@@ -11,14 +11,15 @@ import Slider from "react-slick";
 import NumGuest from "../components/numguest/NumGuest";
 import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
 import { dataDetailSelector } from "../redux-tookit/selector";
+import Popup from "../components/popup/PopUp";
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
+
   const location = useLocation();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
-
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
 
@@ -34,6 +35,8 @@ function Detail() {
   const [pet, setPet] = useState( parseInt( urlParams.get('pet'))!==0 ? parseInt( urlParams.get('pet')) : 0);
   const [totalDays, setTotalDays] = useState(1);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
+  const [currentImage, setCurrentImage] = useState(dataDetail.imagesList?[0]:null);
   
 
   useEffect(() => {
@@ -62,11 +65,11 @@ function Detail() {
     setShowDropdown(!showDropdown);
   }
 
-  const onChangeTotalFinal = () => {
-    console.log('truoc',adults, children, infants, pet);
-    setTotalGuests(adults + children + infants + pet);
-    console.log('sau',adults, children, infants, pet);
-    console.log(totalGuests);
+  const onClickImage = (image) => {
+    setCurrentImage(dataDetail.imagesList[parseInt(image.target.getAttribute('testindex'))]);
+    url.searchParams.set('image', currentImage?.imageId);
+    window.history.replaceState({}, '', url);
+    setOpenPopup(true);
   }
 
   useEffect(() => {
@@ -134,12 +137,13 @@ function Detail() {
   return (
     <>
       <Header page={"home"}></Header>
+      <Popup currentImageInit={currentImage} imagesList={dataDetail.imagesList} openPopup={openPopup} setOpenPopup={setOpenPopup}></Popup>
       <div className="w-full box-border pl-20 pr-20">
       <div className="w-full h-[500px] flex justify-center mb-4 slider_detail" key={id}>
       <Slider {...settings} className="w-[80%]">
         {dataDetail.imagesList?.map((item, index) => (
-          <div key={index} className=" h-[450px]">
-            <img style={styleImg} src={item.url} alt="" />
+          <div key={index} className=" h-[450px]" >
+            <img style={styleImg} src={item.url} testindex={index} alt="" onClick={onClickImage}/>
           </div>
         ))}
       </Slider>
@@ -272,16 +276,16 @@ function Detail() {
                     </div>
                     <div className={` ${showDropdown ? "" : "hidden"} absolute w-[290px] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}>
                             <div className="flex justify-between p-2">
-                              <NumGuest type="adult" totalGuest={adults} setTotalGuest={setAdults} onChangeTotalFinal={onChangeTotalFinal} />
+                              <NumGuest type="adult" totalGuest={adults} setTotalGuest={setAdults} />
                             </div>
                             <div className="flex justify-between p-2">
-                              <NumGuest type="children" totalGuest={children} setTotalGuest={setChildren} onChangeTotalFinal={onChangeTotalFinal} />
+                              <NumGuest type="children" totalGuest={children} setTotalGuest={setChildren} />
                               </div>
                             <div className="flex justify-between p-2">
-                              <NumGuest type="infants" totalGuest={infants} setTotalGuest={setInfants} onChangeTotalFinal={onChangeTotalFinal} />
+                              <NumGuest type="infants" totalGuest={infants} setTotalGuest={setInfants} />
                               </div>
                             <div className="flex justify-between p-2">
-                              <NumGuest type="pet" totalGuest={pet} setTotalGuest={setPet} onChangeTotalFinal={onChangeTotalFinal} />
+                              <NumGuest type="pet" totalGuest={pet} setTotalGuest={setPet} />
                               </div>
                         </div>
                   </div>
