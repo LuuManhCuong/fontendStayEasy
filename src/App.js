@@ -17,14 +17,23 @@ function App() {
       <Route path="/explore" element={<Explore></Explore>}></Route>
 
       <Route path="/explore/detail/:id" element={<Detail />} />
-      <Route path="/inbox" element={<Inbox> </Inbox>} />
+      <Route
+        path="/inbox"
+        element={
+          <ShowComponent>
+            <Inbox> </Inbox>
+          </ShowComponent>
+        }
+      />
       <Route
         path="/inbox/:roomId"
         element={
-          <Inbox>
-            {" "}
-            <InboxGuest></InboxGuest>{" "}
-          </Inbox>
+          <ShowComponent>
+            <Inbox>
+              {" "}
+              <InboxGuest></InboxGuest>{" "}
+            </Inbox>
+          </ShowComponent>
         }
       />
     </Routes>
