@@ -38,13 +38,6 @@ function Detail() {
   const [openPopup, setOpenPopup] = useState(false);
   const [currentImage, setCurrentImage] = useState(dataDetail.imagesList?[0]:null);
   
-  const queryData = {
-    adults: adults,
-    children: children,
-    infants: infants,
-    pet: pet,
-  }
-
   useEffect(() => {
     url.searchParams.set('adults', adults);
     url.searchParams.set('children', children);
@@ -177,17 +170,12 @@ function Detail() {
                 {dataDetail.numGuests} khách
               </p>
               <span>-</span>
-              <p>
-                {dataDetail.numBedrooms} phòng ngủ
-              </p>
-              <span>-</span>
-              <p>
-                {dataDetail.numBeds} giường
-              </p>
-              <span>-</span>
-              <p>
-                {dataDetail.numBathrooms} phòng tắm
-              </p>
+              {dataDetail.propertyUtilitis?.map((item, index) => (
+                <p key={index}>
+                  {item.quantity} {item.utilities.utilitiesName}
+                  {index !== dataDetail.propertyUtilitis.length - 1 ? <span> -</span> : ""}
+                </p>
+              ))}
             </div>
             <div className="w-[50%] rating text-lg font-semibold flex pt-4">
               <div className="flex">
