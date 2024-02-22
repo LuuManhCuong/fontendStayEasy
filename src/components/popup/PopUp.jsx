@@ -5,14 +5,16 @@ import ListImage from '../listimage/ListImage';
 import { useLocation } from "react-router-dom";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 function Popup(props) {
     const location = useLocation();
     var currentURL = window.location.href;
     var url = new URL(currentURL);
   
     const queryString = location.search;
-    const urlParams = new URLSearchParams(queryString);
     const { currentImageInit, imagesList, openPopup, setOpenPopup} = props;
+    const [index, setIndex] = useState(0);
+    
     
     const handleClose = () => {
         setOpenPopup(false);
@@ -35,9 +37,13 @@ function Popup(props) {
             },
           }}
         >
-            <DialogTitle></DialogTitle>
+            <DialogTitle>
+                <div className='text-4xl text-white mt-4'>
+                    <p>{index}/{imagesList?.length}</p>
+                </div>
+            </DialogTitle>
             <DialogContent>
-                <ListImage currentImageInit={currentImageInit} imagesList={imagesList}></ListImage>
+                <ListImage setIndex={setIndex} currentImageInit={currentImageInit} imagesList={imagesList}></ListImage>
             </DialogContent>
             <DialogActions>
                 <div className='flex text-white cursor-pointer justify-between w-[70px] fixed top-10 left-10' onClick={handleClose}>

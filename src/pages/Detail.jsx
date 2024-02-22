@@ -38,11 +38,24 @@ function Detail() {
   const [openPopup, setOpenPopup] = useState(false);
   const [currentImage, setCurrentImage] = useState(dataDetail.imagesList?[0]:null);
   
+  const queryData = {
+    adults: adults,
+    children: children,
+    infants: infants,
+    pet: pet,
+  }
+
+  useEffect(() => {
+    url.searchParams.set('adults', adults);
+    url.searchParams.set('children', children);
+    url.searchParams.set('infants', infants);
+    url.searchParams.set('pet', pet);
+    window.history.replaceState({}, '', url);
+  }, [adults, children, infants, pet]);
 
   useEffect(() => {
     // Tính số ngày giữa checkin và checkout
     const newTotalDays = Math.ceil((checkout.getTime() - checkin.getTime()) / 86400000); // Đảm bảo rằng giá trị totalDays đã được tính toán đúng
-
     // Cập nhật totalDaysState
     setTotalDays(newTotalDays);
   }, [checkin, checkout]);  
@@ -176,9 +189,14 @@ function Detail() {
                 {dataDetail.numBathrooms} phòng tắm
               </p>
             </div>
-            <div className="rating text-lg font-semibold flex pt-4">
+            <div className="w-[50%] rating text-lg font-semibold flex pt-4">
+              <div className="flex">
               <p className="text-4xl">{dataDetail.rating}</p>
               <FontAwesomeIcon className=" text-yellow-300 stroke-black ml-[2px]" size="2x" icon={icon({name: 'star', family: 'classic', style: 'solid'})} />
+              </div>
+              <div>
+                <p className="text-[18px] ml-4 p-2 underline">{dataDetail.feedbackList?.length} đánh giá</p>
+              </div>
             </div>
           </div>
 

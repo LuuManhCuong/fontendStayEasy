@@ -14,9 +14,46 @@ import LandscapeIcon from "@mui/icons-material/Landscape";
 import BalconyIcon from "@mui/icons-material/Balcony";
 import ForestIcon from "@mui/icons-material/Forest";
 
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { dataCategorySelector } from "../../redux-tookit/selector";
+import axios from "axios";
+import { dataCategorySlice } from "../../redux-tookit/reducer/dataCategorySlice";
+import { dataHomeSlice } from "../../redux-tookit/reducer/dataHomeSlice";
+
 function Filter() {
+  const dispatch = useDispatch();
+  const { dataCategory } = useSelector(dataCategorySelector);
   const [activeIndex, setActiveIndex] = useState(null);
   console.log("active: ", activeIndex);
+
+  const handleClick = (categoryId) => {
+    dispatch(dataHomeSlice.actions.getDataHomeRequest());
+    axios
+      .get(`http://localhost:8080/api/property/category/${categoryId}`)
+      .then(function (response) {
+        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
+      })
+      .catch(function (error) {
+        dispatch(dataHomeSlice.actions.getDataHomeFailure());
+
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    dispatch(dataCategorySlice.actions.getDataCategoryRequest());
+    axios
+      .get(`http://localhost:8080/api/category`)
+      .then(function (response) {
+        dispatch(dataCategorySlice.actions.getDataCategorySuccess(response.data));
+      })
+      .catch(function (error) {
+        dispatch(dataCategorySlice.actions.getDataCategoryFailure());
+
+        console.log(error);
+      });
+  }, []);
 
   const settings = {
     dots: false,
@@ -63,6 +100,18 @@ function Filter() {
         <div className={`filter-category`}>
           <BeachAccessIcon></BeachAccessIcon>nhiệt đới
         </div>
+        {dataCategory.map((item, index) => {
+          return (
+            <div
+              key={index}
+              className={`filter-category`}
+              onClick={() => handleClick(item.categoryId)}
+            >
+              {item.categoryName}
+            </div>
+          );
+        }
+        )}
       </Slider>
     </div>
   );
