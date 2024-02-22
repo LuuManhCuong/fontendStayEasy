@@ -25,6 +25,7 @@ function Card(props) {
     >
       <div className="w-full h-[20rem] rounded-[1.6rem] relative overflow-hidden">
         <img
+          loading="lazy"
           className="w-full h-full object-cover"
           src={props.item.thumbnail}
           alt=""
@@ -41,6 +42,7 @@ function Card(props) {
         </div>
       </div>
       <h2>{props.item.propertyName}</h2>
+      <h2>tổng: {props.item.total}</h2>
       <div>{props.item.address}</div>
       <div>
         <b>{props.item.price}</b> / đêm
