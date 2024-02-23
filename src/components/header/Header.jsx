@@ -91,10 +91,16 @@ function Header({ page }) {
     console.log("keysearch: ", keySearch);
     dispatch(dataExploreSlice.actions.getDataExploreRequest());
     axios
-      .get(`http://localhost:8080/explore/search?keySearch=${keySearch}`)
+      .get(
+        `http://localhost:8080/api/v1/explore/search?keySearch=${keySearch}&page=${0}&size=${10}`
+      )
       .then(function (response) {
         navigate("/explore");
-        dispatch(dataExploreSlice.actions.getDataExploreSuccess(response.data));
+        dispatch(
+          dataExploreSlice.actions.getDataExploreSuccess(
+            response.data.properties.content
+          )
+        );
         // console.log("Data search: ", response.data);
       })
       .catch(function (error) {

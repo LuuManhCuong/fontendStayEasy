@@ -20,7 +20,6 @@ function Home() {
     axios
       .get(`http://localhost:8080/api/property`)
       .then(function (response) {
-        
         dispatch(counterSlice.actions.totalRecord(response.data.length));
         dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
       })

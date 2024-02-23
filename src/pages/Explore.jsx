@@ -18,14 +18,11 @@ import { dataExploreSlice } from "../redux-tookit/reducer/dataExploreSlice";
 function Explore() {
   const dispatch = useDispatch();
   const { keySearch } = useSelector(keySearchSelector);
-  const { counter, totalRecord } = useSelector(counterSelector);
+  const { counter } = useSelector(counterSelector);
   const { dataExplore, isLoading } = useSelector(dataExploreSelector);
-  const [page, setPage] = useState(1);
-  console.log("total recoe: ", Math.ceil(totalRecord / 8));
+  const [page, setPage] = useState(0);
+
   const fetchData = () => {
-    if (page >= Math.ceil(totalRecord / 8)) {
-      setPage(Math.ceil(totalRecord / 8));
-    }
     axios
       // .get("http://localhost:8080/explore")
       .get(
@@ -33,13 +30,14 @@ function Explore() {
       )
 
       .then(function (response) {
-        console.log("data: ", response.data.first.content);
-        console.log("tổng: ", response.data.second);
+        console.log("data: ", response.data);
+        console.log("tổng page: ", response.data.size);
+        console.log("total recoe: ", response.data.totalElements);
 
         dispatch(
           dataExploreSlice.actions.getDataExploreSuccess([
             ...dataExplore,
-            ...response.data.content,
+            ...response.data.properties.content,
           ])
         );
       })
