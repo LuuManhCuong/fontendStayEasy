@@ -38,6 +38,15 @@ function Detail() {
   const [openPopup, setOpenPopup] = useState(false);
   const [currentImage, setCurrentImage] = useState(dataDetail.imagesList?[0]:null);
   
+  // useEffect(() => {
+  //   if(urlParams.get('popup') === "true" && urlParams.get('image') !== null && dataDetail.imagesList) {
+  //     const image = dataDetail.imagesList.find((item) => item.imageId === urlParams.get('image'));
+  //     setCurrentImage(image);
+  //     setOpenPopup(true);
+  //   }
+  // }, [urlParams]);
+
+  
   useEffect(() => {
     url.searchParams.set('adults', adults);
     url.searchParams.set('children', children);
@@ -72,11 +81,16 @@ function Detail() {
   }
 
   const onClickImage = (image) => {
-    setCurrentImage(dataDetail.imagesList[parseInt(image.target.getAttribute('testindex'))]);
-    url.searchParams.set('image', currentImage?.imageId);
-    window.history.replaceState({}, '', url);
+    setCurrentImage(image);
+    if (image) {
+        url.searchParams.set('image', image.imageId);
+        url.searchParams.set('popup', true);
+        window.history.replaceState({}, '', url);
+    }
     setOpenPopup(true);
   }
+
+  
 
   useEffect(() => {
     setTotalGuests(adults + children);
@@ -149,7 +163,7 @@ function Detail() {
       <Slider {...settings} className="w-[80%]">
         {dataDetail.imagesList?.map((item, index) => (
           <div key={index} className=" h-[450px]" >
-            <img style={styleImg} src={item.url} testindex={index} alt="" onClick={onClickImage}/>
+            <img style={styleImg} src={item.url} testindex={index} alt="" onClick={() => onClickImage(item)}/>
           </div>
         ))}
       </Slider>
