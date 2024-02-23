@@ -67,7 +67,7 @@ function Header({ page }) {
     }
     axios
       .get(
-        `http://localhost:8080/explore/search/suggest?keySearch=${keySearch}`
+        `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
       )
       .then(function (response) {
         setSuggest(response.data);
@@ -86,14 +86,12 @@ function Header({ page }) {
     } else if (page === "experience") {
       url = `${page}/search?keySearch=${keySearch}`;
     } else {
-      url = `${page}/search?keySearch=${keySearch}`;
+      url = `${page}/search?keySearch=${keySearch}&page=${0}&size=${100}`;
     }
     console.log("keysearch: ", keySearch);
     dispatch(dataExploreSlice.actions.getDataExploreRequest());
     axios
-      .get(
-        `http://localhost:8080/api/v1/explore/search?keySearch=${keySearch}&page=${0}&size=${10}`
-      )
+      .get(`http://localhost:8080/api/v1/stayeasy/${url}`)
       .then(function (response) {
         navigate("/explore");
         dispatch(
@@ -133,7 +131,7 @@ function Header({ page }) {
 
   // method signup
   const signup = () => {
-    if (!username == "" && !password == "" && !confirmPassword == "") {
+    if (!username === "" && !password === "" && !confirmPassword === "") {
       if (isValidEmail(username)) {
         if (password === confirmPassword) {
           const myHeaders = new Headers();
@@ -155,19 +153,22 @@ function Header({ page }) {
           fetch("http://localhost:8080/api/v1/auth/register", requestOptions)
             .then((response) => {
               if (response.ok) {
-                setSuccessMessage("Đăng kí thành công thành công!");
-                setErrorMessage("");
-                setIsLogined(true);
                 return response.text();
               }
               throw Error(response.status);
             })
             .then((result) => {
-              console.log(result);
-              localStorage.setItem("accesstoken", result.access_token);
-              localStorage.setItem("user", result.user);
+              setSuccessMessage(
+                "Đăng kí thành công thành công. Mời bạn đăng nhập!"
+              );
+              setErrorMessage("");
+              setisOpenLoginModal(true);
+              setisOpenRegisterModal(false);
             })
-            .catch((error) => setErrorMessage("Email đã được đăng ký!"));
+            .catch((error) => {
+              console.error("error", error);
+              setErrorMessage("error!");
+            });
         } else {
           setErrorMessage("Mật khẩu không khớp!");
         }
@@ -204,8 +205,11 @@ function Header({ page }) {
         throw Error(response.status);
       })
       .then((result) => {
+        console.log("user: ", result.user);
         localStorage.setItem("accesstoken", result.access_token);
         localStorage.setItem("user", result.user.email);
+        localStorage.setItem("id_user", result.user.id);
+
         setisOpenLoginModal(false);
         setIsLogined(true);
         alert("Đăng nhập thành công");
@@ -345,7 +349,9 @@ function Header({ page }) {
                       >
                         <path d="M512 240c0 114.9-114.6 208-256 208c-37.1 0-72.3-6.4-104.1-17.9c-11.9 8.7-31.3 20.6-54.3 30.6C73.6 471.1 44.7 480 16 480c-6.5 0-12.3-3.9-14.8-9.9c-2.5-6-1.1-12.8 3.4-17.4l0 0 0 0 0 0 0 0 .3-.3c.3-.3 .7-.7 1.3-1.4c1.1-1.2 2.8-3.1 4.9-5.7c4.1-5 9.6-12.4 15.2-21.6c10-16.6 19.5-38.4 21.4-62.9C17.7 326.8 0 285.1 0 240C0 125.1 114.6 32 256 32s256 93.1 256 208z" />
                       </svg>
-                      <button className="text-2xl py-2 px-4">Tin nhắn</button>
+                      <Link to={"/inbox"} className="text-2xl py-2 px-4">
+                        Tin nhắn
+                      </Link>
                     </div>
                   </Dropdown.Item>
                   <Dropdown.Item>
@@ -640,6 +646,13 @@ function Header({ page }) {
             <hr />
             {/* body area start */}
             <div className="px-10 py-4 overflow-auto max-h-[88%] z-50">
+              {/* success message */}
+              {!successMessage === "" ? (
+                <div className="bg-[#d4edda] rouned-xl p-3 my-3">
+                  <span className="text-green-500">{successMessage}</span>
+                </div>
+              ) : null}
+
               {/* body title */}
               <h1 className="font-semibold mb-4">Chào mừng đến Airbnb</h1>
               {/* form login start */}
@@ -754,14 +767,14 @@ function Header({ page }) {
             {/* body area start */}
             <div className="px-10 py-4 overflow-auto max-h-[88%] z-50">
               {/* error message */}
-              {!errorMessage == "" ? (
+              {!errorMessage === "" ? (
                 <div className="bg-[#f8d7da] rouned-xl p-3 my-3">
                   <span className="text-red-500">{errorMessage}</span>
                 </div>
               ) : null}
 
               {/* success message */}
-              {!successMessage == "" ? (
+              {!successMessage === "" ? (
                 <div className="bg-[#d4edda] rouned-xl p-3 my-3">
                   <span className="text-green-500">{successMessage}</span>
                 </div>

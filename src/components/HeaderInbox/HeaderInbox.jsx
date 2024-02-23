@@ -4,9 +4,10 @@ export default function HeaderInbox() {
   const idUser = localStorage.getItem("id_user");
   const [user, setUser] = useState();
   useEffect(() => {
-    fetch(`http://localhost:8080/api/v1/user/${idUser}`)
+    fetch(`http://localhost:8080/api/v1/stayeasy/user/${idUser}`)
       .then((data) => data.json())
       .then((data) => {
+        console.log("daataa: ", data);
         setUser(data);
       });
   }, [idUser]);

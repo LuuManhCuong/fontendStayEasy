@@ -26,7 +26,7 @@ function Explore() {
     axios
       // .get("http://localhost:8080/explore")
       .get(
-        `http://localhost:8080/explore/search?keySearch=${keySearch}&page=${page}&size=${8}`
+        `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${8}`
       )
 
       .then(function (response) {
@@ -49,7 +49,7 @@ function Explore() {
   useEffect(() => {
     dispatch(dataExploreSlice.actions.getDataExploreRequest());
     fetchData();
-  }, [counter, page]);
+  }, [counter, page, keySearch]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
