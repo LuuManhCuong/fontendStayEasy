@@ -67,7 +67,7 @@ function Header({ page }) {
     }
     axios
       .get(
-        `http://localhost:8080/explore/search/suggest?keySearch=${keySearch}`
+        `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
       )
       .then(function (response) {
         setSuggest(response.data);
@@ -91,7 +91,7 @@ function Header({ page }) {
     console.log("keysearch: ", keySearch);
     dispatch(dataExploreSlice.actions.getDataExploreRequest());
     axios
-      .get(`http://localhost:8080/explore/search?keySearch=${keySearch}`)
+      .get(`http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}`)
       .then(function (response) {
         navigate("/explore");
         dispatch(dataExploreSlice.actions.getDataExploreSuccess(response.data));
