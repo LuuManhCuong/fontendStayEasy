@@ -5,6 +5,7 @@ import { dataHomeSlice } from "./reducer/dataHomeSlice";
 import { dataDetailSlice } from "./reducer/dataDetailSlice";
 import { dataCategorySlice } from "./reducer/dataCategorySlice";
 
+import { keySearchSlice } from "./reducer/keySearchSlice";
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     dataHome: dataHomeSlice.reducer,
     dataDetail: dataDetailSlice.reducer,
     dataCategory: dataCategorySlice.reducer,
+    keySearch: keySearchSlice.reducer,
   },
 });
 
