@@ -149,19 +149,18 @@ function Header({ page }) {
           fetch("http://localhost:8080/api/v1/auth/register", requestOptions)
             .then((response) => {
               if (response.ok) {
-                setSuccessMessage("Đăng kí thành công thành công!");
-                setErrorMessage("");
-                setIsLogined(true);
                 return response.text();
-              }
-              throw Error(response.status);
+              }throw Error(response.status);
             })
             .then((result) => {
-              console.log(result);
-              localStorage.setItem("accesstoken", result.access_token);
-              localStorage.setItem("user", result.user);
+              setSuccessMessage("Đăng kí thành công thành công. Mời bạn đăng nhập!");
+              setErrorMessage("");
+              setisOpenLoginModal(true);
+              setisOpenRegisterModal(false);
             })
-            .catch((error) => setErrorMessage("Email đã được đăng ký!"));
+            .catch((error) => {
+              console.error("error", error);
+              setErrorMessage("error!");});
         } else {
           setErrorMessage("Mật khẩu không khớp!");
         }
@@ -634,6 +633,13 @@ function Header({ page }) {
             <hr />
             {/* body area start */}
             <div className="px-10 py-4 overflow-auto max-h-[88%] z-50">
+              {/* success message */}
+              {!successMessage == "" ? (
+                <div className="bg-[#d4edda] rouned-xl p-3 my-3">
+                  <span className="text-green-500">{successMessage}</span>
+                </div>
+              ) : null}
+              
               {/* body title */}
               <h1 className="font-semibold mb-4">Chào mừng đến Airbnb</h1>
               {/* form login start */}
