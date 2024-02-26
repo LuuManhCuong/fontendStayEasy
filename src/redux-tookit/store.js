@@ -3,6 +3,8 @@ import { counterSlice } from "./reducer/counterSlice";
 import { dataExploreSlice } from "./reducer/dataExploreSlice";
 import { dataHomeSlice } from "./reducer/dataHomeSlice";
 import { dataDetailSlice } from "./reducer/dataDetailSlice";
+import { dataCategorySlice } from "./reducer/dataCategorySlice";
+
 import { keySearchSlice } from "./reducer/keySearchSlice";
 
 const store = configureStore({
@@ -11,6 +13,7 @@ const store = configureStore({
     dataExplore: dataExploreSlice.reducer,
     dataHome: dataHomeSlice.reducer,
     dataDetail: dataDetailSlice.reducer,
+    dataCategory: dataCategorySlice.reducer,
     keySearch: keySearchSlice.reducer,
   },
 });

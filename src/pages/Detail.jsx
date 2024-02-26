@@ -11,14 +11,16 @@ import Slider from "react-slick";
 import NumGuest from "../components/numguest/NumGuest";
 import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
 import { dataDetailSelector } from "../redux-tookit/selector";
+import Popup from "../components/popup/PopUp";
+import { parseISO } from "date-fns";
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
+
   const location = useLocation();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
-
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
 
@@ -54,39 +56,45 @@ function Detail() {
   );
   const [totalDays, setTotalDays] = useState(1);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
+  const [currentImage, setCurrentImage] = useState(
+    dataDetail.imagesList ? [0] : null
+  );
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      dispatch(dataDetailSlice.actions.getDataDetailRequest());
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/stayeasy/property/${id}`
+      );
+      dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
+      setDataLoaded(true); // Đặt trạng thái tải dữ liệu thành true khi dữ liệu đã được tải hoàn toàn
+    } catch (error) {
+      dispatch(dataDetailSlice.actions.getDataDetailFailure());
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    url.searchParams.set("adults", adults);
+    url.searchParams.set("children", children);
+    url.searchParams.set("infants", infants);
+    url.searchParams.set("pet", pet);
+    window.history.replaceState({}, "", url);
+  }, [adults, children, infants, pet]);
 
   useEffect(() => {
     // Tính số ngày giữa checkin và checkout
     const newTotalDays = Math.ceil(
       (checkout.getTime() - checkin.getTime()) / 86400000
     ); // Đảm bảo rằng giá trị totalDays đã được tính toán đúng
-
     // Cập nhật totalDaysState
     setTotalDays(newTotalDays);
   }, [checkin, checkout]);
-
-  const onChangeCheckin = (date) => {
-    setCheckin(date);
-    url.searchParams.set("checkin", date);
-    window.history.replaceState({}, "", url);
-  };
-
-  const onChangeCheckout = (date) => {
-    setCheckout(date);
-    url.searchParams.set("checkout", date);
-    window.history.replaceState({}, "", url);
-  };
-
-  const onChangeDropdown = () => {
-    setShowDropdown(!showDropdown);
-  };
-
-  const onChangeTotalFinal = () => {
-    console.log("truoc", adults, children, infants, pet);
-    setTotalGuests(adults + children + infants + pet);
-    console.log("sau", adults, children, infants, pet);
-    console.log(totalGuests);
-  };
 
   useEffect(() => {
     setTotalGuests(adults + children);
@@ -96,22 +104,45 @@ function Detail() {
     setCheckout(new Date(checkin.getTime() + 86400000));
   }, [checkin]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        dispatch(dataDetailSlice.actions.getDataDetailRequest());
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/stayeasy/property/${id}`
-        );
-        dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
-      } catch (error) {
-        dispatch(dataDetailSlice.actions.getDataDetailFailure());
-        console.log(error);
-      }
-    };
+  const onChangeCheckin = (date) => {
+    const formattedDate = date.toISOString().split("T")[0];
 
-    fetchData();
-  }, [id]);
+    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
+    const checkinDate = new Date(formattedDate);
+
+    setCheckin(checkinDate);
+    url.searchParams.set("checkin", formattedDate);
+    url.searchParams.set(
+      "checkout",
+      new Date(checkinDate.getTime() + 86400000).toISOString().split("T")[0]
+    );
+    window.history.replaceState({}, "", url);
+  };
+
+  const onChangeCheckout = (date) => {
+    const formattedDate = date.toISOString().split("T")[0];
+
+    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
+    const checkoutDate = new Date(formattedDate);
+
+    setCheckout(checkoutDate);
+    url.searchParams.set("checkout", formattedDate);
+    window.history.replaceState({}, "", url);
+  };
+
+  const onChangeDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const onClickImage = (image) => {
+    setCurrentImage(image);
+    if (image) {
+      url.searchParams.set("popup", true);
+      url.searchParams.set("image", image.imageId);
+      window.history.replaceState({}, "", url);
+    }
+    setOpenPopup(true);
+  };
 
   const styleImg = {
     width: "100%",
@@ -164,9 +195,25 @@ function Detail() {
     );
   }
 
+  if (openPopup == false) {
+    url.searchParams.delete("popup");
+    url.searchParams.delete("image");
+    window.history.replaceState({}, "", url);
+  }
+
+  if (!dataLoaded) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
-      <Header page={"explore"}></Header>
+      <Header page={"home"}></Header>
+      <Popup
+        currentImageInit={currentImage}
+        imagesList={dataDetail.imagesList}
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      ></Popup>
       <div className="w-full box-border pl-20 pr-20">
         <div
           className="w-full h-[500px] flex justify-center mb-4 slider_detail"
@@ -175,7 +222,13 @@ function Detail() {
           <Slider {...settings} className="w-[80%]">
             {dataDetail.imagesList?.map((item, index) => (
               <div key={index} className=" h-[450px]">
-                <img style={styleImg} src={item.url} alt="" />
+                <img
+                  style={styleImg}
+                  src={item.url}
+                  testindex={index}
+                  alt=""
+                  onClick={() => onClickImage(item)}
+                />
               </div>
             ))}
           </Slider>
@@ -194,32 +247,44 @@ function Detail() {
               <div className="flex mt-2 text-[17px] font-normal justify-between w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
                 <span>-</span>
-                <p>{dataDetail.numBedrooms} phòng ngủ</p>
-                <span>-</span>
-                <p>{dataDetail.numBeds} giường</p>
-                <span>-</span>
-                <p>{dataDetail.numBathrooms} phòng tắm</p>
+                {dataDetail.propertyUtilitis?.map((item, index) => (
+                  <p key={index}>
+                    {item.quantity} {item.utilitiesName}
+                    {index !== dataDetail.propertyUtilitis.length - 1 ? (
+                      <span> -</span>
+                    ) : (
+                      ""
+                    )}
+                  </p>
+                ))}
               </div>
-              <div className="rating text-lg font-semibold flex pt-4">
-                <p className="text-4xl">{dataDetail.rating}</p>
-                <FontAwesomeIcon
-                  className=" text-yellow-300 stroke-black ml-[2px]"
-                  size="2x"
-                  icon={icon({
-                    name: "star",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
+              <div className="w-[50%] rating text-lg font-semibold flex pt-4">
+                <div className="flex">
+                  <p className="text-4xl">{dataDetail.rating}</p>
+                  <FontAwesomeIcon
+                    className=" text-yellow-300 stroke-black ml-[2px]"
+                    size="2x"
+                    icon={icon({
+                      name: "star",
+                      family: "classic",
+                      style: "solid",
+                    })}
+                  />
+                </div>
+                <div>
+                  <p className="text-[18px] ml-4 p-2 underline">
+                    {dataDetail.feedbackList?.length} đánh giá
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* info-host */}
-            <div className="w-full pt-6 pb-6 flex justify-items-center border-b-2">
-              <div className="w-[4.8rem] h-[4.8rem]">
+            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2">
+              <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
                 <img src={dataDetail.owner?.avatar} alt="" />
               </div>
-              <div className="ml-3">
+              <div className="p-3">
                 <div className="text-base font-semibold">
                   <p className="text-[17px]">
                     Hosted by {dataDetail.owner?.firstName}{" "}
@@ -315,6 +380,7 @@ function Detail() {
                         selected={checkin}
                         onChange={onChangeCheckin}
                         minDate={today}
+                        dateFormat="yyyy/MM/dd"
                       />
                     </div>
                     <div className="checkout w-[40%]">
@@ -324,7 +390,8 @@ function Detail() {
                         className="search-text"
                         selected={checkout}
                         onChange={onChangeCheckout}
-                        minDate={checkin.getTime() + 86400000}
+                        minDate={new Date(checkin) + 86400000}
+                        dateFormat="yyyy/MM/dd"
                       />
                     </div>
                   </div>
@@ -370,7 +437,6 @@ function Detail() {
                         type="adult"
                         totalGuest={adults}
                         setTotalGuest={setAdults}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                     <div className="flex justify-between p-2">
@@ -378,7 +444,6 @@ function Detail() {
                         type="children"
                         totalGuest={children}
                         setTotalGuest={setChildren}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                     <div className="flex justify-between p-2">
@@ -386,7 +451,6 @@ function Detail() {
                         type="infants"
                         totalGuest={infants}
                         setTotalGuest={setInfants}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                     <div className="flex justify-between p-2">
@@ -394,7 +458,6 @@ function Detail() {
                         type="pet"
                         totalGuest={pet}
                         setTotalGuest={setPet}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                   </div>

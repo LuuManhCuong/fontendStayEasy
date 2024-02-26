@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 function Card(props) {
   const [active, setActive] = useState(false);
   const checkin = new Date();
-  let timeStamp = checkin + 86400000;
+  let timeStamp = checkin.getTime() + 86400000;
   const checkout = new Date(timeStamp);
   const navigate = useNavigate();
 
@@ -15,26 +15,34 @@ function Card(props) {
   };
 
   const handleDetail = () => {
+    const checkinString = checkin.toISOString().split("T")[0];
+    const checkoutString = checkout.toISOString().split("T")[0];
+    console.log(checkinString, checkoutString);
+
+    console.log(checkin, checkout);
     navigate(
-      `/explore/detail/${props.item.propertyId}?checkin=${checkin}&checkout=${checkout}&adults=1&children=0&infants=0&pet=0`
+      `/explore/detail/${props.item.propertyId}?checkin=${checkinString}&checkout=${checkoutString}&adults=1&children=0&infants=0&pet=0`
     );
   };
+
+  console.log(props.item);
   return (
     <div
       onClick={handleDetail}
       className="w-full h-auto cursor-pointer flex-initial mb-[2rem]"
       key={props.index}
     >
-      <div className="w-full h-[20rem] rounded-[1.6rem] relative overflow-hidden">
-        <img
-          loading="lazy"
-          className="w-full h-full object-cover"
-          src={props.item.thumbnail}
-          alt=""
-        />
-
+      <div className="w-full h-[28rem] relative">
+        <div className="w-full h-[20rem] rounded-[1.6rem] overflow-hidden">
+          <img
+            loading="lazy"
+            className="w-full h-full object-cover"
+            src={props.item.thumbnail}
+            alt=""
+          />
+        </div>
         <div
-          className={`flex absolute top-3 right-3 text-fav-icon text-4xl ${
+          className={`heart-btn flex absolute top-3 right-3 text-fav-icon text-4xl ${
             active ? "active" : ""
           }`}
           onClick={() => handleLike(props.item.propertyId)}
@@ -43,12 +51,13 @@ function Card(props) {
             icon={icon({ name: "heart", family: "classic", style: "solid" })}
           />
         </div>
-      </div>
-      <h2>{props.item.propertyName}</h2>
-      <h2>tổng: {props.item.total}</h2>
-      <div>{props.item.address}</div>
-      <div>
-        <b>{props.item.price}</b> / đêm
+        <div className="p-2">
+          <div className="text-3xl font-bold">{props.item.propertyName}</div>
+          <div>{props.item.address}</div>
+          <div>
+            <b>{props.item.price}</b> / đêm
+          </div>
+        </div>
       </div>
     </div>
   );
