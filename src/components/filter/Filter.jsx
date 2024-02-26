@@ -30,7 +30,7 @@ function Filter() {
   const handleClick = (categoryId) => {
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
-      .get(`http://localhost:8080/api/property/category/${categoryId}`)
+      .get(`http://localhost:8080/api/v1/stayeasy/property/category/${categoryId}`)
       .then(function (response) {
         dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
       })
@@ -44,7 +44,7 @@ function Filter() {
   useEffect(() => {
     dispatch(dataCategorySlice.actions.getDataCategoryRequest());
     axios
-      .get(`http://localhost:8080/api/category`)
+      .get(`http://localhost:8080/api/v1/stayeasy/category`)
       .then(function (response) {
         dispatch(dataCategorySlice.actions.getDataCategorySuccess(response.data));
       })

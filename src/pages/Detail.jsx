@@ -104,7 +104,7 @@ function Detail() {
     const fetchData = async () => {
       try {
         dispatch(dataDetailSlice.actions.getDataDetailRequest());
-        const response = await axios.get(`http://localhost:8080/api/property/${id}`);
+        const response = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/${id}`);
         dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
       } catch (error) {
         dispatch(dataDetailSlice.actions.getDataDetailFailure());
@@ -186,7 +186,7 @@ function Detail() {
               <span>-</span>
               {dataDetail.propertyUtilitis?.map((item, index) => (
                 <p key={index}>
-                  {item.quantity} {item.utilities.utilitiesName}
+                  {item.quantity} {item.utilitiesName}
                   {index !== dataDetail.propertyUtilitis.length - 1 ? <span> -</span> : ""}
                 </p>
               ))}
