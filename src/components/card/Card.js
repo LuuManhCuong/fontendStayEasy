@@ -2,16 +2,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 function Card(props) {
   const [active, setActive] = useState(false);
   const checkin = new Date();
   let timeStamp = checkin.getTime() + 86400000;
   const checkout = new Date(timeStamp);
   const navigate = useNavigate();
-  const handleActive = (event) => {
-    setActive(!active);
-    event.stopPropagation();
+
+  const handleLike = (id) => {
+    console.log("like id: ", id);
   };
+
   const handleDetail = () => {
     const checkinString = checkin.toISOString().split('T')[0];
     const checkoutString = checkout.toISOString().split('T')[0];
@@ -44,7 +46,7 @@ function Card(props) {
           className={`flex absolute top-3 right-3 text-fav-icon text-4xl ${
             active ? "active" : ""
           }`}
-          onClick={handleActive}
+          onClick={() => handleLike(props.item.propertyId)}
         >
           <FontAwesomeIcon
             icon={icon({ name: "heart", family: "classic", style: "solid" })}
