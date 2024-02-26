@@ -13,7 +13,7 @@ export const dataHomeSlice = createSlice({
     getDataHomeSuccess: (state, action) => {
       state.isLoading = false;
       state.dataHome = action.payload;
-      console.log("payload: ", action.payload);
+      // console.log("payload: ", action.payload);
     },
     getDataHomeFailure: (state) => {
       state.isLoading = false;
