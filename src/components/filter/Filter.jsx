@@ -30,7 +30,9 @@ function Filter() {
   const handleClick = (categoryId) => {
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
-      .get(`http://localhost:8080/api/v1/stayeasy/property/category/${categoryId}`)
+      .get(
+        `http://localhost:8080/api/v1/stayeasy/property/category/${categoryId}`
+      )
       .then(function (response) {
         dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
       })
@@ -46,7 +48,9 @@ function Filter() {
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/category`)
       .then(function (response) {
-        dispatch(dataCategorySlice.actions.getDataCategorySuccess(response.data));
+        dispatch(
+          dataCategorySlice.actions.getDataCategorySuccess(response.data)
+        );
       })
       .catch(function (error) {
         dispatch(dataCategorySlice.actions.getDataCategoryFailure());
@@ -110,8 +114,7 @@ function Filter() {
               {item.categoryName}
             </div>
           );
-        }
-        )}
+        })}
       </Slider>
     </div>
   );

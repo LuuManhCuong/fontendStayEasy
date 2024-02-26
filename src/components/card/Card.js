@@ -15,8 +15,8 @@ function Card(props) {
   };
 
   const handleDetail = () => {
-    const checkinString = checkin.toISOString().split('T')[0];
-    const checkoutString = checkout.toISOString().split('T')[0];
+    const checkinString = checkin.toISOString().split("T")[0];
+    const checkoutString = checkout.toISOString().split("T")[0];
     console.log(checkinString, checkoutString);
 
     console.log(checkin, checkout);
@@ -34,16 +34,15 @@ function Card(props) {
     >
       <div className="w-full h-[28rem] relative">
         <div className="w-full h-[20rem] rounded-[1.6rem] overflow-hidden">
-
-        <img
-          loading="lazy"
-          className="w-full h-full object-cover"
-          src={props.item.thumbnail}
-          alt=""
-        />
+          <img
+            loading="lazy"
+            className="w-full h-full object-cover"
+            src={props.item.thumbnail}
+            alt=""
+          />
         </div>
         <div
-          className={`flex absolute top-3 right-3 text-fav-icon text-4xl ${
+          className={`heart-btn flex absolute top-3 right-3 text-fav-icon text-4xl ${
             active ? "active" : ""
           }`}
           onClick={() => handleLike(props.item.propertyId)}
@@ -53,12 +52,11 @@ function Card(props) {
           />
         </div>
         <div className="p-2">
-
-        <div className="text-3xl font-bold">{props.item.propertyName}</div>
-        <div>{props.item.address}</div>
-        <div>
-          <b>{props.item.price}</b> / đêm
-        </div>
+          <div className="text-3xl font-bold">{props.item.propertyName}</div>
+          <div>{props.item.address}</div>
+          <div>
+            <b>{props.item.price}</b> / đêm
+          </div>
         </div>
       </div>
     </div>
