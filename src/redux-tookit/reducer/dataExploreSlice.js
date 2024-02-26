@@ -12,8 +12,11 @@ export const dataExploreSlice = createSlice({
     },
     getDataExploreSuccess: (state, action) => {
       state.isLoading = false;
-      console.log("payload: ", action.payload);
       state.dataExplore = action.payload;
+    },
+    getDataSearchExploreSuccess: (state, action) => {
+      state.isLoading = false;
+      state.dataSearchExplore = action.payload;
     },
     getDataExploreFailure: (state) => {
       state.isLoading = false;

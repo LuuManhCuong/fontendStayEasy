@@ -25,7 +25,7 @@ function Card(props) {
     );
   };
 
-  console.log(props.item);
+  // console.log(props.item);
   return (
     <div
       onClick={handleDetail}

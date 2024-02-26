@@ -7,7 +7,6 @@ export const keySearchSlice = createSlice({
   },
   reducers: {
     setKeySearch: (state, action) => {
-      console.log("key search reducer: ", action.payload);
       state.keySearch = action.payload;
     },
   },

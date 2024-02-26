@@ -13,7 +13,7 @@ export const dataCategorySlice = createSlice({
     getDataCategorySuccess: (state, action) => {
       state.isLoading = false;
       state.dataCategory = action.payload;
-      console.log("payload: ", action.payload);
+      // console.log("payload: ", action.payload);
     },
     getDataCategoryFailure: (state) => {
       state.isLoading = false;

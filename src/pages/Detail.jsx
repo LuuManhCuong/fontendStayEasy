@@ -77,7 +77,7 @@ function Detail() {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     url.searchParams.set("adults", adults);
@@ -207,7 +207,7 @@ function Detail() {
 
   return (
     <>
-      <Header page={"home"}></Header>
+      <Header page={"explore"}></Header>
       <Popup
         currentImageInit={currentImage}
         imagesList={dataDetail.imagesList}
