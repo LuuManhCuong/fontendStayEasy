@@ -15,9 +15,6 @@ import BalconyIcon from "@mui/icons-material/Balcony";
 import ForestIcon from "@mui/icons-material/Forest";
 
 function Filter() {
-  const [activeIndex, setActiveIndex] = useState(null);
-  console.log("active: ", activeIndex);
-
   const settings = {
     dots: false,
     infinite: true,

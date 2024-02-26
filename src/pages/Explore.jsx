@@ -19,36 +19,75 @@ function Explore() {
   const dispatch = useDispatch();
   const { keySearch } = useSelector(keySearchSelector);
   const { counter } = useSelector(counterSelector);
-  const { dataExplore, isLoading } = useSelector(dataExploreSelector);
+  // const { dataExplore, isLoading } = useSelector(dataExploreSelector);
+  const [isLoading, setIsLoading] = useState(true);
+  const [dataExplore, setDataExplore] = useState([]);
   const [page, setPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
+  const [size, setSize] = useState(8);
+  console.log("keySearch : ", keySearch);
 
   const fetchData = () => {
-    axios
-      // .get("http://localhost:8080/explore")
-      .get(
-        `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${8}`
-      )
+    if (keySearch.length > 0) {
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${0}&size=${50}`
+        )
 
-      .then(function (response) {
-        console.log("data: ", response.data);
-        console.log("tổng page: ", response.data.size);
-        console.log("total recoe: ", response.data.totalElements);
+        .then(function (response) {
+          console.log("data: ", response.data);
+          setTotalPage(() => Math.ceil(response.data.totalCount / size));
 
-        dispatch(
-          dataExploreSlice.actions.getDataExploreSuccess([
-            ...dataExplore,
-            ...response.data.properties.content,
-          ])
-        );
-      })
-      .catch(function (error) {
-        dispatch(dataExploreSlice.actions.getDataExploreFailure());
-        console.log(error);
-      });
+          setIsLoading(false);
+
+          setDataExplore(response.data.properties);
+          // dispatch(
+          //   dataExploreSlice.actions.getDataExploreSuccess([
+          //     ...dataExplore,
+          //     ...response.data.properties,
+          //   ])
+          // );
+        })
+        .catch(function (error) {
+          // dispatch(dataExploreSlice.actions.getDataExploreFailure());
+          setIsLoading(true);
+          console.log(error);
+        });
+    } else if (keySearch.length === 0) {
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${size}`
+        )
+
+        .then(function (response) {
+          console.log("data: ", response.data);
+          setTotalPage(() => Math.ceil(response.data.totalCount / size));
+
+          setIsLoading(false);
+
+          setDataExplore((prev) => {
+            return [...prev, ...response.data.properties];
+          });
+          // dispatch(
+          //   dataExploreSlice.actions.getDataExploreSuccess([
+          //     ...dataExplore,
+          //     ...response.data.properties,
+          //   ])
+          // );
+        })
+        .catch(function (error) {
+          // dispatch(dataExploreSlice.actions.getDataExploreFailure());
+          setIsLoading(true);
+          console.log(error);
+        });
+    }
   };
   useEffect(() => {
-    dispatch(dataExploreSlice.actions.getDataExploreRequest());
-    fetchData();
+    // dispatch(dataExploreSlice.actions.getDataExploreRequest());
+    console.log("Call api");
+    if (page <= totalPage) {
+      fetchData();
+    }
   }, [counter, page, keySearch]);
 
   useEffect(() => {
@@ -70,16 +109,16 @@ function Explore() {
       <Header page="explore"></Header>
       <Filter></Filter>
 
-      {dataExplore.length > 0 && <ListView data={dataExplore}></ListView>}
+      {dataExplore?.length > 0 && <ListView data={dataExplore}></ListView>}
       {isLoading && (
         <Stack sx={{ width: "100%", color: "grey.500" }} spacing={2}>
           <LinearProgress color="secondary" />
           loading...
         </Stack>
       )}
-      {!isLoading && dataExplore.length === 0 && (
+      {/* {!isLoading && dataExplore?.length === 0 && (
         <h3>Không tìm thấy dữ liệu</h3>
-      )}
+      )} */}
 
       <Footer></Footer>
     </>
