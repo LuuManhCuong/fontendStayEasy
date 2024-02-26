@@ -22,6 +22,7 @@ function Popup(props) {
         url.searchParams.delete('popup');
         window.history.replaceState({}, '', url);
         setOpenPopup(false); 
+        console.log(setOpenPopup(false),openPopup);
     }
 
     console.log('popup');

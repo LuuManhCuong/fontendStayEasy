@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Card(props) {
   const [active, setActive] = useState(false);
   const checkin = new Date();
-  let timeStamp = checkin + 86400000;
+  let timeStamp = checkin.getTime() + 86400000;
   const checkout = new Date(timeStamp);
   const navigate = useNavigate();
   const handleActive = (event) => {
@@ -13,8 +13,13 @@ function Card(props) {
     event.stopPropagation();
   };
   const handleDetail = () => {
+    const checkinString = checkin.toISOString().split('T')[0];
+    const checkoutString = checkout.toISOString().split('T')[0];
+    console.log(checkinString, checkoutString);
+
+    console.log(checkin, checkout);
     navigate(
-      `/explore/detail/${props.item.propertyId}?checkin=${checkin}&checkout=${checkout}&adults=1&children=0&infants=0&pet=0`
+      `/explore/detail/${props.item.propertyId}?checkin=${checkinString}&checkout=${checkoutString}&adults=1&children=0&infants=0&pet=0`
     );
   };
 

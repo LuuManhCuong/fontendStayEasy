@@ -12,6 +12,7 @@ import NumGuest from "../components/numguest/NumGuest";
 import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
 import { dataDetailSelector } from "../redux-tookit/selector";
 import Popup from "../components/popup/PopUp";
+import { parseISO } from 'date-fns';
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -37,15 +38,22 @@ function Detail() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
   const [currentImage, setCurrentImage] = useState(dataDetail.imagesList?[0]:null);
-  
-  // useEffect(() => {
-  //   if(urlParams.get('popup') === "true" && urlParams.get('image') !== null && dataDetail.imagesList) {
-  //     const image = dataDetail.imagesList.find((item) => item.imageId === urlParams.get('image'));
-  //     setCurrentImage(image);
-  //     setOpenPopup(true);
-  //   }
-  // }, [urlParams]);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
+  const fetchData = async () => {
+    try {
+      dispatch(dataDetailSlice.actions.getDataDetailRequest());
+      const response = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/${id}`);
+      dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
+      setDataLoaded(true); // Đặt trạng thái tải dữ liệu thành true khi dữ liệu đã được tải hoàn toàn
+    } catch (error) {
+      dispatch(dataDetailSlice.actions.getDataDetailFailure());
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   
   useEffect(() => {
     url.searchParams.set('adults', adults);
@@ -60,38 +68,8 @@ function Detail() {
     const newTotalDays = Math.ceil((checkout.getTime() - checkin.getTime()) / 86400000); // Đảm bảo rằng giá trị totalDays đã được tính toán đúng
     // Cập nhật totalDaysState
     setTotalDays(newTotalDays);
-  }, [checkin, checkout]);  
-
-  const onChangeCheckin = (date) => {
-    setCheckin(date);
-    url.searchParams.set('checkin', date);
-    window.history.replaceState({}, '', url);
-    
-  }
-
-  const onChangeCheckout = (date) => {
-    setCheckout(date);
-    url.searchParams.set('checkout', date);
-    window.history.replaceState({}, '', url);
-    
-  }
-
-  const onChangeDropdown = () => {
-    setShowDropdown(!showDropdown);
-  }
-
-  const onClickImage = (image) => {
-    setCurrentImage(image);
-    if (image) {
-        url.searchParams.set('image', image.imageId);
-        url.searchParams.set('popup', true);
-        window.history.replaceState({}, '', url);
-    }
-    setOpenPopup(true);
-  }
-
+  }, [checkin, checkout]); 
   
-
   useEffect(() => {
     setTotalGuests(adults + children);
   }, [adults, children]);
@@ -100,20 +78,42 @@ function Detail() {
     setCheckout(new Date(checkin.getTime() + 86400000));
   }, [checkin]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        dispatch(dataDetailSlice.actions.getDataDetailRequest());
-        const response = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/${id}`);
-        dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
-      } catch (error) {
-        dispatch(dataDetailSlice.actions.getDataDetailFailure());
-        console.log(error);
-      }
-    };
-  
-    fetchData();
-  }, []);
+  const onChangeCheckin = (date) => {
+    const formattedDate = date.toISOString().split('T')[0];
+
+    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
+    const checkinDate = new Date(formattedDate);
+
+    setCheckin(checkinDate);
+    url.searchParams.set('checkin', formattedDate);
+    url.searchParams.set('checkout', new Date(checkinDate.getTime() + 86400000).toISOString().split('T')[0]);
+    window.history.replaceState({}, '', url);
+}
+
+const onChangeCheckout = (date) => {
+    const formattedDate = date.toISOString().split('T')[0];
+
+    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
+    const checkoutDate = new Date(formattedDate);
+
+    setCheckout(checkoutDate);
+    url.searchParams.set('checkout', formattedDate);
+    window.history.replaceState({}, '', url);
+}
+
+  const onChangeDropdown = () => {
+    setShowDropdown(!showDropdown);
+  }
+
+  const onClickImage = (image) => {
+    setCurrentImage(image);
+    if (image) {
+        url.searchParams.set('popup', true);
+        url.searchParams.set('image', image.imageId);
+        window.history.replaceState({}, '', url);
+    }
+    setOpenPopup(true);
+  }
 
   const styleImg = {
     width: "100%",
@@ -152,6 +152,16 @@ function Detail() {
         onClick={onClick}
       />
     );
+  }
+  
+  if (openPopup == false) {
+    url.searchParams.delete('popup');
+    url.searchParams.delete('image');
+    window.history.replaceState({}, '', url); 
+  }
+
+  if (!dataLoaded) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -203,11 +213,11 @@ function Detail() {
           </div>
 
           {/* info-host */}
-            <div className="w-full pt-6 pb-6 flex justify-items-center border-b-2">
-              <div className="w-[4.8rem] h-[4.8rem]">
+            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2">
+              <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
                 <img src={dataDetail.owner?.avatar} alt="" />
               </div>
-              <div className="ml-3">
+              <div className="p-3">
                 <div className="text-base font-semibold">
                   <p className="text-[17px]">Hosted by {dataDetail.owner?.firstName} {dataDetail.owner?.lastName}</p>
                 </div>
@@ -270,6 +280,7 @@ function Detail() {
                             selected={checkin}
                             onChange={onChangeCheckin}
                             minDate={today}
+                            dateFormat="yyyy/MM/dd"
                           />
                         </div>
                         <div className="checkout w-[40%]">
@@ -279,7 +290,8 @@ function Detail() {
                             className="search-text"
                             selected={checkout}
                             onChange={onChangeCheckout}
-                            minDate={checkin.getTime() + 86400000}
+                            minDate={new Date(checkin) + 86400000}
+                            dateFormat="yyyy/MM/dd"
                           />
                         </div>
                     </div>
