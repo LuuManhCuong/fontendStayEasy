@@ -10,6 +10,7 @@ import InboxGuest from "./components/InboxGuest/InboxGuest";
 import ShowComponent from "./pages/Inbox/ShowComponent";
 
 import Booking from "./pages/Booking";
+import ListProperty from "./components/Property/ListProperty";
 
 
 
@@ -20,6 +21,7 @@ function App() {
       <Route path="/experience" element={<Experience></Experience>}></Route>
       <Route path="/explore" element={<Explore></Explore>}></Route>
       <Route path="/explore/detail/:id" element={<Detail />} />
+      <Route path="/property/list" element={<ListProperty/>}/>
       <Route
         path="/inbox"
         element={
