@@ -91,7 +91,7 @@ export default function InboxGuest() {
                     <h2>Chat Box</h2>
                 </div>
                 <div className={style.thread_button}>
-                    <button onClick={changeActive}>Hide details</button>
+                    <button onClick={changeActive}>{active?'Hide details':'Learns the details'}</button>
                 </div>
             </div>
 
