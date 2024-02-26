@@ -101,7 +101,7 @@ function Detail() {
       try {
         dispatch(dataDetailSlice.actions.getDataDetailRequest());
         const response = await axios.get(
-          `http://localhost:8080/api/property/${id}`
+          `http://localhost:8080/api/v1/stayeasy/property/${id}`
         );
         dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
       } catch (error) {
