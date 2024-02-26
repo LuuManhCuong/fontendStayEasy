@@ -1,6 +1,6 @@
 import React from "react";
 import "./header.scss";
-import { NavLink } from "react-router-dom";
+import {NavLink } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
 import Avatar from "@mui/material/Avatar";
 import Row from "react-bootstrap/Row";
@@ -109,7 +109,8 @@ function Header({ page }) {
 
               <Dropdown.Menu>
                 <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                <Dropdown.Item href="/property">Quản lý phòng</Dropdown.Item>
+                {/* <Dropdown.Item><Link to="/manager/property">Quản lý phòng</Link></Dropdown.Item> */}
                 <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
