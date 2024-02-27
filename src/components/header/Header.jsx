@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./header.scss";
 import { NavLink } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -21,20 +21,21 @@ function Header({ page }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { keySearch } = useSelector(keySearchSelector);
+
+  // console.log("current user: ", user);
   const today = new Date();
 
-  const [keyword, setKeyword] = React.useState("");
   const [checkin, setCheckin] = React.useState(new Date());
   let timeStamp = today.getTime() + 86400000;
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
   const [showHistory, setShowHistory] = React.useState(false);
-
+  const [placeholder, setPlaceholder] = React.useState("Tìm kiếm...");
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [suggest, setSuggest] = useState();
 
   const [isLogined, setIsLogined] = useState(
-    localStorage.getItem("accesstoken") ? true : false
+    localStorage.getItem("access_token") ? true : false
   );
 
   const [isOpenLoginModal, setisOpenLoginModal] = useState(false);
@@ -51,67 +52,70 @@ function Header({ page }) {
   }, [checkin]);
 
   React.useEffect(() => {
-    if (keyword?.length === 0) {
+    if (keySearch?.length === 0) {
       setShowHistory(false);
     }
-  }, [keyword]);
+  }, [keySearch]);
 
+  // suggest
   React.useEffect(() => {
     let url;
-    if (page === "experience" && keyword.length > 0) {
-      url = `${page}/search?keySearch=${keyword}`;
-      // fetchSuggest(url)
-    } else if (page === "explore" && keyword.length > 0) {
-      url = `${page}/search/suggest?keySearch=${keyword}`;
-      fetchSuggest(url);
+    if (page === "home") {
+      url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
+    } else if (page === "experience") {
+      url = `${page}/search?keySearch=${keySearch}`;
+    } else {
+      url = `${page}/search?keySearch=${keySearch}`;
     }
-  }, [keyword]);
-
-  const fetchSuggest = (url) => {
     axios
-      .get(`http://localhost:8080/api/v1/stayeasy/${url}`)
+      .get(
+        `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
+      )
       .then(function (response) {
         setSuggest(response.data);
-        console.log("Data suggest: ", response.data);
+        // console.log("Data suggest: ", response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
-  };
+  }, [keySearch]);
 
   function handleSearch() {
     setShowHistory(false);
-    // console.log("search : ", keySearch);
-    dispatch(keySearchSlice.actions.setKeySearch(keyword));
-    navigate("/explore");
-
-    // let url;
-    // if (page === "home") {
-    //   url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
-    // } else if (page === "experience") {
-    //   url = `${page}/search?keySearch=${keySearch}`;
-    // } else if (page === "explore") {
-    //   url = `${page}/search?keySearch=${keySearch}&page=${0}&size=${50}`;
-    //   console.log("url : ", url);
-    // }
     // console.log("keysearch: ", keySearch);
-    // dispatch(dataExploreSlice.actions.getDataExploreRequest());
-    // axios
-    //   .get(`http://localhost:8080/api/v1/stayeasy/${url}`)
-    //   .then(function (response) {
-    //     console.log(response.data);
-    //     navigate("/explore");
-    //     dispatch(
-    //       dataExploreSlice.actions.getDataExploreSuccess(
-    //         response.data.properties
-    //       )
-    //     );
-    //   })
-    //   .catch(function (error) {
-    //     dispatch(dataExploreSlice.actions.getDataExploreFailure());
 
-    //     console.log(error);
-    //   });
+    let url;
+    if (page === "home") {
+      url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
+    } else if (page === "experience") {
+      url = `${page}/search?keySearch=${keySearch}`;
+    } else if (page === "explore" && keySearch.length > 0) {
+      url = `${page}/search?keySearch=${keySearch}&page=${0}&size=${50}`;
+      searchExplore(url);
+    } else {
+      setPlaceholder("Nhập từ khóa tìm kiếm!!!");
+    }
+  }
+
+  // method search explore data
+  function searchExplore(url) {
+    dispatch(dataExploreSlice.actions.getDataExploreRequest());
+    axios
+      .get(`http://localhost:8080/api/v1/stayeasy/${url}`)
+      .then(function (response) {
+        navigate("/search/result");
+        dispatch(
+          dataExploreSlice.actions.getDataExploreSuccess(
+            response.data.properties
+          )
+        );
+        // console.log("Data search: ", response.data);
+      })
+      .catch(function (error) {
+        dispatch(dataExploreSlice.actions.getDataExploreFailure());
+
+        console.log(error);
+      });
   }
 
   // method check email is valid
@@ -211,9 +215,16 @@ function Header({ page }) {
         throw Error(response.status);
       })
       .then((result) => {
-        console.log("user: ", result.user);
-        localStorage.setItem("accesstoken", result.access_token);
-        localStorage.setItem("user", result.user);
+        localStorage.setItem(
+          "access_token",
+          JSON.stringify(result.access_token)
+        );
+        localStorage.setItem(
+          "refresh_token",
+          JSON.stringify(result.refresh_token)
+        );
+        localStorage.setItem("user", JSON.stringify(result.user));
+        dispatch(counterSlice.actions.increase());
 
         setisOpenLoginModal(false);
         setIsLogined(true);
@@ -227,8 +238,8 @@ function Header({ page }) {
 
   // method logout
   const logout = () => {
-    console.log("Bearer " + localStorage.getItem("accesstoken") != null);
-    if (localStorage.getItem("accesstoken") != null) {
+    // console.log("Bearer " + localStorage.getItem("accesstoken") != null);
+    if (localStorage.getItem("access_token") != null) {
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
@@ -244,8 +255,10 @@ function Header({ page }) {
       fetch("http://localhost:8080/api/v1/auth/logout", requestOptions)
         .then((response) => {
           if (response.ok) {
-            localStorage.removeItem("accesstoken");
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
             localStorage.removeItem("user");
+            dispatch(counterSlice.actions.descrease());
             setIsLogined(false);
             alert("Đăng xuất thành công");
             return response.text();
@@ -299,9 +312,9 @@ function Header({ page }) {
           </NavLink>
           <NavLink
             to="/explore"
-            className={(navData) =>
-              navData.isActive ? "active nav-item" : "nav-item"
-            }
+            className={(navData) => {
+              return navData.isActive ? "active nav-item" : "nav-item";
+            }}
           >
             Khám phá
           </NavLink>
@@ -454,10 +467,9 @@ function Header({ page }) {
             <input
               type="text"
               className="search-text"
-              value={keyword}
+              value={keySearch}
               onChange={(e) =>
-                // dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
-                setKeyword(e.target.value)
+                dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
               }
               id="keySerch"
               name="keySearch"
@@ -494,15 +506,17 @@ function Header({ page }) {
             <input
               type="text"
               className="search-text"
-              value={keyword}
+              value={keySearch}
               onChange={(e) => {
-                // dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
-                setKeyword(e.target.value);
+                //                 dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
+
+                dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
+
                 setShowHistory(true);
               }}
               id="keySerch"
               name="keySearch"
-              placeholder="Tìm kiếm..."
+              placeholder={placeholder}
             />
             {showHistory & (suggest?.length > 0) ? (
               <div
@@ -522,7 +536,6 @@ function Header({ page }) {
                       to={`/explore/detail/${e.propertyId}`}
                       onClick={() => {
                         setShowHistory(false);
-                        // dispatch(keySearchSlice.actions.setKeySearch(""));
                       }}
                     >
                       <img src={e.thumbnail} alt="thumbnail" />
@@ -553,14 +566,12 @@ function Header({ page }) {
           <div
             className="clear"
             onClick={() => {
-              setKeyword("");
               dispatch(keySearchSlice.actions.setKeySearch(""));
-              dispatch(counterSlice.actions.increase());
+              navigate("/explore");
             }}
           >
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
-
           <SearchIcon
             onClick={() => handleSearch()}
             className="search-btn"
@@ -573,15 +584,15 @@ function Header({ page }) {
             <input
               type="text"
               className="search-text"
-              value={keyword}
+              value={keySearch}
               onChange={(e) => {
-                // dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
-                setKeyword(e.target.value);
+                dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
+
                 setShowHistory(true);
               }}
               id="keySerch"
               name="keySearch"
-              placeholder="Tìm kiếm..."
+              placeholder={placeholder}
             />
             {showHistory && (
               <div
@@ -610,7 +621,10 @@ function Header({ page }) {
 
           <div
             className="clear"
-            onClick={() => dispatch(keySearchSlice.actions.setKeySearch(""))}
+            onClick={() => {
+              dispatch(keySearchSlice.actions.setKeySearch(""));
+              navigate("/explore");
+            }}
           >
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
