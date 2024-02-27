@@ -244,14 +244,14 @@ function Detail() {
               <div className="text-3xl font-medium mt-2">
                 <p>{dataDetail.address}</p>
               </div>
-              <div className="flex mt-2 text-[17px] font-normal justify-between w-[100%]">
+              <div className="flex mt-2 text-[17px] font-normal justify-between ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
                 <span>-</span>
                 {dataDetail.propertyUtilitis?.map((item, index) => (
                   <p key={index}>
                     {item.quantity} {item.utilitiesName}
                     {index !== dataDetail.propertyUtilitis.length - 1 ? (
-                      <span> -</span>
+                      <span> - </span>
                     ) : (
                       ""
                     )}
@@ -430,7 +430,7 @@ function Detail() {
                   <div
                     className={` ${
                       showDropdown ? "" : "hidden"
-                    } absolute w-[290px] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}
+                    } absolute w-[100%] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}
                   >
                     <div className="flex justify-between p-2">
                       <NumGuest
