@@ -10,8 +10,7 @@ import InboxGuest from "./components/InboxGuest/InboxGuest";
 import ShowComponent from "./pages/Inbox/ShowComponent";
 
 import Booking from "./pages/Booking";
-
-
+import SearchResult from "./pages/SearchResult";
 
 function App() {
   return (
@@ -19,6 +18,10 @@ function App() {
       <Route path="/" element={<Home></Home>}></Route>
       <Route path="/experience" element={<Experience></Experience>}></Route>
       <Route path="/explore" element={<Explore></Explore>}></Route>
+      <Route
+        path="/search/result"
+        element={<SearchResult></SearchResult>}
+      ></Route>
       <Route path="/explore/detail/:id" element={<Detail />} />
       <Route
         path="/inbox"
@@ -40,7 +43,6 @@ function App() {
         }
       />
       <Route path="/booking" element={<Booking />} />
-
     </Routes>
   );
 }

@@ -18,88 +18,47 @@ import { dataExploreSlice } from "../redux-tookit/reducer/dataExploreSlice";
 function Explore() {
   const dispatch = useDispatch();
   const { keySearch } = useSelector(keySearchSelector);
-  const { counter } = useSelector(counterSelector);
-  // const { dataExplore, isLoading } = useSelector(dataExploreSelector);
   const [isLoading, setIsLoading] = useState(true);
   const [dataExplore, setDataExplore] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [size, setSize] = useState(8);
-  console.log("keySearch : ", keySearch);
-
+  console.log("datarender: ", dataExplore);
   const fetchData = () => {
-    if (keySearch.length > 0) {
-      axios
-        .get(
-          `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${0}&size=${50}`
-        )
+    setIsLoading(true);
+    axios
+      .get(
+        `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${size}`
+      )
+      .then(function (response) {
+        console.log("more data: ", response.data);
+        setTotalPage(() => Math.ceil(response.data.totalCount / size));
 
-        .then(function (response) {
-          console.log("data: ", response.data);
-          setTotalPage(() => Math.ceil(response.data.totalCount / size));
-
-          setIsLoading(false);
-
-          setDataExplore(response.data.properties);
-          // dispatch(
-          //   dataExploreSlice.actions.getDataExploreSuccess([
-          //     ...dataExplore,
-          //     ...response.data.properties,
-          //   ])
-          // );
-        })
-        .catch(function (error) {
-          // dispatch(dataExploreSlice.actions.getDataExploreFailure());
-          setIsLoading(true);
-          console.log(error);
+        setIsLoading(false);
+        setDataExplore((prev) => {
+          return [...prev, ...response.data.properties];
         });
-    } else if (keySearch.length === 0) {
-      axios
-        .get(
-          `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${size}`
-        )
-
-        .then(function (response) {
-          console.log("data: ", response.data);
-          setTotalPage(() => Math.ceil(response.data.totalCount / size));
-
-          setIsLoading(false);
-
-          setDataExplore((prev) => {
-            return [...prev, ...response.data.properties];
-          });
-          // dispatch(
-          //   dataExploreSlice.actions.getDataExploreSuccess([
-          //     ...dataExplore,
-          //     ...response.data.properties,
-          //   ])
-          // );
-        })
-        .catch(function (error) {
-          // dispatch(dataExploreSlice.actions.getDataExploreFailure());
-          setIsLoading(true);
-          console.log(error);
-        });
-    }
+      })
+      .catch(function (error) {
+        setIsLoading(true);
+        console.log(error);
+      });
   };
   useEffect(() => {
-    // dispatch(dataExploreSlice.actions.getDataExploreRequest());
-    console.log("Call api");
     if (page <= totalPage) {
       fetchData();
     }
-  }, [counter, page, keySearch]);
+  }, [page]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleScroll = () => {
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
 
-    if (scrollTop + clientHeight >= scrollHeight) {
+    if (scrollTop + clientHeight >= scrollHeight && page < totalPage) {
       setPage((prev) => prev + 1);
     }
   };
@@ -116,9 +75,9 @@ function Explore() {
           loading...
         </Stack>
       )}
-      {/* {!isLoading && dataExplore?.length === 0 && (
+      {!isLoading && dataExplore?.length === 0 && (
         <h3>Không tìm thấy dữ liệu</h3>
-      )} */}
+      )}
 
       <Footer></Footer>
     </>

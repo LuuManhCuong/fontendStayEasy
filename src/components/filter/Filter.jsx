@@ -25,7 +25,7 @@ function Filter() {
   const dispatch = useDispatch();
   const { dataCategory } = useSelector(dataCategorySelector);
   const [activeIndex, setActiveIndex] = useState(null);
-  console.log("active: ", activeIndex);
+  // console.log("active: ", activeIndex);
 
   const handleClick = (categoryId) => {
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
