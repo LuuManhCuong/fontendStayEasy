@@ -244,7 +244,7 @@ function Detail() {
               <div className="text-3xl font-medium mt-2">
                 <p>{dataDetail.address}</p>
               </div>
-              <div className="flex mt-2 text-[17px] font-normal justify-between w-[38rem]">
+              <div className="flex mt-2 text-[17px] font-normal justify-between w-[100%]">
                 <p>{dataDetail.numGuests} khách</p>
                 <span>-</span>
                 {dataDetail.propertyUtilitis?.map((item, index) => (
@@ -300,7 +300,7 @@ function Detail() {
             </div>
 
             {/* info-service */}
-            <div className="w-full h-[25rem] pt-6 pb-6 flex flex-col border-b-2 justify-between">
+            <div className="w-full h-[35%] pt-6 pb-6 flex flex-col border-b-2 justify-between">
               <div className="flex justify-items-center">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
@@ -362,7 +362,7 @@ function Detail() {
 
           {/* right */}
           <div className="w-[40%]">
-            <div className="w-[350px] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
+            <div className="w-[65%] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
               <div className="p-5 pt-4">
                 <div className="flex justify-items-center">
                   <p className="text-[2.4rem] font-semibold">
