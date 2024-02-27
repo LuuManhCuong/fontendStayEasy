@@ -10,9 +10,12 @@ function Card(props) {
   const checkout = new Date(timeStamp);
   const navigate = useNavigate();
 
-  const handleLike = (id) => {
+  const handleLike = (event, id) => {
+    event.stopPropagation(); // Ngăn chặn sự kiện nổi bọt
     console.log("like id: ", id);
+    setActive(!active);
   };
+  
 
   const handleDetail = () => {
     const checkinString = checkin.toISOString().split("T")[0];
@@ -32,8 +35,8 @@ function Card(props) {
       className="w-full h-auto cursor-pointer flex-initial mb-[2rem]"
       key={props.index}
     >
-      <div className="w-full h-[28rem] relative">
-        <div className="w-full h-[20rem] rounded-[1.6rem] overflow-hidden">
+      <div className="w-full  2lg:h-[36rem] lg:h-[36rem] md:h-[36rem] sm:h[36rem] ssm:h[36rem] relative">
+        <div className="w-full 2lg:h-[28rem] lg:h-[28rem] md:h-[28rem] sm:h[28rem] ssm:h[28rem] rounded-[1.6rem] overflow-hidden">
           <img
             loading="lazy"
             className="w-full h-full object-cover"
@@ -45,7 +48,7 @@ function Card(props) {
           className={`heart-btn flex absolute top-3 right-3 text-fav-icon text-4xl ${
             active ? "active" : ""
           }`}
-          onClick={() => handleLike(props.item.propertyId)}
+          onClick={(event) => handleLike(event, props.item.propertyId)}
         >
           <FontAwesomeIcon
             icon={icon({ name: "heart", family: "classic", style: "solid" })}

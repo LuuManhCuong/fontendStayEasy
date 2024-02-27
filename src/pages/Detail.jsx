@@ -390,7 +390,7 @@ function Detail() {
                         className="search-text"
                         selected={checkout}
                         onChange={onChangeCheckout}
-                        minDate={new Date(checkin) + 86400000}
+                        minDate={new Date(checkin.getTime() + 86400000)}
                         dateFormat="yyyy/MM/dd"
                       />
                     </div>
