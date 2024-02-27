@@ -23,7 +23,7 @@ function Explore() {
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [size, setSize] = useState(8);
-  console.log("datarender: ", dataExplore);
+  // console.log("datarender: ", dataExplore);
   const fetchData = () => {
     setIsLoading(true);
     axios
@@ -31,7 +31,6 @@ function Explore() {
         `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${size}`
       )
       .then(function (response) {
-        console.log("more data: ", response.data);
         setTotalPage(() => Math.ceil(response.data.totalCount / size));
 
         setIsLoading(false);

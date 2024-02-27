@@ -1,34 +1,51 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import "./cart.scss";
+import { useSelector } from "react-redux";
+import { counterSelector } from "../../redux-tookit/selector";
 
 function Card(props) {
   const [active, setActive] = useState(false);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const counter = useSelector(counterSelector);
   const checkin = new Date();
   let timeStamp = checkin.getTime() + 86400000;
   const checkout = new Date(timeStamp);
   const navigate = useNavigate();
 
-  const handleLike = (id) => {
-    console.log("like id: ", id);
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, [counter]);
+  // console.log("user", user);
+
+  const handleLike = (e, idPost) => {
+    e.stopPropagation();
+    if (user) {
+      console.log("like id: ", idPost, "idUSer: ", user?.id);
+    } else {
+      console.log("chưa đăng nhập");
+    }
   };
 
+  const checkinString = checkin.toISOString().split("T")[0];
+  const checkoutString = checkout.toISOString().split("T")[0];
+
   const handleDetail = () => {
-    const checkinString = checkin.toISOString().split("T")[0];
-    const checkoutString = checkout.toISOString().split("T")[0];
     console.log(checkinString, checkoutString);
 
     console.log(checkin, checkout);
     navigate(
-      `/explore/detail/${props.item.propertyId}?checkin=${checkinString}&checkout=${checkoutString}&adults=1&children=0&infants=0&pet=0`
+      `/explore/detail/${props.item.propertyId}?checkin=${checkinString}&checkout=${checkoutString}`
     );
   };
 
   // console.log(props.item);
   return (
     <div
-      onClick={handleDetail}
+      onClick={() => handleDetail()}
+      // to={`/explore/detail/${props.item.propertyId}?checkin=${checkinString}&checkout=${checkoutString}`}
       className="w-full h-auto cursor-pointer flex-initial mb-[2rem]"
       key={props.index}
     >
@@ -45,7 +62,7 @@ function Card(props) {
           className={`heart-btn flex absolute top-3 right-3 text-fav-icon text-4xl ${
             active ? "active" : ""
           }`}
-          onClick={() => handleLike(props.item.propertyId)}
+          onClick={(e) => handleLike(e, props.item.propertyId)}
         >
           <FontAwesomeIcon
             icon={icon({ name: "heart", family: "classic", style: "solid" })}
