@@ -213,8 +213,7 @@ function Header({ page }) {
       .then((result) => {
         console.log("user: ", result.user);
         localStorage.setItem("accesstoken", result.access_token);
-        localStorage.setItem("user", result.user.email);
-        localStorage.setItem("id_user", result.user.id);
+        localStorage.setItem("user", result.user);
 
         setisOpenLoginModal(false);
         setIsLogined(true);
