@@ -10,7 +10,7 @@ function Row(props) {
         return (
           <div
             key={index}
-            className="ml-10 ssm:w-[80%] sm:w-[45%] md:w-[45%] lg:w-[30%] 2lg:w-[23%]"
+            className="mt-8 ml-10 ssm:w-[80%] sm:w-[45%] md:w-[45%] lg:w-[30%] 2lg:w-[23%]"
           >
             <Card item={item} index={index} />
           </div>
