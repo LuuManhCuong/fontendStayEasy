@@ -10,7 +10,9 @@ export default function LoginAndSecurity({title}) {
   return (
     <>
     <CommonHeader/>
-    <div className='flex flex-col xl:px-[24rem] py-[4rem] lg:px-[7rem] md:px-[5rem] sm:px-[2rem] ssm:px-[2rem] mt-32'>
+    {/* max-[768px]: Từ 768px trở xuống */}
+    {/* min-[768px]: Từ 768px trở lên */}
+    <div className='flex flex-col py-[4rem] mt-32 max-[768px]:mt-9 min-[1286px]:px-[24rem] min-[640px]:px-[7rem] max-[640px]:px-[2rem]'>
       <div className='flex items-center gap-3 font-medium'>
         <Link to='/account-settings' className='hover:underline'>
           Tài khoản
