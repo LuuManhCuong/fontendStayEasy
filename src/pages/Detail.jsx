@@ -557,8 +557,8 @@ function Detail() {
           </Col>
         </Row>
 
-        <h2>host: {dataDetail.owner?.id}</h2>
-        <h2>user: {idUser}</h2>
+        {/* <h2>host: {dataDetail.owner?.id}</h2>
+        <h2>user: {idUser}</h2> */}
 
         {idUser !== dataDetail.owner?.id && (
           <Row className="d-flex justify-content-center my-5">

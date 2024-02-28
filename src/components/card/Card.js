@@ -18,15 +18,15 @@ function Card(props) {
   let timeStamp = checkin.getTime() + 86400000;
   const checkout = new Date(timeStamp);
   const navigate = useNavigate();
+  const isActive = props.item.likeList?.some(
+    (like) => like?.idUser === user?.id
+  );
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, [counter]);
 
   // Kiểm tra xem người dùng đã like property này hay chưa => true/false
-  const isActive = props.item.likeList?.some(
-    (like) => like?.idUser === user?.id
-  );
 
   const handleLike = (e, idPost) => {
     e.stopPropagation();
