@@ -3,11 +3,15 @@ import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./cart.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { counterSelector } from "../../redux-tookit/selector";
-
+import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
+import axios from "axios";
+import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 function Card(props) {
-  const [active, setActive] = useState(false);
+  // console.log("property: ", props.item);
+
+  const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const counter = useSelector(counterSelector);
   const checkin = new Date();
@@ -18,13 +22,49 @@ function Card(props) {
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, [counter]);
-  // console.log("user", user);
+
+  // Kiểm tra xem người dùng đã like property này hay chưa => true/false
+  const isActive = props.item.likeList?.some(
+    (like) => like?.idUser === user?.id
+  );
 
   const handleLike = (e, idPost) => {
     e.stopPropagation();
-    if (user) {
+    // like
+    if (user && !isActive) {
       console.log("like id: ", idPost, "idUSer: ", user?.id);
+      axios
+        .post(`http://localhost:8080/api/v1/stayeasy/like`, {
+          idPost: idPost,
+          idUser: user?.id,
+        })
+        .then(function (response) {
+          dispatch(counterSlice.actions.increase());
+          console.log("res ", response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    // unlike
+    else if (user && isActive) {
+      console.log("unlike id: ", idPost, "idUSer: ", user?.id);
+      axios
+        .delete(`http://localhost:8080/api/v1/stayeasy/unlike`, {
+          params: {
+            idPost: idPost,
+            idUser: user?.id,
+          },
+        })
+        .then(function (response) {
+          dispatch(counterSlice.actions.descrease());
+          console.log("res ", response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     } else {
+      dispatch(grouptSlice.actions.openLoginForm());
       console.log("chưa đăng nhập");
     }
   };
@@ -59,13 +99,16 @@ function Card(props) {
             alt=""
           />
         </div>
+
         <div
           className={`heart-btn flex absolute top-5 right-5 text-fav-icon text-5xl ${
-            active ? "active" : ""
+            isActive ? "active" : ""
           }`}
           onClick={(e) => handleLike(e, props.item.propertyId)}
         >
+          <p className="num-like">{props.item.likeList?.length}</p>
           <FontAwesomeIcon
+            className="like-icon"
             icon={icon({ name: "heart", family: "classic", style: "solid" })}
           />
         </div>
