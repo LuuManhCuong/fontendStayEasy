@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import Footer from "../../components/footer/Footer";
 import Card from "../../components/AccountSetting/Card";
 import CommonHeader from "../../components/header/CommonHeader";
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-notifications";
-import Header from "../../components/header/Header";
 
 export default function Account({ title }) {
   // check is loginned yet?
@@ -15,11 +10,9 @@ export default function Account({ title }) {
   return (
     <>
       {/* header */}
-      {/* <CommonHeader /> */}
-      <Header></Header>
-
-      {/* Body */}
-      <div className="flex flex-col px-[25rem] py-[5rem] mt-32">
+      <CommonHeader />
+    {/* Body */}
+    <div className='flex flex-col py-[4rem] mt-32 max-[768px]:mt-9 min-[1286px]:px-[24rem] min-[640px]:px-[7rem] max-[640px]:px-[2rem]'>
         {/* title */}
         <div className="mb-20 px-4 py-2">
           <h1 className="text-[3.5rem] font-medium">{title}</h1>

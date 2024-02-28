@@ -12,60 +12,39 @@ export default function PersonalInfo({ title }) {
 
   return (
     <>
-      {/* <CommonHeader/> */}
-      <Header></Header>
-      <div className="flex flex-col xl:px-[24rem] py-[4rem] lg:px-[7rem] md:px-[5rem] sm:px-[2rem] ssm:px-[2rem] mt-32">
-        <div className="flex items-center gap-3 font-medium">
-          <Link to="/account-settings" className="hover:underline">
-            Tài khoản
-          </Link>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="12"
-            width="7.5"
-            viewBox="0 0 320 512"
-          >
-            <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-          </svg>
-          <span>{title}</span>
-        </div>
-        <h1 className="text-[3.5rem] font-bold my-2">{title}</h1>
-        <div className="lg:flex justify-between">
-          <div className="lg:w-[55%] mt-14">
-            {/* Name */}
-            <Infor
-              title="Họ và tên"
-              value={
-                user.firstName && user.firstName
-                  ? user.firstName + " " + user.lastName
-                  : "Chưa cung cấp"
-              }
-            />
-            <hr />
-            {/* email */}
-            <Infor title="Email" value={user.email} />
-            <hr />
-            {/* phone */}
-            <Infor
-              title="Số điện thoại"
-              value={
-                user.phone
-                  ? user.phone
-                  : "Thêm số điện thoại để khách được xác nhận và Stayeasy có thể liên hệ. Bạn có thể thêm các số khác và chọn cách sử dụng chúng."
-              }
-            />
-            <hr />
-            {/* address */}
-            <Infor
-              title="Địa chỉ"
-              value={user.address ? user.address : "Chưa cung cấp"}
-            />
-            <hr />
-            {/* hotline */}
-            <Infor
-              title="Liên lạc khẩn cấp"
-              value={user.hotline ? user.hotline : "Chưa cung cấp"}
-            />
+    <CommonHeader/>
+    <div className='flex flex-col py-[4rem] mt-32 max-[768px]:mt-9 min-[1286px]:px-[24rem] min-[640px]:px-[7rem] max-[640px]:px-[2rem]'>
+      <div className='flex items-center gap-3 font-medium'>
+        <Link to='/account-settings' className='hover:underline'>
+          Tài khoản
+        </Link>
+        <svg xmlns="http://www.w3.org/2000/svg" height="12" width="7.5" viewBox="0 0 320 512">
+            <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/>
+        </svg>
+        <span>{title}</span>
+      </div>
+      <h1 className='text-[3.5rem] font-bold my-2'>{title}</h1>
+      <div className='lg:flex justify-between'>
+        <div className='lg:w-[55%] mt-14'>
+          {/* Name */}
+          <Infor title="Họ và tên" 
+          value={user.firstName&&user.firstName?user.firstName + " " +user.lastName:"Chưa cung cấp"}/>
+          <hr/>
+          {/* email */}
+          <Infor title="Email" 
+          value={user.email} />
+          <hr/>
+          {/* phone */}
+          <Infor title="Số điện thoại" 
+          value={user.phone?user.phone:"Thêm số điện thoại để khách được xác nhận và Stayeasy có thể liên hệ. Bạn có thể thêm các số khác và chọn cách sử dụng chúng."} />
+          <hr/>
+          {/* address */}
+          <Infor title="Địa chỉ" 
+          value={user.address?user.address:"Chưa cung cấp"} />
+          <hr/>
+          {/* hotline */}
+          <Infor title="Liên lạc khẩn cấp" 
+          value={user.hotline?user.hotline:"Chưa cung cấp"} />
           </div>
           <div className="lg:w-[35%] mt-14 p-5 border border-gray-700 rounded-2xl">
             <div className="flex flex-col gap-4">
