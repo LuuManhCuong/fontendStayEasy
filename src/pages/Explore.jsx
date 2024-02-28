@@ -13,8 +13,6 @@ import {
   keySearchSelector,
 } from "../redux-tookit/selector";
 
-import { dataExploreSlice } from "../redux-tookit/reducer/dataExploreSlice";
-
 function Explore() {
   const dispatch = useDispatch();
   const reload = useSelector(counterSelector);
@@ -24,31 +22,27 @@ function Explore() {
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [size, setSize] = useState(8);
-  // console.log("datarender: ", dataExplore);
-  const fetchData = () => {
-    setIsLoading(true);
-    axios
-      .get(
-        `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${size}`
-      )
-      .then(function (response) {
-        setTotalPage(() => Math.ceil(response.data.totalCount / size));
 
-        setIsLoading(false);
-        setDataExplore((prev) => {
-          return [...prev, ...response.data.properties];
-        });
-      })
-      .catch(function (error) {
-        setIsLoading(true);
-        console.log(error);
-      });
-  };
   useEffect(() => {
     if (page <= totalPage) {
-      fetchData();
+      setIsLoading(true);
+
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${page}&size=${size}`
+        )
+        .then(function (response) {
+          setTotalPage(() => Math.ceil(response.data.totalCount / size));
+          // console.log("reload");
+          setIsLoading(false);
+          setDataExplore(response.data.properties);
+        })
+        .catch(function (error) {
+          setIsLoading(true);
+          console.log(error);
+        });
     }
-  }, [page, reload]);
+  }, [size, reload]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -59,7 +53,8 @@ function Explore() {
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
 
     if (scrollTop + clientHeight >= scrollHeight && page < totalPage) {
-      setPage((prev) => prev + 1);
+      // setPage((prev) => prev + 1);
+      setSize((prev) => prev + 8);
     }
   };
 
@@ -68,7 +63,6 @@ function Explore() {
       <Header page="explore"></Header>
       <Filter></Filter>
 
-      {dataExplore?.length > 0 && <ListView data={dataExplore}></ListView>}
       {isLoading ? (
         <Stack
           sx={{ width: "100%", height: "5px", color: "grey.500" }}
@@ -79,6 +73,9 @@ function Explore() {
       ) : (
         <div style={{ height: "5px" }}></div>
       )}
+
+      {dataExplore?.length > 0 && <ListView data={dataExplore}></ListView>}
+
       {!isLoading && dataExplore?.length === 0 && (
         <h3>Không tìm thấy dữ liệu</h3>
       )}

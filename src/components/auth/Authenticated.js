@@ -50,7 +50,7 @@ export default function Authenticated({ setIsLogined }) {
 
   return (
     <>
-      <Dropdown.Menu>
+      <Dropdown.Menu className="w-[23rem] h-[fit] border-white rounded-full shadow-lg">
         <Dropdown.Item>
           <div className="flex items-center">
             <svg

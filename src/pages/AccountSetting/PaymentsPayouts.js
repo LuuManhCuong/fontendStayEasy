@@ -10,54 +10,28 @@ export default function PaymentsPayouts({ title }) {
 
   return (
     <>
-      {/* <CommonHeader/> */}
-      <Header></Header>
-      <div className="flex flex-col xl:px-[24rem] py-[4rem] lg:px-[7rem] md:px-[5rem] sm:px-[2rem] ssm:px-[2rem] mt-32">
-        <div className="flex items-center gap-3 font-medium">
-          <Link to="/account-settings" className="hover:underline">
-            Tài khoản
-          </Link>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="12"
-            width="7.5"
-            viewBox="0 0 320 512"
-          >
-            <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-          </svg>
-          <span>{title}</span>
-        </div>
-        <h1 className="text-[3.5rem] font-bold my-2">{title}</h1>
-        <div className="mt-16 lg:w-[55%]">
-          <div className="flex gap-5 font-medium">
-            <NavLink
-              to="/account-settings/payments/payment-methods"
-              onClick={() => setCurrentActive(0)}
-            >
-              <p
-                className={
-                  currentActive == 0
-                    ? "text-black hover:bg-gray-100 px-3 py-2 rounded-lg"
-                    : "text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg"
-                }
-              >
-                Thanh toán
-              </p>
-            </NavLink>
-            <NavLink
-              to="/account-settings/payments/payout-methods"
-              onClick={() => setCurrentActive(1)}
-            >
-              <p
-                className={
-                  currentActive == 1
-                    ? "text-black hover:bg-gray-100 px-3 py-2 rounded-lg"
-                    : "text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg"
-                }
-              >
-                Hoàn tiền
-              </p>
-            </NavLink>
+    <CommonHeader/>
+    <div className='flex flex-col py-[4rem] mt-32 max-[768px]:mt-9 min-[1286px]:px-[24rem] min-[640px]:px-[7rem] max-[640px]:px-[2rem]'>
+      <div className='flex items-center gap-3 font-medium'>
+        <Link to='/account-settings' className='hover:underline'>
+          Tài khoản
+        </Link>
+        <svg xmlns="http://www.w3.org/2000/svg" height="12" width="7.5" viewBox="0 0 320 512">
+            <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/>
+        </svg>
+        <span>{title}</span>
+      </div>
+      <h1 className='text-[3.5rem] font-bold my-2'>{title}</h1>
+      <div className='mt-16 lg:w-[55%]'>
+        <div className='flex gap-5 font-medium'>
+          <NavLink to="/account-settings/payments/payment-methods" onClick={() => setCurrentActive(0)}>
+            <p className={currentActive==0?"text-black hover:bg-gray-100 px-3 py-2 rounded-lg"
+            :"text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg"}>Thanh toán</p>
+          </NavLink>
+          <NavLink to="/account-settings/payments/payout-methods" onClick={() => setCurrentActive(1)}>
+            <p className={currentActive==1?"text-black hover:bg-gray-100 px-3 py-2 rounded-lg"
+            :"text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg"}>Hoàn tiền</p>
+          </NavLink>
           </div>
           <hr className="m-0 p-0" />
         </div>
