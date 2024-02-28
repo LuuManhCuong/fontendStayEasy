@@ -36,23 +36,26 @@ function Detail() {
       ? new Date(urlParams.get("checkout"))
       : new Date(timeStamp)
   );
+  console.log(urlParams.get("adults"));
   const [adults, setAdults] = useState(
-    parseInt(urlParams.get("adults")) !== 0
+    (parseInt(urlParams.get("adults")) || parseInt(urlParams.get("adults")) ==0) 
       ? parseInt(urlParams.get("adults"))
       : 1
   );
   const [children, setChildren] = useState(
-    parseInt(urlParams.get("children")) !== 0
+    (parseInt(urlParams.get("children")) || parseInt(urlParams.get("adults")) ==0)
       ? parseInt(urlParams.get("children"))
       : 0
   );
   const [infants, setInfants] = useState(
-    parseInt(urlParams.get("infants")) !== 0
+    (parseInt(urlParams.get("infants")) || parseInt(urlParams.get("adults")) ==0)
       ? parseInt(urlParams.get("infants"))
       : 0
   );
   const [pet, setPet] = useState(
-    parseInt(urlParams.get("pet")) !== 0 ? parseInt(urlParams.get("pet")) : 0
+    (parseInt(urlParams.get("pet")) || parseInt(urlParams.get("adults")) ==0)
+    ? parseInt(urlParams.get("pet")) 
+    : 0
   );
   const [totalDays, setTotalDays] = useState(1);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -362,6 +365,9 @@ function Detail() {
 
           {/* right */}
           <div className="w-[40%]">
+            <div className="lg:hidden">
+                  X
+            </div>
             <div className="w-[65%] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
               <div className="p-5 pt-4">
                 <div className="flex justify-items-center">
@@ -370,9 +376,9 @@ function Detail() {
                   </p>
                   <span className="pt-[6px] ml-1 text-[17px]">/ đêm</span>
                 </div>
-                <div className="pt-6 pb-6 flex flex-col relative h-[15rem]">
-                  <div className="flex border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
-                    <div className="checkin w-[45%] ml-4 border-r-2 overflow-hidden">
+                <div className="pt-6 pb-6  relative h-[15rem]">
+                  <div className="flex xl:flex-row flex-col border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
+                    <div className="pl-24 xl:pl-0 checkin xl:w-[45%] xl:ml-4  xl:border-r-2 overflow-hidden">
                       <label htmlFor="">Nhận phòng</label>
 
                       <DatePicker
@@ -383,7 +389,7 @@ function Detail() {
                         dateFormat="yyyy/MM/dd"
                       />
                     </div>
-                    <div className="checkout w-[40%]">
+                    <div className="pl-24 xl:pl-0  checkout xl:w-[40%]">
                       <label htmlFor="">Trả phòng</label>
 
                       <DatePicker

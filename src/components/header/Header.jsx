@@ -21,8 +21,10 @@ function Header({ page }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { keySearch } = useSelector(keySearchSelector);
+
+  // console.log("current user: ", user);
   const today = new Date();
-  // console.log("key search: ", keySearch);
+
   const [checkin, setCheckin] = React.useState(new Date());
   let timeStamp = today.getTime() + 86400000;
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
@@ -33,7 +35,7 @@ function Header({ page }) {
   const [suggest, setSuggest] = useState();
 
   const [isLogined, setIsLogined] = useState(
-    localStorage.getItem("accesstoken") ? true : false
+    localStorage.getItem("access_token") ? true : false
   );
 
   const [isOpenLoginModal, setisOpenLoginModal] = useState(false);
@@ -107,7 +109,7 @@ function Header({ page }) {
             response.data.properties
           )
         );
-        console.log("Data search: ", response.data);
+        // console.log("Data search: ", response.data);
       })
       .catch(function (error) {
         dispatch(dataExploreSlice.actions.getDataExploreFailure());
@@ -213,10 +215,16 @@ function Header({ page }) {
         throw Error(response.status);
       })
       .then((result) => {
-        console.log("user: ", result.user);
-        localStorage.setItem("accesstoken", result.access_token);
-        localStorage.setItem("user", result.user.email);
-        localStorage.setItem("id_user", result.user.id);
+        localStorage.setItem(
+          "access_token",
+          JSON.stringify(result.access_token)
+        );
+        localStorage.setItem(
+          "refresh_token",
+          JSON.stringify(result.refresh_token)
+        );
+        localStorage.setItem("user", JSON.stringify(result.user));
+        dispatch(counterSlice.actions.increase());
 
         setisOpenLoginModal(false);
         setIsLogined(true);
@@ -230,8 +238,8 @@ function Header({ page }) {
 
   // method logout
   const logout = () => {
-    console.log("Bearer " + localStorage.getItem("accesstoken") != null);
-    if (localStorage.getItem("accesstoken") != null) {
+    // console.log("Bearer " + localStorage.getItem("accesstoken") != null);
+    if (localStorage.getItem("access_token") != null) {
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
@@ -247,8 +255,10 @@ function Header({ page }) {
       fetch("http://localhost:8080/api/v1/auth/logout", requestOptions)
         .then((response) => {
           if (response.ok) {
-            localStorage.removeItem("accesstoken");
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
             localStorage.removeItem("user");
+            dispatch(counterSlice.actions.descrease());
             setIsLogined(false);
             alert("Đăng xuất thành công");
             return response.text();

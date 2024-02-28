@@ -3,7 +3,7 @@ import Card from "../card/Card";
 function Row(props) {
   return (
     <div
-      className="flex flex-wrap w-full justify-start pl-20 pr-20 mt-3"
+      className="flex flex-wrap w-full sm:justify-start justify-center pl-20 pr-20 mt-3"
       key={props.property.length}
     >
       {props.property.map((item, index) => {
