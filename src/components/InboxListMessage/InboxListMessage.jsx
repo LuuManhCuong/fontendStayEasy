@@ -3,7 +3,7 @@ import style from "./inboxListMessage.module.css";
 import Room from "./Room/Room";
 export default function InboxListMessage() {
   const [listRoom, setListRoom] = useState([]);
-  const idUser = localStorage.getItem("id_user");
+  const idUser = JSON.parse(localStorage.getItem("user")).id;
   useEffect(() => {
     fetch(
       `http://localhost:8080/api/v1/stayeasy/chatroom/get/all/room/user/${idUser}`

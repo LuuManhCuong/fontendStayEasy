@@ -1,16 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import style from "./header.module.css";
 export default function HeaderInbox() {
-  const idUser = localStorage.getItem("id_user");
-  const [user, setUser] = useState();
-  useEffect(() => {
-    fetch(`http://localhost:8080/api/v1/stayeasy/user/${idUser}`)
-      .then((data) => data.json())
-      .then((data) => {
-        console.log("daataa: ", data);
-        setUser(data);
-      });
-  }, [idUser]);
+  const user = JSON.parse(localStorage.getItem("user"));
   return (
     <header>
       <a href="/" className={style.header_logo}>

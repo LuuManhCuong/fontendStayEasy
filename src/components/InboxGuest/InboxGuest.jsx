@@ -12,7 +12,7 @@ export default function InboxGuest() {
     const roomId = useParams().roomId
     const [messages, setMessages] = useState([])
     const [stompClient, setStompClient] = useState(null);
-    const idUser = localStorage.getItem('id_user')
+    const idUser = JSON.parse(localStorage.getItem('user')).id
     const [message, setMessage] = useState('');
     const messagesEndRef = useRef(null);
     const [isPickkerVisible, setPickkerVisible] = useState(false)
@@ -25,7 +25,7 @@ export default function InboxGuest() {
         scrollToBottom();
     }, [messages]);
     useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/chatroom/get/all/${roomId}`)
+        fetch(`http://localhost:8080/api/v1/stayeasy/chatroom/get/all/${roomId}`)
             .then(data => data.json())
             .then(data => {
                 setMessages(data)
@@ -35,12 +35,12 @@ export default function InboxGuest() {
             })
     }, [roomId])
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/ws');
+        const socket = new SockJS('http://localhost:8080/api/v1/stayeasy/ws');
         const client = Stomp.over(socket);
         client.debug = null
         client.connect({}, () => {
             if (client.connected) {
-                client.subscribe(`/topic/${roomId}`, (message) => {
+                client.subscribe(`/api/v1/stayeasy/topic/${roomId}`, (message) => {
                     const receivedMessage = JSON.parse(message.body);
                     setMessages(prevMessages => [...prevMessages, receivedMessage]);
                 });
@@ -71,7 +71,7 @@ export default function InboxGuest() {
                     userId: idUser,
                     content: message,
                 };
-                stompClient.send(`/app/chat/${roomId}`, {}, JSON.stringify(chatMessage));
+                stompClient.send(`/api/v1/stayeasy/app/chat/${roomId}`, {}, JSON.stringify(chatMessage));
                 setMessage('');
             }
         }
@@ -91,7 +91,7 @@ export default function InboxGuest() {
                     <h2>Chat Box</h2>
                 </div>
                 <div className={style.thread_button}>
-                    <button onClick={changeActive}>Hide details</button>
+                    <button onClick={changeActive}>{active?'Hide details':'Learns the details'}</button>
                 </div>
             </div>
 
