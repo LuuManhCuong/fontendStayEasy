@@ -4,12 +4,12 @@ import moment from 'moment'
 export default function Message({ data }) {
     const [user, setUser] = useState()
     useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/user/${data.userId}`)
+        fetch(`http://localhost:8080/api/v1/stayeasy/chatroom/get-host/${data.userId}`)
             .then(data => data.json())
-            .then(user => {
-                setUser(user)
+            .then(data => {
+                setUser(data)
             })
-    }, [data])
+    }, [data.userId])
     return (
         <li>
             <div className={style.inbox_avater}>

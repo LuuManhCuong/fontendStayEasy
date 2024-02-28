@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import {Dropdown, DropdownToggle} from "react-bootstrap";
 import DatePicker from "react-datepicker";
@@ -10,7 +10,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { dataExploreSlice } from "../../redux-tookit/reducer/dataExploreSlice";
 import { useNavigate } from "react-router-dom";
-import { keySearchSelector } from "../../redux-tookit/selector";
+import { keySearchSelector, counterSelector } from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 
 import AuthModal from "../Auth/Authenticate";
@@ -29,13 +29,17 @@ function Header({ page }) {
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
   const [showHistory, setShowHistory] = React.useState(false);
   const [placeholder, setPlaceholder] = React.useState("Tìm kiếm...");
-
   const [suggest, setSuggest] = useState();
-
   // check is loginned yet?
   const [isLogined, setIsLogined] = useState(
     localStorage.getItem("access_token") ? true : false
   );
+
+  const counter = useSelector(counterSelector);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, [counter]);
 
   React.useEffect(() => {
     setCheckout(new Date(checkin.getTime() + 86400000));
@@ -269,7 +273,7 @@ function Header({ page }) {
             className="search-btn"
           ></SearchIcon>
         </div>
-      ) : (
+      ) : page === "experience" ? (
         <div className="search-wrap">
           <div className="search-address">
             <label htmlFor="keySearch">{page}</label>
@@ -323,6 +327,8 @@ function Header({ page }) {
             className="search-btn"
           ></SearchIcon>
         </div>
+      ) : (
+        " "
       )}
     </header>
   );

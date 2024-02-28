@@ -34,12 +34,6 @@ function App() {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, [counter]);
 
-  // // Similar to componentDidMount and componentDidUpdate:
-  // useEffect(() => {
-  //   // Update the document title using the browser API
-  //   setLoggedIn(localStorage.getItem("access_token"));
-  // }, [localStorage.getItem("access_token")]);
-
   return (
     <Routes>
       <Route path="/" element={<Home></Home>}></Route>
@@ -50,21 +44,15 @@ function App() {
         element={<SearchResult></SearchResult>}
       ></Route>
       <Route path="/explore/detail/:id" element={<Detail />} />
+
       {/* account setting */}
       <Route path="/account-settings" element={user ? <Account title="Tài khoản" /> : <Login/>}/>
       <Route path="/account-settings/personal-info" element={user ? <PersonalInfo title="Thông tin cá nhân"/> : <Login/>}/>
       <Route path="/account-settings/login-and-security" element={user ?<LoginAndSecurity title="Đăng nhập và bảo mật" />: <Login/>}/>
       <Route path="/account-settings/login-and-security/login-requests"element={user ? <LoginAndSecurity title="Đăng nhập và bảo mật" />: <Login/>}/>
-      <Route path="/account-settings/login-and-security/shared-access" element={user ? <LoginAndSecurity title="Đăng nhập và bảo mật" />: <Login/>}
-      />
-      <Route
-        path="/account-settings/payments/payment-methods"
-        element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
-      />
-      <Route
-        path="/account-settings/payments/payout-methods"
-        element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
-      />
+      <Route path="/account-settings/login-and-security/shared-access" element={user ? <LoginAndSecurity title="Đăng nhập và bảo mật" />: <Login/>}/>
+      <Route path="/account-settings/payments/payment-methods" element={user ? <PaymentsPayouts title="Thanh toán và Hoàn tiền" />: <Login/>}/>
+      <Route path="/account-settings/payments/payout-methods" element={user ? <PaymentsPayouts title="Thanh toán và Hoàn tiền" />: <Login/>}/>
       {/* inbox */}
       <Route
         path="/inbox"
