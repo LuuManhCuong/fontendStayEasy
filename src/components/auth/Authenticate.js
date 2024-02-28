@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import ButtonCustom from "./ButtonCustom";
 import Dropdown from "react-bootstrap/Dropdown";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
+
+// Component show menu when not authenticate yet
+// Show Popup for Login and register
 export default function AuthModal({setIsLogined}) {
   const [isOpenModal, setisOpenModal] = useState(false);
   const [isLoginModal, setisLoginModal] = useState(true);
@@ -30,6 +34,7 @@ export default function AuthModal({setIsLogined}) {
     setMessage("","","");
   };
 
+  //Set message
   const setMessage = (loginError, signUpError, signUpSuccess) => {
     setErrorLoginMessage(loginError);
     setErrorMessage(signUpError);
@@ -108,11 +113,12 @@ export default function AuthModal({setIsLogined}) {
       })
       .then((result) => {
         localStorage.setItem("accesstoken", result.access_token);
-        localStorage.setItem("user", result.user.email);
+        localStorage.setItem("user", JSON.stringify(result.user,null,1));
         setIsLogined(true);
         setMessage("","","");
         toggleClosePopup();
-        alert("Đăng nhập thành công");
+        NotificationManager.success('Success message', 'Title here');
+        // alert("Đăng nhập thành công");
       })
       .catch((error) => {
         console.error("error", error);
