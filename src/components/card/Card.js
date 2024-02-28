@@ -32,7 +32,7 @@ function Card(props) {
     e.stopPropagation();
     // like
     if (user && !isActive) {
-      console.log("like id: ", idPost, "idUSer: ", user?.id);
+      // console.log("like id: ", idPost, "idUSer: ", user?.id);
       axios
         .post(`http://localhost:8080/api/v1/stayeasy/like`, {
           idPost: idPost,
@@ -48,7 +48,7 @@ function Card(props) {
     }
     // unlike
     else if (user && isActive) {
-      console.log("unlike id: ", idPost, "idUSer: ", user?.id);
+      // console.log("unlike id: ", idPost, "idUSer: ", user?.id);
       axios
         .delete(`http://localhost:8080/api/v1/stayeasy/unlike`, {
           params: {
@@ -57,7 +57,7 @@ function Card(props) {
           },
         })
         .then(function (response) {
-          dispatch(counterSlice.actions.descrease());
+          dispatch(counterSlice.actions.increase());
           console.log("res ", response.data);
         })
         .catch(function (error) {

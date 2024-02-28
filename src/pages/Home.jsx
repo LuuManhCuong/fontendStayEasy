@@ -4,7 +4,7 @@ import ListView from "../components/listview/ListView";
 import Filter from "../components/filter/Filter";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { counterSelector, dataHomeSelector } from "../redux-tookit/selector";
 import axios from "axios";
@@ -14,6 +14,7 @@ import { counterSlice } from "../redux-tookit/reducer/counterSlice";
 function Home() {
   const dispatch = useDispatch();
   const { dataHome, isLoading } = useSelector(dataHomeSelector);
+
   const reload = useSelector(counterSelector);
   useEffect(() => {
     dispatch(dataHomeSlice.actions.getDataHomeRequest());

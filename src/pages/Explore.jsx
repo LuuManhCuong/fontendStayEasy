@@ -18,6 +18,7 @@ import { dataExploreSlice } from "../redux-tookit/reducer/dataExploreSlice";
 function Explore() {
   const dispatch = useDispatch();
   const reload = useSelector(counterSelector);
+
   const { keySearch } = useSelector(keySearchSelector);
   const [isLoading, setIsLoading] = useState(true);
   const [dataExplore, setDataExplore] = useState([]);
