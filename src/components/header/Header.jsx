@@ -14,7 +14,11 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { dataExploreSlice } from "../../redux-tookit/reducer/dataExploreSlice";
 import { useNavigate } from "react-router-dom";
-import { grouptSelector, keySearchSelector } from "../../redux-tookit/selector";
+import {
+  counterSelector,
+  grouptSelector,
+  keySearchSelector,
+} from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 
@@ -34,13 +38,17 @@ function Header({ page }) {
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
   const [showHistory, setShowHistory] = React.useState(false);
   const [placeholder, setPlaceholder] = React.useState("Tìm kiếm...");
-
   const [suggest, setSuggest] = useState();
-
   // check is loginned yet?
   const [isLogined, setIsLogined] = useState(
     localStorage.getItem("access_token") ? true : false
   );
+
+  const counter = useSelector(counterSelector);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, [counter]);
 
   React.useEffect(() => {
     setCheckout(new Date(checkin.getTime() + 86400000));
@@ -166,6 +174,7 @@ function Header({ page }) {
           </NavLink>
 
           {/* Menu */}
+
           <div className="account">
             <Dropdown>
               <Dropdown.Toggle
@@ -173,6 +182,22 @@ function Header({ page }) {
                 variant="dark"
                 id="dropdown-basic"
               >
+                {user ? (
+                  <>
+                    <h3>{user.email}</h3>
+                    <Avatar
+                      className="avatar ml-3"
+                      alt="avatar"
+                      src={
+                        user?.avatar ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&usqp=CAU"
+                      }
+                    />
+                  </>
+                ) : (
+                  <h3>Login</h3>
+                )}
+
                 <svg
                   className="ml-3"
                   xmlns="http://www.w3.org/2000/svg"
@@ -185,11 +210,6 @@ function Header({ page }) {
                     d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
                   />
                 </svg>
-                <Avatar
-                  className="avatar ml-3"
-                  alt="avatar"
-                  src="https://mui.com/static/images/avatar/2.jpg"
-                />
               </Dropdown.Toggle>
 
               {isLogined ? (

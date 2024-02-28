@@ -18,17 +18,24 @@ import PersonalInfo from "./pages/AccountSetting/PersonalInfo";
 import LoginAndSecurity from "./pages/AccountSetting/LoginAndSecurity";
 import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { counterSelector } from "./redux-tookit/selector";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(
-    localStorage.getItem("access_token")
-  );
+  // const [user, setuser] = useState(
+  //   localStorage.getItem("access_token")
+  // );
 
-  // Similar to componentDidMount and componentDidUpdate:
+  // // Similar to componentDidMount and componentDidUpdate:
+  // useEffect(() => {
+  //   // Update the document title using the browser API
+  //   setuser(localStorage.getItem("access_token"));
+  // });
+  const counter = useSelector(counterSelector);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   useEffect(() => {
-    // Update the document title using the browser API
-    setLoggedIn(localStorage.getItem("access_token"));
-  });
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, [counter]);
 
   return (
     <Routes>
@@ -40,11 +47,9 @@ function App() {
         element={<SearchResult></SearchResult>}
       ></Route>
       <Route path="/explore/detail/:id" element={<Detail />} />
+
       {/* account setting */}
-      <Route
-        path="/account-settings"
-        element={loggedIn ? <Account title="Tài khoản" /> : <Home />}
-      />
+      <Route path="/account-settings" element={<Account title="Tài khoản" />} />
       <Route
         path="/account-settings/personal-info"
         element={<PersonalInfo title="Thông tin cá nhân" />}
