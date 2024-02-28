@@ -3,7 +3,7 @@ import style from '../inboxListMessage.module.css'
 import { Link } from 'react-router-dom'
 
 export default function Room({ data }) {
-    const idUser = JSON.parse(localStorage.getItem('user')).id.toLocaleLowerCase()
+    const idUser = JSON.parse(localStorage.getItem('user'))?.id.toLocaleLowerCase()
     const [host, setHost] = useState()
     const hostId = data.userId === idUser ? data.hostId : data.userId
     useEffect(() => {

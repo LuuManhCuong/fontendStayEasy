@@ -14,24 +14,26 @@ import { dataDetailSelector } from "../redux-tookit/selector";
 import Popup from "../components/popup/PopUp";
 import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
   const [show, setShow] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
   const today = new Date();
   let timeStamp = today.getTime() + 86400000;
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState("");
   const [totalGuests, setTotalGuests] = useState(1);
   const [checkin, setCheckin] = useState(
     urlParams.get("checkin") ? new Date(urlParams.get("checkin")) : today
   );
+  const idUser = JSON.parse(localStorage.getItem("user"))?.id;
   const [checkout, setCheckout] = useState(
     urlParams.get("checkout")
       ? new Date(urlParams.get("checkout"))
@@ -207,39 +209,36 @@ function Detail() {
   }
 
   function sendMessageHost() {
-    if (message) {
-
-      const idUser = JSON.parse(localStorage.getItem('user')).id
-      const idHost = dataDetail.owner.id
+    const idUser = JSON.parse(localStorage.getItem("user"))?.id;
+    if (message && idUser) {
+      const idHost = dataDetail.owner.id;
       const data = {
         userId: idUser,
         hostId: idHost,
         content: message,
       };
-      fetch('http://localhost:8080/api/v1/stayeasy/chatroom/first-room', {
-        method: 'POST',
+      fetch("http://localhost:8080/api/v1/stayeasy/chatroom/first-room", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       })
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           } else {
-            setShow(true)
-            navigate('/inbox')
+            setShow(true);
+            navigate("/inbox");
           }
           return response.json();
         })
-        .then(data => {
-
-        })
-        .catch(error => {
-        });
+        .then((data) => {})
+        .catch((error) => {});
+    } else {
+      dispatch(grouptSlice.actions.openLoginForm());
     }
   }
-
 
   return (
     <>
@@ -464,8 +463,9 @@ function Detail() {
                     </div>
                   </div>
                   <div
-                    className={` ${showDropdown ? "" : "hidden"
-                      } absolute w-[290px] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}
+                    className={` ${
+                      showDropdown ? "" : "hidden"
+                    } absolute w-[290px] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}
                   >
                     <div className="flex justify-between p-2">
                       <NumGuest
@@ -531,38 +531,59 @@ function Detail() {
             </div>
           </div>
         </div>
+
+        {/* chat with host */}
         <Row>
-          <Col className="col-3" style={{ position: 'fixed', zIndex: '99', top: '60%', right: '0' }}>
+          <Col
+            className="col-3"
+            style={{ position: "fixed", zIndex: "99", top: "60%", right: "0" }}
+          >
             <Alert show={show} variant="success">
               <Alert.Heading>Thông báo</Alert.Heading>
               <p>
-                Tin nhắn của bạn đã được gửi đến {dataDetail.owner.firstName} {dataDetail.owner.lastName}
+                Tin nhắn của bạn đã được gửi đến {dataDetail.owner.firstName}{" "}
+                {dataDetail.owner.lastName}
               </p>
               <hr />
               <div className="d-flex justify-content-end">
-                <Button onClick={() => setShow(false)} variant="outline-success">
+                <Button
+                  onClick={() => setShow(false)}
+                  variant="outline-success"
+                >
                   Close me
                 </Button>
               </div>
             </Alert>
           </Col>
         </Row>
-        <Row className="d-flex justify-content-center my-5">
-          <Col className="col-5">
-            <InputGroup className="mb-3">
-              <Form.Control
-                style={{ height: '40px', fontSize: '20px' }}
-                placeholder="Nhắn tin cho host"
-                aria-label="Nhắn tin cho host"
-                aria-describedby="basic-addon2"
-                onChange={e => setMessage(e.target.value)}
-              />
-              <Button onClick={sendMessageHost} className="fs-5" variant="outline-primary" id="button-addon2" style={{ width: '80px' }}>
-                Gửi
-              </Button>
-            </InputGroup>
-          </Col>
-        </Row>
+
+        <h2>host: {dataDetail.owner?.id}</h2>
+        <h2>user: {idUser}</h2>
+
+        {idUser !== dataDetail.owner?.id && (
+          <Row className="d-flex justify-content-center my-5">
+            <Col className="col-5">
+              <InputGroup className="mb-3">
+                <Form.Control
+                  style={{ height: "40px", fontSize: "20px" }}
+                  placeholder="Nhắn tin cho host"
+                  aria-label="Nhắn tin cho host"
+                  aria-describedby="basic-addon2"
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <Button
+                  onClick={sendMessageHost}
+                  className="fs-5"
+                  variant="outline-primary"
+                  id="button-addon2"
+                  style={{ width: "80px" }}
+                >
+                  Gửi
+                </Button>
+              </InputGroup>
+            </Col>
+          </Row>
+        )}
       </div>
     </>
   );

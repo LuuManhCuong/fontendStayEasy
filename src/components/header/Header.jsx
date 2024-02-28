@@ -336,7 +336,7 @@ function Header({ page }) {
             className="search-btn"
           ></SearchIcon>
         </div>
-      ) : (
+      ) : page === "experience" ? (
         <div className="search-wrap">
           <div className="search-address">
             <label htmlFor="keySearch">{page}</label>
@@ -390,6 +390,8 @@ function Header({ page }) {
             className="search-btn"
           ></SearchIcon>
         </div>
+      ) : (
+        " "
       )}
     </header>
   );

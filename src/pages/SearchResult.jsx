@@ -5,7 +5,7 @@ import Filter from "../components/filter/Filter";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useSelector } from "react-redux";
-import ListView from "../components/listView/ListView";
+import ListView from "../components/listview/ListView";
 import {
   dataExploreSelector,
   keySearchSelector,
