@@ -6,7 +6,11 @@ import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { counterSelector, dataHomeSelector } from "../redux-tookit/selector";
+import {
+  counterSelector,
+  dataHomeSelector,
+  grouptSelector,
+} from "../redux-tookit/selector";
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
 import { counterSlice } from "../redux-tookit/reducer/counterSlice";
@@ -15,7 +19,7 @@ function Home() {
   const dispatch = useDispatch();
   const { dataHome, isLoading } = useSelector(dataHomeSelector);
 
-  const reload = useSelector(counterSelector);
+  const { reloadLike } = useSelector(grouptSelector);
   useEffect(() => {
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
@@ -29,7 +33,7 @@ function Home() {
 
         console.log(error);
       });
-  }, [reload]);
+  }, [reloadLike]);
 
   return (
     <>

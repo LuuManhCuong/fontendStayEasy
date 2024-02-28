@@ -15,6 +15,7 @@ import Popup from "../components/popup/PopUp";
 import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
+import CommentBlock from "../components/comment/CommentBlock";
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -584,6 +585,9 @@ function Detail() {
             </Col>
           </Row>
         )}
+
+        <h3>Bình luận</h3>
+        <CommentBlock></CommentBlock>
       </div>
     </>
   );

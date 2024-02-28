@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./cart.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { counterSelector } from "../../redux-tookit/selector";
+import { counterSelector, grouptSelector } from "../../redux-tookit/selector";
 import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import axios from "axios";
 import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
@@ -14,6 +14,7 @@ function Card(props) {
   const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const counter = useSelector(counterSelector);
+  const { reloadLike } = useSelector(grouptSelector);
   const checkin = new Date();
   let timeStamp = checkin.getTime() + 86400000;
   const checkout = new Date(timeStamp);
@@ -39,7 +40,7 @@ function Card(props) {
           idUser: user?.id,
         })
         .then(function (response) {
-          dispatch(counterSlice.actions.increase());
+          dispatch(grouptSlice.actions.reloadLike());
           console.log("res ", response.data);
         })
         .catch(function (error) {
@@ -57,7 +58,7 @@ function Card(props) {
           },
         })
         .then(function (response) {
-          dispatch(counterSlice.actions.increase());
+          dispatch(grouptSlice.actions.reloadLike());
           console.log("res ", response.data);
         })
         .catch(function (error) {
