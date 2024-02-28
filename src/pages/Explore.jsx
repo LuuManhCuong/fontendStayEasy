@@ -68,11 +68,15 @@ function Explore() {
       <Filter></Filter>
 
       {dataExplore?.length > 0 && <ListView data={dataExplore}></ListView>}
-      {isLoading && (
-        <Stack sx={{ width: "100%", color: "grey.500" }} spacing={2}>
+      {isLoading ? (
+        <Stack
+          sx={{ width: "100%", height: "5px", color: "grey.500" }}
+          spacing={2}
+        >
           <LinearProgress color="secondary" />
-          loading...
         </Stack>
+      ) : (
+        <div style={{ height: "5px" }}></div>
       )}
       {!isLoading && dataExplore?.length === 0 && (
         <h3>Không tìm thấy dữ liệu</h3>

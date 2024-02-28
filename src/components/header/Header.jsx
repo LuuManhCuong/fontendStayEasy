@@ -14,14 +14,15 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { dataExploreSlice } from "../../redux-tookit/reducer/dataExploreSlice";
 import { useNavigate } from "react-router-dom";
-import { keySearchSelector } from "../../redux-tookit/selector";
+import { grouptSelector, keySearchSelector } from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
+import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 function Header({ page }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { keySearch } = useSelector(keySearchSelector);
-
+  const { isOpenLoginModal } = useSelector(grouptSelector);
   // console.log("current user: ", user);
   const today = new Date();
 
@@ -38,7 +39,7 @@ function Header({ page }) {
     localStorage.getItem("access_token") ? true : false
   );
 
-  const [isOpenLoginModal, setisOpenLoginModal] = useState(false);
+  // const [isOpenLoginModal, setisOpenLoginModal] = useState(false);
   const [isOpenRegisterModal, setisOpenRegisterModal] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -128,13 +129,15 @@ function Header({ page }) {
     if (isOpenRegisterModal) {
       setisOpenRegisterModal(!isOpenRegisterModal);
     }
-    setisOpenLoginModal(!isOpenLoginModal);
+    // setisOpenLoginModal(!isOpenLoginModal);
+    dispatch(grouptSlice.actions.openLoginForm());
   };
 
   // method show or hide register modal
   const toggleRegisterPopup = () => {
     if (isOpenLoginModal) {
-      setisOpenLoginModal(!isOpenLoginModal);
+      // setisOpenLoginModal(!isOpenLoginModal);
+      dispatch(grouptSlice.actions.openLoginForm());
     }
     setisOpenRegisterModal(!isOpenRegisterModal);
   };
@@ -172,7 +175,9 @@ function Header({ page }) {
                 "Đăng kí thành công thành công. Mời bạn đăng nhập!"
               );
               setErrorMessage("");
-              setisOpenLoginModal(true);
+              // setisOpenLoginModal(true);
+              dispatch(grouptSlice.actions.openLoginForm());
+
               setisOpenRegisterModal(false);
             })
             .catch((error) => {
@@ -226,7 +231,9 @@ function Header({ page }) {
         localStorage.setItem("user", JSON.stringify(result.user));
         dispatch(counterSlice.actions.increase());
 
-        setisOpenLoginModal(false);
+        // setisOpenLoginModal(false);
+        dispatch(grouptSlice.actions.openLoginForm());
+
         setIsLogined(true);
         alert("Đăng nhập thành công");
       })
