@@ -3,11 +3,11 @@ import style from '../inboxListMessage.module.css'
 import { Link } from 'react-router-dom'
 
 export default function Room({ data }) {
-    const idUser = localStorage.getItem('id_user').toLocaleLowerCase()
+    const idUser = JSON.parse(localStorage.getItem('user'))?.id.toLocaleLowerCase()
     const [host, setHost] = useState()
     const hostId = data.userId === idUser ? data.hostId : data.userId
     useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/user/${hostId}`)
+        fetch(`http://localhost:8080/api/v1/stayeasy/chatroom/get-host/${hostId}`)
             .then(data => data.json())
             .then(data => {
                 setHost(data)
