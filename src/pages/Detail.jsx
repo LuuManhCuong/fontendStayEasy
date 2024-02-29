@@ -339,7 +339,7 @@ function Detail() {
             </div>
 
             {/* info-service */}
-            <div className="w-full h-[35%] pt-6 pb-6 flex flex-col border-b-2 justify-between">
+            <div className="w-full h-[40%] pt-6 pb-6 flex flex-col border-b-2 justify-between">
               <div className="flex justify-items-center">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
