@@ -153,8 +153,10 @@ function Card(props) {
     >
       <div className="w-full  h-[36rem]  relative">
         <div className="w-full h-[28rem] rounded-[1.6rem] overflow-hidden">
-        <Slider {...settings} className="w-full h-full">
-            {props.item.imagesList?.map((item, index) => (
+
+        {props.item.imagesList?.length >0 
+        ? <Slider {...settings} className="w-full h-full">
+            { props.item.imagesList?.map((item, index) => (
               <div key={index} className="h-[280px]">
                 <img 
                   loading="lazy"
@@ -165,7 +167,17 @@ function Card(props) {
                 />
               </div>
             ))}
-          </Slider>
+          </Slider> 
+        : <div className="h-[280px]">
+        <img 
+          loading="lazy"
+          className="w-full h-full object-cover rounded-[1.6rem]"
+          src={props.item.thumbnail}
+          alt=""
+        />
+      </div> 
+          } 
+        
         </div>
 
         <div
