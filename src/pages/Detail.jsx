@@ -68,6 +68,9 @@ function Detail() {
     dataDetail.imagesList ? [0] : null
   );
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+
+  const toggleShowCheckout = () => setShowCheckout(!showCheckout);
 
   const fetchData = async () => {
     try {
@@ -400,11 +403,11 @@ function Detail() {
           {/* end-left */}
 
           {/* right */}
-          <div className="w-[40%]">
-            <div className="lg:hidden">
+          <div className="w-[50%] lg:w-[40%]">
+            <div className={` ${showCheckout ? "btnActive transition duration-500" :"transition duration-500"} lg:hidden fixed  top-60 right-10 cursor-pointer bg-white`} onClick={toggleShowCheckout}>
                   X
             </div>
-            <div className="w-[65%] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
+            <div className={` ${showCheckout ? "checkActive transition duration-500" : "transition duration-500"} fixed lg:relative top-60 -right-[350px] lg:top-0 lg:right-0 lg:block w-[300px] lg:w-[75%] max-w-[350px] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`}>
               <div className="p-5 pt-4">
                 <div className="flex justify-items-center">
                   <p className="text-[2.4rem] font-semibold">
@@ -413,8 +416,8 @@ function Detail() {
                   <span className="pt-[6px] ml-1 text-[17px]">/ đêm</span>
                 </div>
                 <div className="pt-6 pb-6  relative h-[15rem]">
-                  <div className="flex xl:flex-row flex-col border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
-                    <div className="pl-24 xl:pl-0 checkin xl:w-[45%] xl:ml-4  xl:border-r-2 overflow-hidden">
+                  <div className="flex border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
+                    <div className="pl-0 checkin w-[45%] ml-4  border-r-2 overflow-hidden">
                       <label htmlFor="">Nhận phòng</label>
 
                       <DatePicker
@@ -425,7 +428,7 @@ function Detail() {
                         dateFormat="yyyy/MM/dd"
                       />
                     </div>
-                    <div className="pl-24 xl:pl-0  checkout xl:w-[40%]">
+                    <div className="pl-0  checkout w-[40%]">
                       <label htmlFor="">Trả phòng</label>
 
                       <DatePicker
