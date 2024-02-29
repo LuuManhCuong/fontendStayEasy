@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+
 import CommonHeader from '../../components/header/CommonHeader';
 import Footer from '../../components/footer/Footer';
 import ButtonCustom from "../../components/Auth/ButtonCustom";
-import Dropdown from "react-bootstrap/Dropdown";
-import { useDispatch, useSelector } from "react-redux";
-import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
-import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
-import { grouptSelector } from "../../redux-tookit/selector";
+import { useDispatch } from "react-redux";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { login, signup } from "../../service/AuthService";
+
 
 export default function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [isLogin, setisLogin] = useState(true);
   const [isSecondForm, setIsSecondForm] = useState(false);
@@ -20,15 +22,9 @@ export default function Login() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
-
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorLoginMessage, setErrorLoginMessage] = useState("");
-
-  // method check email is valid
-  function isValidEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
-  }
 
   //Set message
   const setMessage = (loginError, signUpError, signUpSuccess) => {
@@ -45,104 +41,35 @@ export default function Login() {
     setFirstName("");
     setLastName("");
   };
+  
+  var data ={
+    "username" : username,
+    "password" : password,
+    "confirmPassword" : confirmPassword,
+    "firstName" : firstName,
+    "lastName" : lastName,
+    "toggleClosePopup" : null,
+    "setIsLogined" : null,
+    "setErrorMessage" : setErrorMessage,
+    "setSuccessMessage" : setSuccessMessage,
+    "setErrorLoginMessage" : setErrorLoginMessage,
+    "setMessage" : setMessage,
+    "setisLogin" : setisLogin,
+    "setIsSecondForm" : setIsSecondForm,
+    "dispatch" : dispatch,
+    "navigate" : navigate,
+    "location" : location
+  }
 
   // validate form
   const validateFirstForm = ()=>{
-    if (!username == "" && !password == "" && !confirmPassword == "") {
-      if (isValidEmail(username)) {
-        if (password === confirmPassword) {
-          setIsSecondForm(true);
-        } else {
-          setErrorMessage("Mật khẩu không khớp!");
-        }
-      } else {
-        setErrorMessage("Email không hợp lệ!");
-      }
+    if (!firstName == "" && !lastName == "") {
+      setMessage("","","");
+      setIsSecondForm(true);
     } else {
-      setErrorMessage("Hãy nhập đầy đủ thông tin!");
+      setErrorMessage("Vui lòng nhập thông tin!");
     }
   }
-
-  // method signup
-  const signup = () => {
-    if (!firstName == "" && !lastName == "") {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      const raw = JSON.stringify({
-        email: username,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        role: "USER",
-      });
-
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-      fetch("http://localhost:8080/api/v1/auth/register", requestOptions)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          }
-          throw Error(response.status);
-        })
-        .then((result) => {
-          setMessage("","","Đăng kí thành công thành công. Mời bạn đăng nhập!");
-          setisLogin(true);
-        })
-        .catch((error) => {
-          console.error("error", error);
-          setErrorMessage("error");
-        }); 
-    } else {
-      setErrorMessage("Hãy nhập đầy đủ thông tin!");
-    }
-  };
-
-  // method login
-  const login = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      email: username,
-      password: password,
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch("http://localhost:8080/api/v1/auth/login", requestOptions)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw Error(response.status);
-      })
-      .then((result) => {
-        localStorage.setItem("access_token", JSON.stringify(result.access_token));
-        localStorage.setItem("refresh_token", JSON.stringify(result.refresh_token));
-        localStorage.setItem("user", JSON.stringify(result.user));
-
-        dispatch(counterSlice.actions.increase());
-        dispatch(grouptSlice.actions.openLoginForm());
-        
-        setMessage("", "", "");
-        alert("Đăng nhập thành công");
-      })
-      .catch((error) => {
-        console.error("error", error);
-        setErrorLoginMessage("Tên tài khoản hoặc mật khẩu sai!");
-      });
-  };
 
   return (
     <>
@@ -181,7 +108,7 @@ export default function Login() {
 
             {/* form start */}
             <form>
-              {isLogin || !isSecondForm?
+              {isLogin || isSecondForm?
                 <>
                 {/* Username */}
                 <div className="mb-4">
@@ -231,10 +158,21 @@ export default function Login() {
                 }
               {/* button */}
               <div className="flex items-center justify-between">
-                <button onClick={isLogin ? login : isSecondForm ? signup : validateFirstForm} type="button" className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
+                <button onClick={isLogin ? ()=>{login(data);}
+                  : isSecondForm ? ()=>{signup(data);} 
+                  : validateFirstForm} type="button" className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
                   {isLogin ? "Đăng nhập" : isSecondForm ? "Đăng ký" : "Tiếp tục"}
                 </button>
               </div>
+              {/* button */}
+              {isSecondForm?
+                <div className="flex justify-center items-center">
+                  <button onClick={()=>{setIsSecondForm(false);}}type="button"
+                    className="mt-4 items-center bg-gray-600 hover:bg-[#4a4546] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-[50%]">
+                    Quay lại
+                  </button>
+                </div>:("")
+              }
             </form>
 
             {/* switch modal */}

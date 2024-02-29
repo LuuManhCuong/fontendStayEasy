@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import ButtonCustom from "./ButtonCustom";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
-import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import { grouptSelector } from "../../redux-tookit/selector";
+import { login, signup } from "../../service/AuthService";
 
 // Component show menu when not authenticate yet
 // Show Popup for Login and register
 export default function AuthModal({ setIsLogined }) {
   const dispatch = useDispatch();
+
   const { isOpenLoginModal } = useSelector(grouptSelector);
 
   const [isLoginModal, setisLoginModal] = useState(true);
@@ -24,11 +25,6 @@ export default function AuthModal({ setIsLogined }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorLoginMessage, setErrorLoginMessage] = useState("");
-
-  // method check email is valid
-  function isValidEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
-  }
 
   // method show modal
   const toggleOpenPopup = () => {
@@ -59,108 +55,31 @@ export default function AuthModal({ setIsLogined }) {
 
   // validate form
   const validateFirstForm = ()=>{
-    if (!username == "" && !password == "" && !confirmPassword == "") {
-      if (isValidEmail(username)) {
-        if (password === confirmPassword) {
-          setIsSecondForm(true);
-          setMessage("","","");
-        } else {
-          setErrorMessage("Mật khẩu không khớp!");
-        }
-      } else {
-        setErrorMessage("Email không hợp lệ!");
-      }
+    if (!firstName == "" && !lastName == "") {
+      setMessage("","","");
+      setIsSecondForm(true);
     } else {
-      setErrorMessage("Hãy nhập đầy đủ thông tin!");
+      setErrorMessage("Vui lòng nhập thông tin!");
     }
   }
 
-  // method signup
-  const signup = () => {
-    if (!firstName == "" && !lastName == "") {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      const raw = JSON.stringify({
-        email: username,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        role: "USER",
-      });
-
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-      fetch("http://localhost:8080/api/v1/auth/register", requestOptions)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          }
-          throw Error(response.status);
-        })
-        .then((result) => {
-          setMessage("","","Đăng kí thành công thành công. Mời bạn đăng nhập!");
-          setisLoginModal(true);
-        })
-        .catch((error) => {
-          console.error("error", error);
-          setErrorMessage("error");
-        }); 
-    } else {
-      setErrorMessage("Hãy nhập đầy đủ thông tin!");
-    }
-  };
-
-  // method login
-  const login = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      email: username,
-      password: password,
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch("http://localhost:8080/api/v1/auth/login", requestOptions)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw Error(response.status);
-      })
-      .then((result) => {
-        localStorage.setItem(
-          "access_token",
-          JSON.stringify(result.access_token)
-        );
-        localStorage.setItem(
-          "refresh_token",
-          JSON.stringify(result.refresh_token)
-        );
-        localStorage.setItem("user", JSON.stringify(result.user));
-        dispatch(counterSlice.actions.increase());
-        dispatch(grouptSlice.actions.openLoginForm());
-        setIsLogined(true);
-        setMessage("", "", "");
-        toggleClosePopup();
-        alert("Đăng nhập thành công");
-      })
-      .catch((error) => {
-        console.error("error", error);
-        setErrorLoginMessage("Tên tài khoản hoặc mật khẩu sai!");
-      });
-  };
+  var data ={
+    "username" : username,
+    "password" : password,
+    "confirmPassword" : confirmPassword,
+    "firstName" : firstName,
+    "lastName" : lastName,
+    "toggleClosePopup" : toggleClosePopup,
+    "setIsLogined" : setIsLogined,
+    "setErrorMessage" : setErrorMessage,
+    "setSuccessMessage" : setSuccessMessage,
+    "setErrorLoginMessage" : setErrorLoginMessage,
+    "setMessage" : setMessage,
+    "setisLogin" : setisLoginModal,
+    "setIsSecondForm" : setIsSecondForm,
+    "dispatch" : dispatch,
+    "location" : null
+  }
 
   return (
     <>
@@ -241,7 +160,7 @@ export default function AuthModal({ setIsLogined }) {
               <h1 className="font-semibold mb-4">Chào mừng đến Stayeasy</h1>
               {/* form start */}
               <form>
-                {isLoginModal || !isSecondForm?
+                {isLoginModal || isSecondForm?
                 <>
                   {/* Username */}
                   <div className="mb-4">
@@ -291,7 +210,9 @@ export default function AuthModal({ setIsLogined }) {
                 }
                 {/* button */}
                 <div className="flex items-center justify-between">
-                  <button onClick={isLoginModal ? login : isSecondForm ? signup : validateFirstForm}type="button"
+                  <button onClick={isLoginModal ? ()=>{login(data);}
+                  : isSecondForm ? ()=>{signup(data);} 
+                  : validateFirstForm}type="button"
                     className="bg-[#da0964] hover:bg-[#ff002bda] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
                     {isLoginModal ? "Đăng nhập" : isSecondForm ? "Đăng ký" : "Tiếp tục"}
                   </button>

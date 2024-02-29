@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import {Dropdown, DropdownToggle} from "react-bootstrap";
@@ -12,7 +12,7 @@ export default function CommonHeader() {
   const [isLogined, setIsLogined] = useState(
     localStorage.getItem("user") ? true : false
   );
-
+  
   return (
     <>
     {/* max-[768px]: Từ 768px trở xuống */}
