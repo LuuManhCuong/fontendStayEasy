@@ -90,7 +90,6 @@ export const signup = (data) => {
               })
               .catch((error) => {
                 console.error("error", error);
-                data.setUsername("");
                 data.setErrorMessage("Email đã đăng ký!");
               }); 
         } else {
