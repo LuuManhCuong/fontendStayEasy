@@ -23,14 +23,18 @@ export default function PaymentsPayouts({ title }) {
       </div>
       <h1 className='text-[3.5rem] font-bold my-2'>{title}</h1>
       <div className='mt-16 lg:w-[55%]'>
-        <div className='flex gap-5 font-medium'>
+        <div className='flex gap-3 font-medium'>
           <NavLink to="/account-settings/payments/payment-methods" onClick={() => setCurrentActive(0)}>
-            <p className={currentActive==0?"text-black hover:bg-gray-100 px-3 py-2 rounded-lg"
-            :"text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg"}>Thanh toán</p>
+            <div className={currentActive==0?"text-black px-3 border-b-[3px] border-black mb-0"
+              :"text-gray-500 hover:bg-gray-100 px-3 rounded-lg mb-0"}>
+              <p className="hover:bg-gray-100 hover:rounded-lg p-2">Thanh toán</p>
+            </div>
           </NavLink>
           <NavLink to="/account-settings/payments/payout-methods" onClick={() => setCurrentActive(1)}>
-            <p className={currentActive==1?"text-black hover:bg-gray-100 px-3 py-2 rounded-lg"
-            :"text-gray-500 hover:bg-gray-100 px-3 py-2 rounded-lg"}>Hoàn tiền</p>
+            <div className={currentActive==1?"text-black px-3 border-b-[3px] border-black mb-0"
+            :"text-gray-500 hover:bg-gray-100 px-3 rounded-lg mb-0"}>
+            <p className="hover:bg-gray-100 hover:rounded-lg p-2">Hoàn tiền</p>
+            </div>
           </NavLink>
           </div>
           <hr className="m-0 p-0" />
