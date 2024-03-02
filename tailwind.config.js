@@ -1,8 +1,13 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Roboto', 'sans-serif'],
+        'roboto': ['Roboto', 'sans-serif'],
+      },
       screens: {
         'ssm': '320px', // Tạo breakpoint 'sm' với độ rộng tối thiểu là 320px
         '2lg': '1350px', // Tạo breakpoint 'xl' với độ rộng tối thiểu là 1280px

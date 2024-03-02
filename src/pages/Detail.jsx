@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, json, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
@@ -11,82 +11,97 @@ import Slider from "react-slick";
 import NumGuest from "../components/numguest/NumGuest";
 import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
 import { dataDetailSelector } from "../redux-tookit/selector";
+import Popup from "../components/popup/PopUp";
+import { parseISO } from "date-fns";
+import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
+import CommentBlock from "../components/comment/CommentBlock";
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
+  const [show, setShow] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
-
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
-
   const today = new Date();
   let timeStamp = today.getTime() + 86400000;
-
+  const [message, setMessage] = useState("");
   const [totalGuests, setTotalGuests] = useState(1);
   const [checkin, setCheckin] = useState(
     urlParams.get("checkin") ? new Date(urlParams.get("checkin")) : today
   );
+  const idUser = JSON.parse(localStorage.getItem("user"))?.id;
   const [checkout, setCheckout] = useState(
     urlParams.get("checkout")
       ? new Date(urlParams.get("checkout"))
       : new Date(timeStamp)
   );
+  console.log(urlParams.get("adults"));
   const [adults, setAdults] = useState(
-    parseInt(urlParams.get("adults")) !== 0
+    (parseInt(urlParams.get("adults")) || parseInt(urlParams.get("adults")) ==0) 
       ? parseInt(urlParams.get("adults"))
       : 1
   );
   const [children, setChildren] = useState(
-    parseInt(urlParams.get("children")) !== 0
+    (parseInt(urlParams.get("children")) || parseInt(urlParams.get("adults")) ==0)
       ? parseInt(urlParams.get("children"))
       : 0
   );
   const [infants, setInfants] = useState(
-    parseInt(urlParams.get("infants")) !== 0
+    (parseInt(urlParams.get("infants")) || parseInt(urlParams.get("adults")) ==0)
       ? parseInt(urlParams.get("infants"))
       : 0
   );
   const [pet, setPet] = useState(
-    parseInt(urlParams.get("pet")) !== 0 ? parseInt(urlParams.get("pet")) : 0
+    (parseInt(urlParams.get("pet")) || parseInt(urlParams.get("adults")) ==0)
+    ? parseInt(urlParams.get("pet")) 
+    : 0
   );
   const [totalDays, setTotalDays] = useState(1);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
+  const [currentImage, setCurrentImage] = useState(
+    dataDetail.imagesList ? [0] : null
+  );
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      dispatch(dataDetailSlice.actions.getDataDetailRequest());
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/stayeasy/property/${id}`
+      );
+      dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
+      setDataLoaded(true); // Đặt trạng thái tải dữ liệu thành true khi dữ liệu đã được tải hoàn toàn
+    } catch (error) {
+      dispatch(dataDetailSlice.actions.getDataDetailFailure());
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    url.searchParams.set("adults", adults);
+    url.searchParams.set("children", children);
+    url.searchParams.set("infants", infants);
+    url.searchParams.set("pet", pet);
+    window.history.replaceState({}, "", url);
+  }, [adults, children, infants, pet]);
 
   useEffect(() => {
     // Tính số ngày giữa checkin và checkout
     const newTotalDays = Math.ceil(
       (checkout.getTime() - checkin.getTime()) / 86400000
     ); // Đảm bảo rằng giá trị totalDays đã được tính toán đúng
-
     // Cập nhật totalDaysState
     setTotalDays(newTotalDays);
   }, [checkin, checkout]);
-
-  const onChangeCheckin = (date) => {
-    setCheckin(date);
-    url.searchParams.set("checkin", date);
-    window.history.replaceState({}, "", url);
-  };
-
-  const onChangeCheckout = (date) => {
-    setCheckout(date);
-    url.searchParams.set("checkout", date);
-    window.history.replaceState({}, "", url);
-  };
-
-  const onChangeDropdown = () => {
-    setShowDropdown(!showDropdown);
-  };
-
-  const onChangeTotalFinal = () => {
-    console.log("truoc", adults, children, infants, pet);
-    setTotalGuests(adults + children + infants + pet);
-    console.log("sau", adults, children, infants, pet);
-    console.log(totalGuests);
-  };
 
   useEffect(() => {
     setTotalGuests(adults + children);
@@ -96,22 +111,45 @@ function Detail() {
     setCheckout(new Date(checkin.getTime() + 86400000));
   }, [checkin]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        dispatch(dataDetailSlice.actions.getDataDetailRequest());
-        const response = await axios.get(
-          `http://localhost:8080/api/property/${id}`
-        );
-        dispatch(dataDetailSlice.actions.getDataDetailSuccess(response.data));
-      } catch (error) {
-        dispatch(dataDetailSlice.actions.getDataDetailFailure());
-        console.log(error);
-      }
-    };
+  const onChangeCheckin = (date) => {
+    const formattedDate = date.toISOString().split("T")[0];
 
-    fetchData();
-  }, [id]);
+    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
+    const checkinDate = new Date(formattedDate);
+
+    setCheckin(checkinDate);
+    url.searchParams.set("checkin", formattedDate);
+    url.searchParams.set(
+      "checkout",
+      new Date(checkinDate.getTime() + 86400000).toISOString().split("T")[0]
+    );
+    window.history.replaceState({}, "", url);
+  };
+
+  const onChangeCheckout = (date) => {
+    const formattedDate = date.toISOString().split("T")[0];
+
+    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
+    const checkoutDate = new Date(formattedDate);
+
+    setCheckout(checkoutDate);
+    url.searchParams.set("checkout", formattedDate);
+    window.history.replaceState({}, "", url);
+  };
+
+  const onChangeDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const onClickImage = (image) => {
+    setCurrentImage(image);
+    if (image) {
+      url.searchParams.set("popup", true);
+      url.searchParams.set("image", image.imageId);
+      window.history.replaceState({}, "", url);
+    }
+    setOpenPopup(true);
+  };
 
   const styleImg = {
     width: "100%",
@@ -164,9 +202,57 @@ function Detail() {
     );
   }
 
+  if (openPopup === false) {
+    url.searchParams.delete("popup");
+    url.searchParams.delete("image");
+    window.history.replaceState({}, "", url);
+  }
+
+  if (!dataLoaded) {
+    return <div>Loading...</div>;
+  }
+
+  function sendMessageHost() {
+    const idUser = JSON.parse(localStorage.getItem("user"))?.id;
+    if (message && idUser) {
+      const idHost = dataDetail.owner.id;
+      const data = {
+        userId: idUser,
+        hostId: idHost,
+        content: message,
+      };
+      fetch("http://localhost:8080/api/v1/stayeasy/chatroom/first-room", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          } else {
+            setShow(true);
+            navigate("/inbox");
+          }
+          return response.json();
+        })
+        .then((data) => {})
+        .catch((error) => {});
+    } else {
+      dispatch(grouptSlice.actions.openLoginForm());
+    }
+  }
+
   return (
     <>
       <Header page={"explore"}></Header>
+      <Popup
+        currentImageInit={currentImage}
+        imagesList={dataDetail.imagesList}
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      ></Popup>
       <div className="w-full box-border pl-20 pr-20">
         <div
           className="w-full h-[500px] flex justify-center mb-4 slider_detail"
@@ -175,7 +261,13 @@ function Detail() {
           <Slider {...settings} className="w-[80%]">
             {dataDetail.imagesList?.map((item, index) => (
               <div key={index} className=" h-[450px]">
-                <img style={styleImg} src={item.url} alt="" />
+                <img
+                  style={styleImg}
+                  src={item.url}
+                  testindex={index}
+                  alt=""
+                  onClick={() => onClickImage(item)}
+                />
               </div>
             ))}
           </Slider>
@@ -191,35 +283,47 @@ function Detail() {
               <div className="text-3xl font-medium mt-2">
                 <p>{dataDetail.address}</p>
               </div>
-              <div className="flex mt-2 text-[17px] font-normal justify-between w-[38rem]">
+              <div className="flex mt-2 text-[17px] font-normal justify-between ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
                 <span>-</span>
-                <p>{dataDetail.numBedrooms} phòng ngủ</p>
-                <span>-</span>
-                <p>{dataDetail.numBeds} giường</p>
-                <span>-</span>
-                <p>{dataDetail.numBathrooms} phòng tắm</p>
+                {dataDetail.propertyUtilitis?.map((item, index) => (
+                  <p key={index}>
+                    {item.quantity} {item.utilitiesName}
+                    {index !== dataDetail.propertyUtilitis.length - 1 ? (
+                      <span> - </span>
+                    ) : (
+                      ""
+                    )}
+                  </p>
+                ))}
               </div>
-              <div className="rating text-lg font-semibold flex pt-4">
-                <p className="text-4xl">{dataDetail.rating}</p>
-                <FontAwesomeIcon
-                  className=" text-yellow-300 stroke-black ml-[2px]"
-                  size="2x"
-                  icon={icon({
-                    name: "star",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
+              <div className="w-[50%] rating text-lg font-semibold flex pt-4">
+                <div className="flex">
+                  <p className="text-4xl">{dataDetail.rating}</p>
+                  <FontAwesomeIcon
+                    className=" text-yellow-300 stroke-black ml-[2px]"
+                    size="2x"
+                    icon={icon({
+                      name: "star",
+                      family: "classic",
+                      style: "solid",
+                    })}
+                  />
+                </div>
+                <div>
+                  <p className="text-[18px] ml-4 p-2 underline">
+                    {dataDetail.feedbackList?.length} đánh giá
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* info-host */}
-            <div className="w-full pt-6 pb-6 flex justify-items-center border-b-2">
-              <div className="w-[4.8rem] h-[4.8rem]">
+            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2">
+              <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
                 <img src={dataDetail.owner?.avatar} alt="" />
               </div>
-              <div className="ml-3">
+              <div className="p-3">
                 <div className="text-base font-semibold">
                   <p className="text-[17px]">
                     Hosted by {dataDetail.owner?.firstName}{" "}
@@ -235,7 +339,7 @@ function Detail() {
             </div>
 
             {/* info-service */}
-            <div className="w-full h-[25rem] pt-6 pb-6 flex flex-col border-b-2 justify-between">
+            <div className="w-full h-[40%] pt-6 pb-6 flex flex-col border-b-2 justify-between">
               <div className="flex justify-items-center">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
@@ -297,7 +401,10 @@ function Detail() {
 
           {/* right */}
           <div className="w-[40%]">
-            <div className="w-[350px] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
+            <div className="lg:hidden">
+                  X
+            </div>
+            <div className="w-[65%] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
               <div className="p-5 pt-4">
                 <div className="flex justify-items-center">
                   <p className="text-[2.4rem] font-semibold">
@@ -305,9 +412,9 @@ function Detail() {
                   </p>
                   <span className="pt-[6px] ml-1 text-[17px]">/ đêm</span>
                 </div>
-                <div className="pt-6 pb-6 flex flex-col relative h-[15rem]">
-                  <div className="flex border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
-                    <div className="checkin w-[45%] ml-4 border-r-2 overflow-hidden">
+                <div className="pt-6 pb-6  relative h-[15rem]">
+                  <div className="flex xl:flex-row flex-col border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
+                    <div className="pl-24 xl:pl-0 checkin xl:w-[45%] xl:ml-4  xl:border-r-2 overflow-hidden">
                       <label htmlFor="">Nhận phòng</label>
 
                       <DatePicker
@@ -315,16 +422,18 @@ function Detail() {
                         selected={checkin}
                         onChange={onChangeCheckin}
                         minDate={today}
+                        dateFormat="yyyy/MM/dd"
                       />
                     </div>
-                    <div className="checkout w-[40%]">
+                    <div className="pl-24 xl:pl-0  checkout xl:w-[40%]">
                       <label htmlFor="">Trả phòng</label>
 
                       <DatePicker
                         className="search-text"
                         selected={checkout}
                         onChange={onChangeCheckout}
-                        minDate={checkin.getTime() + 86400000}
+                        minDate={new Date(checkin.getTime() + 86400000)}
+                        dateFormat="yyyy/MM/dd"
                       />
                     </div>
                   </div>
@@ -363,14 +472,13 @@ function Detail() {
                   <div
                     className={` ${
                       showDropdown ? "" : "hidden"
-                    } absolute w-[290px] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}
+                    } absolute w-[100%] h-[42rem] border-checkout-bg border-[1px] rounded-2xl top-[13.5rem] bg-white left-0 z-10`}
                   >
                     <div className="flex justify-between p-2">
                       <NumGuest
                         type="adult"
                         totalGuest={adults}
                         setTotalGuest={setAdults}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                     <div className="flex justify-between p-2">
@@ -378,7 +486,6 @@ function Detail() {
                         type="children"
                         totalGuest={children}
                         setTotalGuest={setChildren}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                     <div className="flex justify-between p-2">
@@ -386,7 +493,6 @@ function Detail() {
                         type="infants"
                         totalGuest={infants}
                         setTotalGuest={setInfants}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                     <div className="flex justify-between p-2">
@@ -394,7 +500,6 @@ function Detail() {
                         type="pet"
                         totalGuest={pet}
                         setTotalGuest={setPet}
-                        onChangeTotalFinal={onChangeTotalFinal}
                       />
                     </div>
                   </div>
@@ -433,6 +538,62 @@ function Detail() {
             </div>
           </div>
         </div>
+
+        {/* chat with host */}
+        <Row>
+          <Col
+            className="col-3"
+            style={{ position: "fixed", zIndex: "99", top: "60%", right: "0" }}
+          >
+            <Alert show={show} variant="success">
+              <Alert.Heading>Thông báo</Alert.Heading>
+              <p>
+                Tin nhắn của bạn đã được gửi đến {dataDetail.owner.firstName}{" "}
+                {dataDetail.owner.lastName}
+              </p>
+              <hr />
+              <div className="d-flex justify-content-end">
+                <Button
+                  onClick={() => setShow(false)}
+                  variant="outline-success"
+                >
+                  Close me
+                </Button>
+              </div>
+            </Alert>
+          </Col>
+        </Row>
+
+        {/* <h2>host: {dataDetail.owner?.id}</h2>
+        <h2>user: {idUser}</h2> */}
+
+        {idUser !== dataDetail.owner?.id && (
+          <Row className="d-flex justify-content-center my-5">
+            <Col className="col-5">
+              <InputGroup className="mb-3">
+                <Form.Control
+                  style={{ height: "40px", fontSize: "20px" }}
+                  placeholder="Nhắn tin cho host"
+                  aria-label="Nhắn tin cho host"
+                  aria-describedby="basic-addon2"
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <Button
+                  onClick={sendMessageHost}
+                  className="fs-5"
+                  variant="outline-primary"
+                  id="button-addon2"
+                  style={{ width: "80px" }}
+                >
+                  Gửi
+                </Button>
+              </InputGroup>
+            </Col>
+          </Row>
+        )}
+
+        <h3>Bình luận</h3>
+        <CommentBlock></CommentBlock>
       </div>
     </>
   );

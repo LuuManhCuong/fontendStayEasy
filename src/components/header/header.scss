@@ -1,12 +1,17 @@
 .header {
-  height: 180px;
+  height: 170px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #ccc;
   flex-direction: column;
-  padding: 20px;
+  padding: 16px;
+
+
+  .cate {
+    padding: 0 62px;
+  }
 
   .heading {
     font-size: 1.8rem;
@@ -71,6 +76,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 2;
 
     .search-address {
       display: flex;

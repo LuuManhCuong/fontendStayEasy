@@ -1,4 +1,4 @@
-
+import {memo} from 'react';
 function NumGuest({type, totalGuest, setTotalGuest}) {
     
     if(type === "adult") {
@@ -9,7 +9,7 @@ function NumGuest({type, totalGuest, setTotalGuest}) {
                     <span className="text-2xl font-normal">Tuổi từ 13 trở lên</span>
                 </div>
                 <div className="flex items-center w-24 justify-between">
-                    <button onClick={()=> setTotalGuest(totalGuest-1)} className="text-3xl font-semibold">-</button>
+                    <button onClick={()=> setTotalGuest(totalGuest-1)} className={`${totalGuest<2 ? 'disable': ''} text-3xl font-semibold`}>-</button>
                     <span className="text-3xl font-semibold">{totalGuest}</span>
                     <button onClick={()=> setTotalGuest(totalGuest+1)} className="text-3xl font-semibold">+</button>
                 </div>
@@ -23,7 +23,7 @@ function NumGuest({type, totalGuest, setTotalGuest}) {
                     <span className="text-2xl font-normal">Tuổi 2-12</span>
                 </div>
                 <div className="flex items-center w-24 justify-between">
-                    <button onClick={()=> setTotalGuest(totalGuest-1)} className="text-3xl font-semibold">-</button>
+                    <button onClick={()=> setTotalGuest(totalGuest-1)} className={`${totalGuest<1 ? 'disable': ''} text-3xl font-semibold`}>-</button>
                     <span className="text-3xl font-semibold">{totalGuest}</span>
                     <button onClick={()=> setTotalGuest(totalGuest+1)} className="text-3xl font-semibold">+</button>
                 </div>
@@ -37,7 +37,7 @@ function NumGuest({type, totalGuest, setTotalGuest}) {
                 <span className="text-2xl font-normal">Dưới 2 tuổi</span>
             </div>
             <div className="flex items-center w-24 justify-between">
-                    <button onClick={()=> setTotalGuest(totalGuest-1)} className="text-3xl font-semibold">-</button>
+                    <button onClick={()=> setTotalGuest(totalGuest-1)} className={`${totalGuest<1 ? 'disable': ''} text-3xl font-semibold`}>-</button>
                     <span className="text-3xl font-semibold">{totalGuest}</span>
                     <button onClick={()=> setTotalGuest(totalGuest+1)} className="text-3xl font-semibold">+</button>
                 </div>
@@ -50,7 +50,7 @@ function NumGuest({type, totalGuest, setTotalGuest}) {
                 <span className="text-3xl font-semibold">Thú cưng</span>
             </div>
             <div className="flex items-center w-24 justify-between">
-                    <button onClick={()=> setTotalGuest(totalGuest-1)} className="text-3xl font-semibold">-</button>
+                    <button onClick={()=> setTotalGuest(totalGuest-1)} className={`${totalGuest<1 ? 'disable': ''} text-3xl font-semibold`}>-</button>
                     <span className="text-3xl font-semibold">{totalGuest}</span>
                     <button onClick={()=> setTotalGuest(totalGuest+1)} className="text-3xl font-semibold">+</button>
                 </div>
@@ -58,4 +58,4 @@ function NumGuest({type, totalGuest, setTotalGuest}) {
     )
 }
 }
-export default NumGuest;
+export default memo(NumGuest);
