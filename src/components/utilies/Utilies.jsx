@@ -9,14 +9,14 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Category() {
+export default function Utilies() {
   
 
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(data);
 
   const loadData = async() => {
-    const result = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/category/all`);
+    const result = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/util/all`);
     setData(result.data);
   }
 
@@ -31,11 +31,11 @@ export default function Category() {
         {({ open }) => (
           <>
             <Listbox.Label className="block font-medium leading-6 text-gray-900">
-              Thể loại
+              Tiện ích
             </Listbox.Label>
             <div className="relative mt-3">
               <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                <span className="flex items-center block">{selected.category_name}
+                <span className="flex items-center block">{selected.utilitiesName}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                   <ChevronUpDownIcon
@@ -55,7 +55,7 @@ export default function Category() {
                 <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {data.map((util) => (
                     <Listbox.Option
-                      key={util.categoryId}
+                      key={util.id}
                       className={({ active }) =>
                         classNames(
                           active ? "bg-indigo-600 text-white" : "text-gray-900",
@@ -73,7 +73,7 @@ export default function Category() {
                                 "ml-3 h-10 pt-2 block truncate"
                               )}
                             >
-                              {util.category_name}
+                              {util.utilitiesName}
                             </span>
                           </div>
 
