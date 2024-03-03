@@ -15,7 +15,7 @@ import Popup from "../components/popup/PopUp";
 import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
-import CommentBlock from "../components/comment/CommentBlock";
+import CommentForm from "../components/comment/CommentForm";
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -42,24 +42,25 @@ function Detail() {
   );
   console.log(urlParams.get("adults"));
   const [adults, setAdults] = useState(
-    (parseInt(urlParams.get("adults")) || parseInt(urlParams.get("adults")) ==0) 
+    parseInt(urlParams.get("adults")) || parseInt(urlParams.get("adults")) == 0
       ? parseInt(urlParams.get("adults"))
       : 1
   );
   const [children, setChildren] = useState(
-    (parseInt(urlParams.get("children")) || parseInt(urlParams.get("adults")) ==0)
+    parseInt(urlParams.get("children")) ||
+      parseInt(urlParams.get("adults")) == 0
       ? parseInt(urlParams.get("children"))
       : 0
   );
   const [infants, setInfants] = useState(
-    (parseInt(urlParams.get("infants")) || parseInt(urlParams.get("adults")) ==0)
+    parseInt(urlParams.get("infants")) || parseInt(urlParams.get("adults")) == 0
       ? parseInt(urlParams.get("infants"))
       : 0
   );
   const [pet, setPet] = useState(
-    (parseInt(urlParams.get("pet")) || parseInt(urlParams.get("adults")) ==0)
-    ? parseInt(urlParams.get("pet")) 
-    : 0
+    parseInt(urlParams.get("pet")) || parseInt(urlParams.get("adults")) == 0
+      ? parseInt(urlParams.get("pet"))
+      : 0
   );
   const [totalDays, setTotalDays] = useState(1);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -401,9 +402,7 @@ function Detail() {
 
           {/* right */}
           <div className="w-[40%]">
-            <div className="lg:hidden">
-                  X
-            </div>
+            <div className="lg:hidden">X</div>
             <div className="w-[65%] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
               <div className="p-5 pt-4">
                 <div className="flex justify-items-center">
@@ -591,9 +590,7 @@ function Detail() {
             </Col>
           </Row>
         )}
-
-        <h3>Bình luận</h3>
-        <CommentBlock></CommentBlock>
+        <CommentForm propertyId={id}></CommentForm>
       </div>
     </>
   );
