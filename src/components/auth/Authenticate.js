@@ -129,7 +129,7 @@ export default function AuthModal({ setIsLogined }) {
       </Dropdown.Menu>
       {/* modal start */}
       {isOpenLoginModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
+        <div className="fixed inset-0 flex items-center justify-center overflow-auto">
           {/* close modal when click out of modal area */}
           <div
             className="absolute inset-0 bg-gray-900 opacity-50"

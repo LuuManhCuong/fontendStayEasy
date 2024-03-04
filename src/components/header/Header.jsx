@@ -96,7 +96,7 @@ function Header({ page }) {
 
   return (
     <header className="header">
-      <div className="cate flex w-[100%] px-[6.2rem] top-0 items-center bg-white max-[320px]:px-10 justify-between">
+      <div className="cate z-[1000] flex w-[100%] px-[6.2rem] top-0 items-center bg-white max-[320px]:px-10 justify-between">
         <div className="w-[33%] max-[1204px]:w-[20%]">
           <a href="/">
             <svg width="102" height="32" color="#FF385C">
@@ -197,28 +197,20 @@ function Header({ page }) {
                       fontWeight: " 500",
                     }}
                   >
-                    {user?.lastName + user?.firstName || ""}
+                    {user?.lastName || ""}
                   </p>
                   {user && user?.avatar ? (
                     <img
                       className="w-14 h-14 rounded-full"
                       alt="avatar"
-                      src={
-                        user?.avatar ||
-                        "https://mui.com/static/images/avatar/2.jpg"
-                      }
+                      src={user?.avatar}
                     />
-                  ) : !user?.avatar ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 32 32"
-                      aria-hidden="true"
-                      role="presentation"
-                      focusable="false"
-                      className="block, h-14 w-14 text-current"
-                    >
-                      <path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path>
-                    </svg>
+                  ) : user && !user?.avatar ? (
+                    <div class="relative inline-flex items-center justify-center w-14 h-14 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                      <span class="font-medium text-3xl text-gray-600 dark:text-gray-300">
+                        {user?.lastName.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
                   ) : (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -231,9 +223,6 @@ function Header({ page }) {
                       <path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path>
                     </svg>
                   )}
-                  {/* {!user?
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-14 w-14 text-current"><path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path></svg>
-                :("")} */}
                 </div>
               </DropdownToggle>
               {isLogined ? (
