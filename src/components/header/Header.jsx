@@ -112,23 +112,50 @@ function Header({ page }) {
           </a>
         </div>
         <div className="flex justify-center w-[33%] max-[1204px]:w-[55%] min-[768px]:flex max-[768px]:hidden gap-5 text-[1.8rem]">
-          <NavLink to="/" className={(navData) => navData.isActive ? "font-medium nav-item" : "nav-item"}>
+          <NavLink
+            to="/"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item" : "nav-item"
+            }
+          >
             Chỗ ở
           </NavLink>
-          <NavLink to="/experience" className={(navData) => navData.isActive ? "font-medium nav-item" : "nav-item"}>
+          <NavLink
+            to="/experience"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item" : "nav-item"
+            }
+          >
             Trải nghiệm
           </NavLink>
-          <NavLink to="/explore" className={(navData) =>  navData.isActive ? "font-medium nav-item" : "nav-item"}>
+          <NavLink
+            to="/explore"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item" : "nav-item"
+            }
+          >
             Khám phá
+          </NavLink>
+
+          <NavLink
+            to="/admin-dashboard"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
+            }
+          >
+            Admin
           </NavLink>
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
-          <NavLink to="/host/home" className={(navData) =>
+          <NavLink
+            to="/host/home"
+            className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl max-[1204px]:hidden"
                 : "hover:bg-gray-100 p-3 max-[1204px]:hidden rounded-full"
-            }>
+            }
+          >
             Cho thuê chỗ ở qua Stayeasy
           </NavLink>
           <button className="hover:bg-gray-100 p-3 rounded-full" onClick="">
@@ -146,12 +173,24 @@ function Header({ page }) {
           {/* Menu */}
           <div className="flex">
             <Dropdown>
-              <DropdownToggle bsPrefix="false" className="bg-transparent border-white p-0" id="dropdown-basic">
+              <DropdownToggle
+                bsPrefix="false"
+                className="bg-transparent border-white p-0"
+                id="dropdown-basic"
+              >
                 <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                  <svg className="ml-3 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path fill="#000000" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
+                  <svg
+                    className="ml-3 h-7 w-7"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      fill="#000000"
+                      d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+                    />
                   </svg>
-                  <p style={{
+                  <p
+                    style={{
                       margin: "0",
                       color: "black",
                       fontSize: "1.6rem",
@@ -160,14 +199,39 @@ function Header({ page }) {
                   >
                     {user?.lastName + user?.firstName || ""}
                   </p>
-                  {user && user?.avatar ? 
-                    <img className="w-14 h-14 rounded-full" alt="avatar" src={user?.avatar || "https://mui.com/static/images/avatar/2.jpg"}/>
-                    : !user?.avatar ?
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-14 w-14 text-current"><path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path></svg>
-                    :
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-14 w-14 text-current"><path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path></svg>
-                  }
-                {/* {!user?
+                  {user && user?.avatar ? (
+                    <img
+                      className="w-14 h-14 rounded-full"
+                      alt="avatar"
+                      src={
+                        user?.avatar ||
+                        "https://mui.com/static/images/avatar/2.jpg"
+                      }
+                    />
+                  ) : !user?.avatar ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 32 32"
+                      aria-hidden="true"
+                      role="presentation"
+                      focusable="false"
+                      className="block, h-14 w-14 text-current"
+                    >
+                      <path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path>
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 32 32"
+                      aria-hidden="true"
+                      role="presentation"
+                      focusable="false"
+                      className="block, h-14 w-14 text-current"
+                    >
+                      <path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path>
+                    </svg>
+                  )}
+                  {/* {!user?
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-14 w-14 text-current"><path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path></svg>
                 :("")} */}
                 </div>
