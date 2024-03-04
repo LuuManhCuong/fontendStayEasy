@@ -280,7 +280,7 @@ function Detail() {
           {/* left */}
           <div className="w-[55%] pl-6 box-border">
             {/* info */}
-            <div className="pt-6 pb-6 border-b-2 box-border">
+            <div className="pt-6 pb-6 border-b-2 border-black/30 box-border">
               <div className="text-4xl font-medium">
                 <p>{dataDetail.propertyName}</p>
               </div>
@@ -318,7 +318,7 @@ function Detail() {
             </div>
 
             {/* info-host */}
-            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2 box-border">
+            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2 border-black/30 box-border">
               <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
                 <img src={dataDetail.owner?.avatar} alt="" />
               </div>
@@ -338,7 +338,7 @@ function Detail() {
             </div>
 
             {/* info-service */}
-            <div className="w-full pt-6 pb-6 flex flex-col border-b-2 justify-between box-border">
+            <div className="w-full pt-6 pb-6 flex flex-col border-b-2 border-black/30 justify-between box-border">
               <div className="flex p-2 pb-4">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
@@ -390,7 +390,7 @@ function Detail() {
             </div>
 
             {/* info-detail */}
-            <div className="w-full pt-6 pb-6 border-b-2 box-border">
+            <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
               <div>
                 <p className="text-[17px] pl-4">{dataDetail.description}</p>
               </div>
@@ -568,7 +568,8 @@ function Detail() {
         <h2>user: {idUser}</h2> */}
 
         {idUser !== dataDetail.owner?.id && (
-          <Row className="d-flex justify-content-center my-5">
+          <div className="flex justify-center w-full">
+            <div className="border-black/30 border-b-2 w-[89%] p-12 box-border flex justify-center">
             <Col className="col-5">
               <InputGroup className="mb-3">
                 <Form.Control
@@ -589,7 +590,8 @@ function Detail() {
                 </Button>
               </InputGroup>
             </Col>
-          </Row>
+            </div>
+          </div>
         )}
         <CommentForm propertyId={id}></CommentForm>
       </div>
