@@ -69,6 +69,9 @@ function Detail() {
     dataDetail.imagesList ? [0] : null
   );
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+
+  const toggleShowCheckout = () => setShowCheckout(!showCheckout);
 
   const fetchData = async () => {
     try {
@@ -273,11 +276,11 @@ function Detail() {
             ))}
           </Slider>
         </div>
-        <div className="w-full flex justify-between ml-24 mr-24">
+        <div className="w-full flex justify-between ml-24 mr-24 box-border">
           {/* left */}
           <div className="w-[55%] pl-6 box-border">
             {/* info */}
-            <div className="pt-6 pb-6 border-b-2">
+            <div className="pt-6 pb-6 border-b-2 border-black/30 box-border">
               <div className="text-4xl font-medium">
                 <p>{dataDetail.propertyName}</p>
               </div>
@@ -311,16 +314,11 @@ function Detail() {
                     })}
                   />
                 </div>
-                <div>
-                  <p className="text-[18px] ml-4 p-2 underline">
-                    {dataDetail.feedbackList?.length} đánh giá
-                  </p>
-                </div>
               </div>
             </div>
 
             {/* info-host */}
-            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2">
+            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2 border-black/30 box-border">
               <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
                 <img src={dataDetail.owner?.avatar} alt="" />
               </div>
@@ -340,8 +338,8 @@ function Detail() {
             </div>
 
             {/* info-service */}
-            <div className="w-full h-[40%] pt-6 pb-6 flex flex-col border-b-2 justify-between">
-              <div className="flex justify-items-center">
+            <div className="w-full pt-6 pb-6 flex flex-col border-b-2 border-black/30 justify-between box-border">
+              <div className="flex p-2 pb-4">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
                   color="white"
@@ -353,11 +351,11 @@ function Detail() {
                   })}
                 />
                 <div className="ml-3">
-                  <p>Hủy miễn phí trước</p>
-                  <p>Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.</p>
+                  <p className="m-0">Hủy miễn phí trước</p>
+                  <p className="m-0">Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.</p>
                 </div>
               </div>
-              <div className="flex">
+              <div className="flex p-2 pb-4">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
                   color="white"
@@ -369,11 +367,11 @@ function Detail() {
                   })}
                 />
                 <div className="ml-3">
-                  <p>Không gian riêng để làm việc</p>
-                  <p>Một căn phòng có Wi-fi, rất phù hợp để làm việc.</p>
+                  <p className="m-0">Không gian riêng để làm việc</p>
+                  <p className="m-0">Một căn phòng có Wi-fi, rất phù hợp để làm việc.</p>
                 </div>
               </div>
-              <div className="flex">
+              <div className="flex p-2 pb-4">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
                   color="white"
@@ -385,25 +383,27 @@ function Detail() {
                   })}
                 />
                 <div className="ml-3">
-                  <p>Tự nhận phòng</p>
-                  <p>Tự nhận phòng bằng cách nhập mã số vào cửa.</p>
+                  <p className="m-0">Tự nhận phòng</p>
+                  <p className="m-0">Tự nhận phòng bằng cách nhập mã số vào cửa.</p>
                 </div>
               </div>
             </div>
 
             {/* info-detail */}
-            <div className="w-full pt-6 pb-6 border-b-2 ">
+            <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
               <div>
-                <p className="text-[17px]">{dataDetail.description}</p>
+                <p className="text-[17px] pl-4">{dataDetail.description}</p>
               </div>
             </div>
           </div>
           {/* end-left */}
 
           {/* right */}
-          <div className="w-[40%]">
-            <div className="lg:hidden">X</div>
-            <div className="w-[65%] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
+          <div className="w-[50%] lg:w-[40%]">
+            <div className={` ${showCheckout ? "btnActive transition duration-500" :"transition duration-500"} lg:hidden fixed  top-60 right-10 cursor-pointer bg-white`} onClick={toggleShowCheckout}>
+                  X
+            </div>
+            <div className={` ${showCheckout ? "checkActive transition duration-500" : "transition duration-500"} fixed lg:relative top-60 -right-[350px] lg:top-0 lg:right-0 lg:block w-[300px] lg:w-[75%] max-w-[350px] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`}>
               <div className="p-5 pt-4">
                 <div className="flex justify-items-center">
                   <p className="text-[2.4rem] font-semibold">
@@ -412,8 +412,8 @@ function Detail() {
                   <span className="pt-[6px] ml-1 text-[17px]">/ đêm</span>
                 </div>
                 <div className="pt-6 pb-6  relative h-[15rem]">
-                  <div className="flex xl:flex-row flex-col border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
-                    <div className="pl-24 xl:pl-0 checkin xl:w-[45%] xl:ml-4  xl:border-r-2 overflow-hidden">
+                  <div className="flex border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
+                    <div className="pl-0 checkin w-[45%] ml-4  border-r-2 overflow-hidden">
                       <label htmlFor="">Nhận phòng</label>
 
                       <DatePicker
@@ -424,7 +424,7 @@ function Detail() {
                         dateFormat="yyyy/MM/dd"
                       />
                     </div>
-                    <div className="pl-24 xl:pl-0  checkout xl:w-[40%]">
+                    <div className="pl-0  checkout w-[40%]">
                       <label htmlFor="">Trả phòng</label>
 
                       <DatePicker
@@ -536,6 +536,7 @@ function Detail() {
               </div>
             </div>
           </div>
+          {/* end-right */}
         </div>
 
         {/* chat with host */}
@@ -567,7 +568,8 @@ function Detail() {
         <h2>user: {idUser}</h2> */}
 
         {idUser !== dataDetail.owner?.id && (
-          <Row className="d-flex justify-content-center my-5">
+          <div className="flex justify-center w-full">
+            <div className="border-black/30 border-b-2 w-[89%] p-12 box-border flex justify-center">
             <Col className="col-5">
               <InputGroup className="mb-3">
                 <Form.Control
@@ -588,7 +590,8 @@ function Detail() {
                 </Button>
               </InputGroup>
             </Col>
-          </Row>
+            </div>
+          </div>
         )}
         <CommentForm propertyId={id}></CommentForm>
       </div>

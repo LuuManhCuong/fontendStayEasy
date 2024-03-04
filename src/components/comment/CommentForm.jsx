@@ -7,6 +7,7 @@ import "./comment.scss";
 import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { counterSelector } from "../../redux-tookit/selector";
+import moment from 'moment';
 
 function stringToColor(string) {
   let hash = 0;
@@ -110,113 +111,74 @@ const CommentForm = ({ propertyId }) => {
   }, [feedbacks]);
 
   return (
-    <div>
+    <div className="ml-24 p-4">
       <h1>{feedbacks?.length} Bình luận</h1>
-      <ul className="container show-cm" ref={commentContainerRef}>
+      <ul className={`${feedbacks?.length >0 ?"" :"hidden"} show-cm w-[75%] rounded-3xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`} ref={commentContainerRef}>
         {feedbacks?.map((feedback, index) => (
-          <li className="row" key={index}>
-            <div className="col-md-8">
-              <div className="media g-mb-30 media-comment">
+          <li className="row w-[95%] pl-8 pb-2 pt-8" key={index}>
+                <div>
                 <img
-                  className="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15"
+                  className="w-[5rem] h-[5rem] rounded-full"
                   src={
                     feedback.avatar ||
                     `https://bootdey.com/img/Content/avatar/avatar7.png`
                   }
                   alt="Image Description"
                 />
-
-                <div className="media-body u-shadow-v18 g-bg-secondary g-pa-30">
-                  <div className="g-mb-15">
-                    <h5 className="h5 g-color-gray-dark-v1 mb-0">
-                      {feedback.username || "Ẩn Danh"}
-                    </h5>
-                    <span className="g-color-gray-dark-v4 g-font-size-12">
-                      {feedback.createAt}
-                    </span>
-                  </div>
-
-                  <p>{feedback.content}</p>
-
-                  <ul className="list-inline d-sm-flex my-0">
-                    <li className="list-inline-item g-mr-20">
-                      <a
-                        className="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover"
-                        href="#!"
-                      >
-                        <i className="fa fa-thumbs-up g-pos-rel g-top-1 g-mr-3"></i>
-                        178
-                      </a>
-                    </li>
-                    <li className="list-inline-item g-mr-20">
-                      <a
-                        className="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover"
-                        href="#!"
-                      >
-                        <i className="fa fa-thumbs-down g-pos-rel g-top-1 g-mr-3"></i>
-                        34
-                      </a>
-                    </li>
-                    <li className="list-inline-item ml-auto">
-                      <a
-                        className="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover"
-                        href="#!"
-                      >
-                        <i className="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
-                        Reply
-                      </a>
-                    </li>
-                  </ul>
                 </div>
-              </div>
-            </div>
+
+                <div className="w-full rounded-2xl ml-10 p-4 bg-white mt-2 h-full shadow-checkout-shadow border-checkout-bg border-[1px] mb-4">
+                  
+                    <h1 className="text-3xl">
+                      {feedback.username || "Ẩn Danh"}
+                    </h1>
+                    <span className="text-2xl italic">
+                      {moment(feedback.createAt).format('YYYY-MM-DD HH:mm')}
+                    </span>
+                    <p>{feedback.content}</p>
+                </div>
           </li>
         ))}
       </ul>
 
       {/* write comment */}
-      <div className="container">
-        <div className="row">
-          <div className="col-md-8 write-cm w-[65%] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px]">
-            <div className="media g-mb-30 media-comment">
-              <img
-                className="d-flex g-width-50 rounded-circle g-mt-3 g-mr-15"
-                src={
-                  user?.avatar ||
-                  `https://bootdey.com/img/Content/avatar/avatar7.png`
-                }
-                alt="Image Description"
-              />
+      
+          <div className="w-[75%] mt-8 rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] pl-8 pt-4">
+            <div className="flex flex-col justify-between">
+              <div className="flex items-center">
+                <img
+                  className="d-flex g-width-50 rounded-circle g-mt-3 g-mr-15"
+                  src={
+                    user?.avatar ||
+                    `https://bootdey.com/img/Content/avatar/avatar7.png`
+                  }
+                  alt="Image Description"
+                />
+                <p className="text-3xl m-0 font-semibold">
+                      {user?.lastName +" "+ user?.firstName}
+                </p>
+              </div>
 
-              <div className="media-body u-shadow-v18 g-bg-secondary g-pa-30">
-                <div className="g-mb-15">
-                  <h5 className="h5 g-color-gray-dark-v1 mb-0">
-                    {user?.lastName + user?.firstName}
-                  </h5>
-                </div>
-
+              <div className="rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] w-[95%] ml-[2rem] mt-2">
                 <textarea
                   name="comment"
                   id="comment"
                   value={newFeedback}
                   onChange={(e) => setNewFeedback(e.target.value)}
                   style={{ height: "100px", width: "100%" }}
+                  placeholder="Nhập bình luận của bạn..."
+                  className="p-4"
                 ></textarea>
-
-                <div
-                  className="send-btn  bg-red-600 rounded-xl "
-                  onClick={handleSendFeedback}
-                >
-                  <p class="text-white font-medium text-3xl pt-2">
-                    Send Feedback
-                  </p>
-                </div>
+              </div>
+              <div className="w-full flex justify-end pr-12 pb-2 mt-3">
+                  <div className="bg-[#ff5a5f] w-[25%] rounded-2xl text-center cursor-pointer hover:bg-[#ff5a5f]" onClick={handleSendFeedback}>
+                      <p className="text-white font-medium text-3xl pt-2">Send Feedback</p>
+                  </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+
   );
 };
 

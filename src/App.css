@@ -23,3 +23,18 @@
   opacity: 0.5;
   cursor: no-drop !important;
 }
+.checkActive{
+  right: 10px;
+  transition: 0.5s;
+  animation: 0.5s;
+}
+.btnActive{
+  right: 320px !important; 
+  transition: 0.5s !important; 
+  animation: 0.5s !important;  
+}
+.btnDeActive{
+  right: 10px !important; 
+  transition: 0.5s !important;
+  animation: 0.5s !important;
+}
