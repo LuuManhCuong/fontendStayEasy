@@ -31,20 +31,20 @@ export default function PersonalInfo({ title }) {
           value={user.firstName&&user.firstName?user.firstName + " " +user.lastName:"Chưa cung cấp"}/>
           <hr/>
           {/* email */}
-          <Infor title="Email" 
+          <Infor title="Địa chỉ Email" 
           value={user.email} />
           <hr/>
           {/* phone */}
           <Infor title="Số điện thoại" 
-          value={user.phone?user.phone:"Thêm số điện thoại để khách được xác nhận và Stayeasy có thể liên hệ. Bạn có thể thêm các số khác và chọn cách sử dụng chúng."} />
+          value={user.phone?user.phone:"Thêm số điện thoại để khách đã xác nhận và Airbnb có thể liên hệ với bạn. Bạn có thể thêm các số điện thoại khác và chọn mục đích sử dụng tương ứng."} />
           <hr/>
           {/* address */}
           <Infor title="Địa chỉ" 
-          value={user.address?user.address:"Chưa cung cấp"} />
+          value={user.address?user.address:"Chưa được cung cấp"} />
           <hr/>
           {/* hotline */}
-          <Infor title="Liên lạc khẩn cấp" 
-          value={user.hotline?user.hotline:"Chưa cung cấp"} />
+          <Infor title="Liên hệ trong trường hợp khẩn cấp" 
+          value={user.hotline?user.hotline:"Chưa được cung cấp"} />
           </div>
           <div className="lg:w-[35%] mt-14 p-5 border border-gray-700 rounded-2xl">
             <div className="flex flex-col gap-4">
@@ -140,10 +140,10 @@ const Infor = ({ title, value }) => {
     <>
       <div className="flex justify-between mt-4">
         <div>
-          <p className="text-[1.7rem] p-0 m-0">{title}</p>
-          <p className="text-gray-500">{value}</p>
+          <p className="text-[1.6rem] p-0 m-0">{title}</p>
+          <p className="text-gray-500 text-[1.45rem]">{value}</p>
         </div>
-        <button className="underline font-medium text-2xl ml-3">Edit</button>
+        <button className="underline font-medium text-2xl ml-16">Chỉnh sửa</button>
       </div>
     </>
   );

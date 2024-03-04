@@ -15,7 +15,7 @@ import Popup from "../components/popup/PopUp";
 import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
-import CommentBlock from "../components/comment/CommentBlock";
+import CommentForm from "../components/comment/CommentForm";
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -42,24 +42,25 @@ function Detail() {
   );
   console.log(urlParams.get("adults"));
   const [adults, setAdults] = useState(
-    (parseInt(urlParams.get("adults")) || parseInt(urlParams.get("adults")) ==0) 
+    parseInt(urlParams.get("adults")) || parseInt(urlParams.get("adults")) == 0
       ? parseInt(urlParams.get("adults"))
       : 1
   );
   const [children, setChildren] = useState(
-    (parseInt(urlParams.get("children")) || parseInt(urlParams.get("adults")) ==0)
+    parseInt(urlParams.get("children")) ||
+      parseInt(urlParams.get("adults")) == 0
       ? parseInt(urlParams.get("children"))
       : 0
   );
   const [infants, setInfants] = useState(
-    (parseInt(urlParams.get("infants")) || parseInt(urlParams.get("adults")) ==0)
+    parseInt(urlParams.get("infants")) || parseInt(urlParams.get("adults")) == 0
       ? parseInt(urlParams.get("infants"))
       : 0
   );
   const [pet, setPet] = useState(
-    (parseInt(urlParams.get("pet")) || parseInt(urlParams.get("adults")) ==0)
-    ? parseInt(urlParams.get("pet")) 
-    : 0
+    parseInt(urlParams.get("pet")) || parseInt(urlParams.get("adults")) == 0
+      ? parseInt(urlParams.get("pet"))
+      : 0
   );
   const [totalDays, setTotalDays] = useState(1);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -275,11 +276,11 @@ function Detail() {
             ))}
           </Slider>
         </div>
-        <div className="w-full flex justify-between ml-24 mr-24">
+        <div className="w-full flex justify-between ml-24 mr-24 box-border">
           {/* left */}
           <div className="w-[55%] pl-6 box-border">
             {/* info */}
-            <div className="pt-6 pb-6 border-b-2">
+            <div className="pt-6 pb-6 border-b-2 box-border">
               <div className="text-4xl font-medium">
                 <p>{dataDetail.propertyName}</p>
               </div>
@@ -313,16 +314,11 @@ function Detail() {
                     })}
                   />
                 </div>
-                <div>
-                  <p className="text-[18px] ml-4 p-2 underline">
-                    {dataDetail.feedbackList?.length} đánh giá
-                  </p>
-                </div>
               </div>
             </div>
 
             {/* info-host */}
-            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2">
+            <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2 box-border">
               <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
                 <img src={dataDetail.owner?.avatar} alt="" />
               </div>
@@ -342,8 +338,8 @@ function Detail() {
             </div>
 
             {/* info-service */}
-            <div className="w-full h-[40%] pt-6 pb-6 flex flex-col border-b-2 justify-between">
-              <div className="flex justify-items-center">
+            <div className="w-full pt-6 pb-6 flex flex-col border-b-2 justify-between box-border">
+              <div className="flex p-2 pb-4">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
                   color="white"
@@ -355,11 +351,11 @@ function Detail() {
                   })}
                 />
                 <div className="ml-3">
-                  <p>Hủy miễn phí trước</p>
-                  <p>Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.</p>
+                  <p className="m-0">Hủy miễn phí trước</p>
+                  <p className="m-0">Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.</p>
                 </div>
               </div>
-              <div className="flex">
+              <div className="flex p-2 pb-4">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
                   color="white"
@@ -371,11 +367,11 @@ function Detail() {
                   })}
                 />
                 <div className="ml-3">
-                  <p>Không gian riêng để làm việc</p>
-                  <p>Một căn phòng có Wi-fi, rất phù hợp để làm việc.</p>
+                  <p className="m-0">Không gian riêng để làm việc</p>
+                  <p className="m-0">Một căn phòng có Wi-fi, rất phù hợp để làm việc.</p>
                 </div>
               </div>
-              <div className="flex">
+              <div className="flex p-2 pb-4">
                 <FontAwesomeIcon
                   className="stroke-slate-950 p-[0.8rem]"
                   color="white"
@@ -387,16 +383,16 @@ function Detail() {
                   })}
                 />
                 <div className="ml-3">
-                  <p>Tự nhận phòng</p>
-                  <p>Tự nhận phòng bằng cách nhập mã số vào cửa.</p>
+                  <p className="m-0">Tự nhận phòng</p>
+                  <p className="m-0">Tự nhận phòng bằng cách nhập mã số vào cửa.</p>
                 </div>
               </div>
             </div>
 
             {/* info-detail */}
-            <div className="w-full pt-6 pb-6 border-b-2 ">
+            <div className="w-full pt-6 pb-6 border-b-2 box-border">
               <div>
-                <p className="text-[17px]">{dataDetail.description}</p>
+                <p className="text-[17px] pl-4">{dataDetail.description}</p>
               </div>
             </div>
           </div>
@@ -540,6 +536,7 @@ function Detail() {
               </div>
             </div>
           </div>
+          {/* end-right */}
         </div>
 
         {/* chat with host */}
@@ -594,9 +591,7 @@ function Detail() {
             </Col>
           </Row>
         )}
-
-        <h3>Bình luận</h3>
-        <CommentBlock></CommentBlock>
+        <CommentForm propertyId={id}></CommentForm>
       </div>
     </>
   );

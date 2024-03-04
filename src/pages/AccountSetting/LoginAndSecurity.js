@@ -3,7 +3,6 @@ import Footer from "../../components/footer/Footer";
 import CommonHeader from "../../components/header/CommonHeader";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import Header from "../../components/header/Header";
 
 export default function LoginAndSecurity({ title }) {
   var [currentActive, setCurrentActive] = useState(0);
@@ -27,16 +26,22 @@ export default function LoginAndSecurity({ title }) {
       <div className='mt-16 lg:w-[55%]'>
         <div className='flex gap-5 font-medium'>
           <NavLink to="/account-settings/login-and-security" onClick={() => setCurrentActive(0)}>
-            <p className={currentActive==0?"text-[#008489]":""}>ĐĂNG NHẬP</p>
+            <div className={currentActive==0?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
+              <p>ĐĂNG NHẬP</p>
+            </div>
           </NavLink>
           <NavLink to="/account-settings/login-and-security/login-requests" onClick={() => setCurrentActive(1)}>
-            <p className={currentActive==1?"text-[#008489]":""}>YÊU CẦU ĐĂNG NHẬP</p>
+            <div className={currentActive==1?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
+              <p>YÊU CẦU ĐĂNG NHẬP</p>
+            </div>
           </NavLink>
           <NavLink to="/account-settings/login-and-security/shared-access" onClick={() => setCurrentActive(2)}>
-            <p className={currentActive==2?"text-[#008489]":""}>TRUY CẬP CHIA SẺ</p>
+            <div className={currentActive==2?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
+              <p>TRUY CẬP CHIA SẺ</p>
+            </div>
           </NavLink>
           </div>
-          <hr />
+          <hr className="mt-0"/>
         </div>
         {currentActive == 0 ? (
           <Login />

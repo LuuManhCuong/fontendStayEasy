@@ -4,15 +4,15 @@ import {Link} from "react-router-dom";
 export default function Card({svg, title, description, href}) {
   return (
     <>
-      <div className='p-4 border border-black rounded-3xl shadow-xl min-[896px]:w-[32%] min-[550px]:w-[47%] max-[550px]:w-[100%]'>
+      <div className='px-[1.7rem] pt-[2rem] rounded-3xl shadow-checkout-shadow min-[896px]:w-[32%] min-[550px]:w-[47%] max-[550px]:w-[100%] h-auto'>
         <Link to={href}>
-          <svg xmlns="http://www.w3.org/2000/svg" height="26" width="30" viewBox="0 0 576 512">
-            <path d={svg}/>
-          </svg>
-          <h3 className='mt-5'>{title}</h3>
-          <p>{description}</p>
+          {svg}
+          <h3 className='mt-[2.4rem] text-[1.65rem]'>{title}</h3>
+          <p className='text-[1.5rem] text-gray-500'>{description}</p>
         </Link>
       </div>
     </>
   )
 }
+
+
