@@ -1,6 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useParams, useLocation, json, useNavigate } from "react-router-dom";
+
+import {
+  useParams,
+  useLocation,
+  Link,
+  json,
+  useNavigate,
+} from "react-router-dom";
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
@@ -12,21 +20,28 @@ import NumGuest from "../components/numguest/NumGuest";
 import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
 import { dataDetailSelector } from "../redux-tookit/selector";
 import Popup from "../components/popup/PopUp";
+
 import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
+
+import { differenceInCalendarDays, format } from "date-fns";
+
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
+
   const [show, setShow] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
+
   const today = new Date();
   let timeStamp = today.getTime() + 86400000;
   const [message, setMessage] = useState("");
@@ -215,6 +230,15 @@ function Detail() {
   if (!dataLoaded) {
     return <div>Loading...</div>;
   }
+  function handleSubmit() {
+    const checkIn = format(new Date(checkin), "yyyy-MM-dd");
+    const checkOut = format(new Date(checkout), "yyyy-MM-dd");
+    // Chuyển hướng tới trang Booking và truyền các tham số trong URL
+    // window.location.href = `/booking/${id}?checkin=${checkin}&checkout=${checkout}&numGuest=${numGuest}`;
+    navigate(
+      `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`
+    );
+  }
 
   function sendMessageHost() {
     const idUser = JSON.parse(localStorage.getItem("user"))?.id;
@@ -352,7 +376,9 @@ function Detail() {
                 />
                 <div className="ml-3">
                   <p className="m-0">Hủy miễn phí trước</p>
-                  <p className="m-0">Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.</p>
+                  <p className="m-0">
+                    Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.
+                  </p>
                 </div>
               </div>
               <div className="flex p-2 pb-4">
@@ -368,7 +394,9 @@ function Detail() {
                 />
                 <div className="ml-3">
                   <p className="m-0">Không gian riêng để làm việc</p>
-                  <p className="m-0">Một căn phòng có Wi-fi, rất phù hợp để làm việc.</p>
+                  <p className="m-0">
+                    Một căn phòng có Wi-fi, rất phù hợp để làm việc.
+                  </p>
                 </div>
               </div>
               <div className="flex p-2 pb-4">
@@ -384,7 +412,9 @@ function Detail() {
                 />
                 <div className="ml-3">
                   <p className="m-0">Tự nhận phòng</p>
-                  <p className="m-0">Tự nhận phòng bằng cách nhập mã số vào cửa.</p>
+                  <p className="m-0">
+                    Tự nhận phòng bằng cách nhập mã số vào cửa.
+                  </p>
                 </div>
               </div>
             </div>
@@ -400,10 +430,23 @@ function Detail() {
 
           {/* right */}
           <div className="w-[50%] lg:w-[40%]">
-            <div className={` ${showCheckout ? "btnActive transition duration-500" :"transition duration-500"} lg:hidden fixed  top-60 right-10 cursor-pointer bg-white`} onClick={toggleShowCheckout}>
-                  X
+            <div
+              className={` ${
+                showCheckout
+                  ? "btnActive transition duration-500"
+                  : "transition duration-500"
+              } lg:hidden fixed  top-60 right-10 cursor-pointer bg-white`}
+              onClick={toggleShowCheckout}
+            >
+              X
             </div>
-            <div className={` ${showCheckout ? "checkActive transition duration-500" : "transition duration-500"} fixed lg:relative top-60 -right-[350px] lg:top-0 lg:right-0 lg:block w-[300px] lg:w-[75%] max-w-[350px] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`}>
+            <div
+              className={` ${
+                showCheckout
+                  ? "checkActive transition duration-500"
+                  : "transition duration-500"
+              } fixed lg:relative top-60 -right-[350px] lg:top-0 lg:right-0 lg:block w-[300px] lg:w-[75%] max-w-[350px] h-[450px] rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`}
+            >
               <div className="p-5 pt-4">
                 <div className="flex justify-items-center">
                   <p className="text-[2.4rem] font-semibold">
@@ -507,6 +550,7 @@ function Detail() {
                   <button
                     className="h-[4.8rem] bg-red-600 rounded-xl"
                     type="submit"
+                    onClick={handleSubmit}
                   >
                     <p className="text-white font-medium text-3xl pt-2">
                       Đặt phòng
@@ -570,26 +614,26 @@ function Detail() {
         {idUser !== dataDetail.owner?.id && (
           <div className="flex justify-center w-full">
             <div className="border-black/30 border-b-2 w-[89%] p-12 box-border flex justify-center">
-            <Col className="col-5">
-              <InputGroup className="mb-3">
-                <Form.Control
-                  style={{ height: "40px", fontSize: "20px" }}
-                  placeholder="Nhắn tin cho host"
-                  aria-label="Nhắn tin cho host"
-                  aria-describedby="basic-addon2"
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-                <Button
-                  onClick={sendMessageHost}
-                  className="fs-5"
-                  variant="outline-primary"
-                  id="button-addon2"
-                  style={{ width: "80px" }}
-                >
-                  Gửi
-                </Button>
-              </InputGroup>
-            </Col>
+              <Col className="col-5">
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    style={{ height: "40px", fontSize: "20px" }}
+                    placeholder="Nhắn tin cho host"
+                    aria-label="Nhắn tin cho host"
+                    aria-describedby="basic-addon2"
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                  <Button
+                    onClick={sendMessageHost}
+                    className="fs-5"
+                    variant="outline-primary"
+                    id="button-addon2"
+                    style={{ width: "80px" }}
+                  >
+                    Gửi
+                  </Button>
+                </InputGroup>
+              </Col>
             </div>
           </div>
         )}
