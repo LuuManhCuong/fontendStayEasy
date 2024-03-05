@@ -8,16 +8,18 @@ import Detail from "./pages/Detail";
 import Inbox from "./pages/Inbox/Inbox";
 import InboxGuest from "./components/InboxGuest/InboxGuest";
 import ShowComponent from "./pages/Inbox/ShowComponent";
-
-import Booking from "./pages/Booking";
-
 import SearchResult from "./pages/SearchResult";
-
 import Account from "./pages/AccountSetting/Account";
 import PersonalInfo from "./pages/AccountSetting/PersonalInfo";
 import LoginAndSecurity from "./pages/AccountSetting/LoginAndSecurity";
 import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
 import { useEffect, useState } from "react";
+import { UserContextProvider } from './components/UserContext';
+
+import  BookingPage from "./pages/booking/BookingsPage";
+import BookingDetail from './pages/booking/BookingDetail';
+import Booking from "./pages/Booking";
+import PaymentSuccsess from "./pages/PaymentSuccsess";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(
@@ -31,6 +33,8 @@ function App() {
   });
 
   return (
+    <>
+    <UserContextProvider>
     <Routes>
       <Route path="/" element={<Home></Home>}></Route>
       <Route path="/experience" element={<Experience></Experience>}></Route>
@@ -89,8 +93,13 @@ function App() {
           </ShowComponent>
         }
       />
-      <Route path="/booking" element={<Booking />} />
+    <Route path="/booking/:id" element={<Booking/>} />
+    <Route path="/account/bookings" element={<BookingPage/>}/>
+    <Route path="/account/bookings/:id" element={<BookingDetail/>}/>
+    <Route path="/payment/paypal/success" element={<PaymentSuccsess/>} />
     </Routes>
+    </UserContextProvider>
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
@@ -12,18 +12,19 @@ import NumGuest from "../components/numguest/NumGuest";
 import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
 import { dataDetailSelector } from "../redux-tookit/selector";
 import Popup from "../components/popup/PopUp";
-import { parseISO } from "date-fns";
+import {differenceInCalendarDays, format} from "date-fns";
+
+
 function Detail() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
-
   const location = useLocation();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
-
+  const navigate = useNavigate();
   const today = new Date();
   let timeStamp = today.getTime() + 86400000;
 
@@ -203,6 +204,15 @@ function Detail() {
 
   if (!dataLoaded) {
     return <div>Loading...</div>;
+  }
+  function handleSubmit() {
+    const checkIn = format(new Date(checkin), 'yyyy-MM-dd');
+    const checkOut = format(new Date(checkout), 'yyyy-MM-dd');
+    // Chuyển hướng tới trang Booking và truyền các tham số trong URL
+    // window.location.href = `/booking/${id}?checkin=${checkin}&checkout=${checkout}&numGuest=${numGuest}`;
+    navigate(
+      `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`
+    );
   }
 
   return (
@@ -465,12 +475,12 @@ function Detail() {
                 <div className="flex flex-col justify-between">
                   <button
                     className="h-[4.8rem] bg-red-600 rounded-xl"
-                    type="submit"
-                  >
+                    type="submit" onClick={handleSubmit}>
                     <p className="text-white font-medium text-3xl pt-2">
                       Đặt phòng
                     </p>
                   </button>
+                
                 </div>
                 <div className="pt-6 pb-4 border-b-2">
                   <div className="flex justify-between text-lg">

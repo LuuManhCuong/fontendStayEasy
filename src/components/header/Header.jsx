@@ -20,8 +20,8 @@ import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 
 import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 
-import AuthModal from "../Auth/Authenticate";
-import Authenticated from "../Auth/Authenticated";
+import AuthModal from "../auth/Authenticate";
+import Authenticated from "../auth/Authenticated";
 
 function Header({ page }) {
   const dispatch = useDispatch();

@@ -7,8 +7,8 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "react-bootstrap";
-import AuthModal from "../Auth/Authenticate";
-import Authenticated from "../Auth/Authenticated";
+import AuthModal from "../auth/Authenticate";
+import Authenticated from "../auth/Authenticated";
 
 export default function CommonHeader() {
   // check is loginned yet?
