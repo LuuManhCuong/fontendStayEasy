@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Navigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Experience from "./pages/Experience";
@@ -20,43 +20,89 @@ import PersonalInfo from "./pages/AccountSetting/PersonalInfo";
 import LoginAndSecurity from "./pages/AccountSetting/LoginAndSecurity";
 import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
 import Login from "./pages/AccountSetting/Login";
-import {ProtectedRoute, isAuthenticated} from "./pages/ProtectedRoute";
+import { ProtectedRoute, isAuthenticated } from "./pages/ProtectedRoute";
+import AdminDarhBoard from "./pages/AdminDarhBoard";
 
 function App() {
-
   return (
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/experience" element={<Experience />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/search/result" element={<SearchResult />} />
-        <Route path="/explore/detail/:id" element={<Detail />} />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/experience" element={<Experience />} />
+      <Route path="/explore" element={<Explore />} />
+      <Route path="/search/result" element={<SearchResult />} />
+      <Route path="/explore/detail/:id" element={<Detail />} />
 
-        {/* account setting */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/account-settings" element={<Account title="Tài khoản" />} />
-          <Route path="/account-settings/personal-info" element={<PersonalInfo title="Thông tin cá nhân" />} />
+      {/* account setting */}
+      <Route element={<ProtectedRoute />}>
+        <Route
+          path="/admin-dashboard"
+          element={<AdminDarhBoard></AdminDarhBoard>}
+        />
 
-          {/* Đăng nhập và bảo mật */}
-          <Route path="/account-settings/login-and-security" element={<LoginAndSecurity title="Đăng nhập và bảo mật" />} />
-          <Route path="/account-settings/login-and-security/login-requests" element={<LoginAndSecurity title="Đăng nhập và bảo mật" />} />
-          <Route path="/account-settings/login-and-security/shared-access" element={<LoginAndSecurity title="Đăng nhập và bảo mật" />} />
+        <Route
+          path="/account-settings"
+          element={<Account title="Tài khoản" />}
+        />
+        <Route
+          path="/account-settings/personal-info"
+          element={<PersonalInfo title="Thông tin cá nhân" />}
+        />
 
-          {/* Thanh toán và Hoàn tiền */}
-          <Route path="/account-settings/payments/payment-methods" element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />} />
-          <Route path="/account-settings/payments/payout-methods" element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />} />
-        </Route>
+        {/* Đăng nhập và bảo mật */}
+        <Route
+          path="/account-settings/login-and-security"
+          element={<LoginAndSecurity title="Đăng nhập và bảo mật" />}
+        />
+        <Route
+          path="/account-settings/login-and-security/login-requests"
+          element={<LoginAndSecurity title="Đăng nhập và bảo mật" />}
+        />
+        <Route
+          path="/account-settings/login-and-security/shared-access"
+          element={<LoginAndSecurity title="Đăng nhập và bảo mật" />}
+        />
 
-        {/* login */}
-        <Route path="/login" element={isAuthenticated() ? <Navigate to="/" /> : <Login />} />
+        {/* Thanh toán và Hoàn tiền */}
+        <Route
+          path="/account-settings/payments/payment-methods"
+          element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
+        />
+        <Route
+          path="/account-settings/payments/payout-methods"
+          element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
+        />
+      </Route>
 
-        {/* inbox */}
-        <Route path="/inbox" element={<ShowComponent><Inbox /></ShowComponent>} />
-        <Route path="/inbox/:roomId" element={<ShowComponent><Inbox>{" "}<InboxGuest />{" "}</Inbox></ShowComponent> }/>
+      {/* login */}
+      <Route
+        path="/login"
+        element={isAuthenticated() ? <Navigate to="/" /> : <Login />}
+      />
 
-        {/* booking */}
-        <Route path="/booking" element={<Booking />} />
-      </Routes>
+      {/* inbox */}
+      <Route
+        path="/inbox"
+        element={
+          <ShowComponent>
+            <Inbox />
+          </ShowComponent>
+        }
+      />
+      <Route
+        path="/inbox/:roomId"
+        element={
+          <ShowComponent>
+            <Inbox>
+              {" "}
+              <InboxGuest />{" "}
+            </Inbox>
+          </ShowComponent>
+        }
+      />
+
+      {/* booking */}
+      <Route path="/booking" element={<Booking />} />
+    </Routes>
   );
 }
 

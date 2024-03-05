@@ -10,6 +10,15 @@ export default function PersonalInfo({ title }) {
 
   const toggleEdit = () => {};
 
+  function obscureEmail(email) {
+    const parts = email.split("@");
+    const name = parts[0];
+    const domain = parts[1];
+    let obscuredName = name.length > 2 ? name[0] + "*".repeat(name.length - 2) + name[name.length - 1] : name[0] + "*";
+  
+    return `${obscuredName}@${domain}`;
+  }
+
   return (
     <>
     <CommonHeader/>
@@ -28,23 +37,28 @@ export default function PersonalInfo({ title }) {
         <div className='lg:w-[55%] mt-14'>
           {/* Name */}
           <Infor title="Họ và tên" 
-          value={user.firstName&&user.firstName?user.firstName + " " +user.lastName:"Chưa cung cấp"}/>
+          value={user.firstName&&user.firstName?user.firstName + " " +user.lastName:"Chưa cung cấp"}
+          isnull={user.firstName&&user.firstName?false:true}/>
           <hr/>
           {/* email */}
           <Infor title="Địa chỉ Email" 
-          value={user.email} />
+          value={obscureEmail(user.email)}
+          isnull={user.email?false:true}/>
           <hr/>
           {/* phone */}
           <Infor title="Số điện thoại" 
-          value={user.phone?user.phone:"Thêm số điện thoại để khách đã xác nhận và Airbnb có thể liên hệ với bạn. Bạn có thể thêm các số điện thoại khác và chọn mục đích sử dụng tương ứng."} />
+          value={user.phone?user.phone:"Thêm số điện thoại để khách đã xác nhận và Airbnb có thể liên hệ với bạn. Bạn có thể thêm các số điện thoại khác và chọn mục đích sử dụng tương ứng."}
+          isnull={user.phone?false:true}/>
           <hr/>
           {/* address */}
           <Infor title="Địa chỉ" 
-          value={user.address?user.address:"Chưa được cung cấp"} />
+          value={user.address?user.address:"Chưa được cung cấp"}
+          isnull={user.address?false:true}/>
           <hr/>
           {/* hotline */}
           <Infor title="Liên hệ trong trường hợp khẩn cấp" 
-          value={user.hotline?user.hotline:"Chưa được cung cấp"} />
+          value={user.hotline?user.hotline:"Chưa được cung cấp"}
+          isnull={user.hotline?false:true}/>
           </div>
           <div className="lg:w-[35%] mt-14 p-5 border border-gray-700 rounded-2xl">
             <div className="flex flex-col gap-4">
@@ -135,15 +149,15 @@ export default function PersonalInfo({ title }) {
   );
 }
 
-const Infor = ({ title, value }) => {
+const Infor = ({ title, value, isnull }) => {
   return (
     <>
       <div className="flex justify-between mt-4">
         <div>
-          <p className="text-[1.6rem] p-0 m-0">{title}</p>
-          <p className="text-gray-500 text-[1.45rem]">{value}</p>
+          <p className="text-[1.7rem] p-0 m-0">{title}</p>
+          <p className="text-gray-500 text-[1.5rem]">{value}</p>
         </div>
-        <button className="underline font-medium text-2xl ml-16">Chỉnh sửa</button>
+        <button className="underline font-medium text-2xl ml-16">{isnull?"Thêm":"Chỉnh sửa"}</button>
       </div>
     </>
   );
