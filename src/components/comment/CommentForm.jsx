@@ -113,7 +113,7 @@ const CommentForm = ({ propertyId }) => {
   return (
     <div className="ml-24 p-4">
       <h1>{feedbacks?.length} Bình luận</h1>
-      <ul className={`${feedbacks?.length >0 ?"" :"hidden"} show-cm w-[75%] rounded-3xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`} ref={commentContainerRef}>
+      <ul className={`${feedbacks?.length >0 ?"" :"hidden"} show-cm w-[75%] mt-6 rounded-3xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`} ref={commentContainerRef}>
         {feedbacks?.map((feedback, index) => (
           <li className="row w-[95%] pl-8 pb-2 pt-8" key={index}>
                 <div>
