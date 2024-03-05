@@ -16,6 +16,7 @@ module.exports = {
         'fav-icon': '#rgba(0, 0, 0, 0.5)',
         'fav-icon-active': '#ff385c',
         'checkout-bg': 'rgb(221, 221, 221)',
+        customColor: 'rgba(0, 0, 0, 0.57)',
       },
       backdropBlur: {
         xs: "2px",

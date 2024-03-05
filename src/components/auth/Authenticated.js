@@ -1,11 +1,14 @@
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 
 // Component show menu when authenticated
 export default function Authenticated({ setIsLogined }) {
+  const navigate = useNavigate();
+
   // method logout
   const dispatch = useDispatch();
   const logout = () => {
@@ -31,7 +34,7 @@ export default function Authenticated({ setIsLogined }) {
             localStorage.removeItem("user");
             dispatch(counterSlice.actions.descrease());
             setIsLogined(false);
-            alert("Đăng xuất thành công");
+            navigate("/");
             return response.text();
           }
           throw Error(response.status);

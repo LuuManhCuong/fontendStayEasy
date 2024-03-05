@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Footer from "../../components/footer/Footer";
 import CommonHeader from "../../components/header/CommonHeader";
 import { Link } from "react-router-dom";
+import { Input } from "@material-tailwind/react";
 import Header from "../../components/header/Header";
 
 export default function PersonalInfo({ title }) {
@@ -14,51 +15,77 @@ export default function PersonalInfo({ title }) {
     const parts = email.split("@");
     const name = parts[0];
     const domain = parts[1];
-    let obscuredName = name.length > 2 ? name[0] + "*".repeat(name.length - 2) + name[name.length - 1] : name[0] + "*";
-  
+    let obscuredName =
+      name.length > 2
+        ? name[0] + "*".repeat(name.length - 2) + name[name.length - 1]
+        : name[0] + "*";
+
     return `${obscuredName}@${domain}`;
   }
 
   return (
     <>
-    <CommonHeader/>
-    <div className='flex flex-col py-[4rem] mt-32 max-[768px]:mt-9 min-[1286px]:px-[24rem] min-[640px]:px-[7rem] max-[640px]:px-[2rem]'>
-      <div className='flex items-center gap-3 font-medium'>
-        <Link to='/account-settings' className='hover:underline'>
-          Tài khoản
-        </Link>
-        <svg xmlns="http://www.w3.org/2000/svg" height="12" width="7.5" viewBox="0 0 320 512">
-            <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/>
-        </svg>
-        <span>{title}</span>
-      </div>
-      <h1 className='text-[3.5rem] font-bold my-2'>{title}</h1>
-      <div className='lg:flex justify-between'>
-        <div className='lg:w-[55%] mt-14'>
-          {/* Name */}
-          <Infor title="Họ và tên" 
-          value={user.firstName&&user.firstName?user.firstName + " " +user.lastName:"Chưa cung cấp"}
-          isnull={user.firstName&&user.firstName?false:true}/>
-          <hr/>
-          {/* email */}
-          <Infor title="Địa chỉ Email" 
-          value={obscureEmail(user.email)}
-          isnull={user.email?false:true}/>
-          <hr/>
-          {/* phone */}
-          <Infor title="Số điện thoại" 
-          value={user.phone?user.phone:"Thêm số điện thoại để khách đã xác nhận và Airbnb có thể liên hệ với bạn. Bạn có thể thêm các số điện thoại khác và chọn mục đích sử dụng tương ứng."}
-          isnull={user.phone?false:true}/>
-          <hr/>
-          {/* address */}
-          <Infor title="Địa chỉ" 
-          value={user.address?user.address:"Chưa được cung cấp"}
-          isnull={user.address?false:true}/>
-          <hr/>
-          {/* hotline */}
-          <Infor title="Liên hệ trong trường hợp khẩn cấp" 
-          value={user.hotline?user.hotline:"Chưa được cung cấp"}
-          isnull={user.hotline?false:true}/>
+      <CommonHeader />
+      <div className="flex flex-col py-[4rem] mt-32 max-[768px]:mt-9 min-[1286px]:px-[24rem] min-[640px]:px-[7rem] max-[640px]:px-[2rem]">
+        <div className="flex items-center gap-3 font-medium">
+          <Link to="/account-settings" className="hover:underline">
+            Tài khoản
+          </Link>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="12"
+            width="7.5"
+            viewBox="0 0 320 512"
+          >
+            <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+          </svg>
+          <span>{title}</span>
+        </div>
+        <h1 className="text-[3.5rem] font-bold my-2">{title}</h1>
+        <div className="lg:flex justify-between">
+          <div className="lg:w-[55%] mt-14">
+            {/* Name */}
+            <Infor
+              title="Họ và tên"
+              value={
+                user.firstName && user.firstName
+                  ? user.firstName + " " + user.lastName
+                  : "Chưa cung cấp"
+              }
+              isnull={user.firstName && user.firstName ? false : true}
+            />
+            <hr />
+            {/* email */}
+            <Infor
+              title="Địa chỉ Email"
+              value={obscureEmail(user.email)}
+              isnull={user.email ? false : true}
+            />
+            <hr />
+            {/* phone */}
+            <Infor
+              title="Số điện thoại"
+              value={
+                user.phone
+                  ? user.phone
+                  : "Thêm số điện thoại để khách đã xác nhận và Airbnb có thể liên hệ với bạn. Bạn có thể thêm các số điện thoại khác và chọn mục đích sử dụng tương ứng."
+              }
+              isnull={user.phone ? false : true}
+            />
+            <hr />
+            {/* address */}
+            <Infor
+              title="Địa chỉ"
+              value={user.address ? user.address : "Chưa được cung cấp"}
+              isnull={user.address ? false : true}
+            />
+            <hr />
+            {/* hotline */}
+            <Infor
+              title="Liên hệ trong trường hợp khẩn cấp"
+              value={user.hotline ? user.hotline : "Chưa được cung cấp"}
+              isnull={user.hotline ? false : true}
+            />
           </div>
           <div className="lg:w-[35%] mt-14 p-5 border border-gray-700 rounded-2xl">
             <div className="flex flex-col gap-4">
@@ -150,14 +177,42 @@ export default function PersonalInfo({ title }) {
 }
 
 const Infor = ({ title, value, isnull }) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [firstNameValue, setFirstNameValue] = useState(value);
+  const [lastNameValue, setLastNameValue] = useState(value);
+
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+    console.log(isEditing);
+  };  
+  
   return (
     <>
-      <div className="flex justify-between mt-4">
+      <div className="mt-4">
         <div>
           <p className="text-[1.7rem] p-0 m-0">{title}</p>
-          <p className="text-gray-500 text-[1.5rem]">{value}</p>
+          {isEditing ? (
+              <>
+                <p className="text-gray-500 text-[1.5rem]">Đây là tên trên giấy thông hành của bạn, có thể là giấy phép hoặc hộ chiếu.</p>
+                <div className="flex py-4 gap-4">
+                  <input type="text" value={firstNameValue} onChange={(e)=>{setFirstNameValue(e.target.value);}} className="border border-black text-gray-700 px-2 py-3 w-[100%]"/>
+                  <input type="text" value={lastNameValue} onChange={(e)=>{setLastNameValue(e.target.value);}} className="border border-black text-gray-700 px-2 py-3 w-[100%]"/>
+                </div>
+                <button onClick={()=>{handleEditToggle()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">
+                  Lưu
+                </button>
+              </>
+          ) : (
+            <div className="flex justify-between items-center">
+              <p className="text-gray-500 text-[1.5rem]">{value}</p>
+              <button onClick={()=>{handleEditToggle()}} className="underline font-medium text-2xl ml-16">
+                {isnull ? "Thêm" : "Chỉnh sửa"}
+              </button>
+            </div>
+          )}
         </div>
-        <button className="underline font-medium text-2xl ml-16">{isnull?"Thêm":"Chỉnh sửa"}</button>
       </div>
     </>
   );
