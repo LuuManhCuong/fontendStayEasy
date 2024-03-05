@@ -59,13 +59,57 @@ function Filter() {
       });
   }, []);
 
-  const settings = {
+  var settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 10,
     slidesToScroll: 1,
-    autoplay: true,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1350,
+        settings: {
+          slidesToShow: 8,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 6,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 940,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
   };
 
   return (
