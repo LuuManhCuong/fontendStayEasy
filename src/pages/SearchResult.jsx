@@ -7,7 +7,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import { useSelector, useDispatch } from "react-redux";
 // import ListView from "../components/listview/ListView";
-import ListView from "../components/listView/ListView";
+import ListView from "../components/listview/ListView";
 
 import {
   dataExploreSelector,

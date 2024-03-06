@@ -16,7 +16,7 @@ import ListProperty from "../../components/Property/ListProperty";
 function AdminDarhBoard() {
   const sidebar = [
     { cate: "Thống kê", component: <Statistical></Statistical> },
-    { cate: "Bài đăng", component: <ListProperty/>, link: "/property/list" },
+    { cate: "Bài đăng", component: <PostManage></PostManage> },
     { cate: "Đặt phòng", component: <BookingManage></BookingManage> },
     { cate: "Tài khoản", component: <AccountManage></AccountManage> },
     { cate: "Cài đặt", component: <Seting></Seting> },
