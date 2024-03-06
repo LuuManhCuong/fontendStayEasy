@@ -38,7 +38,7 @@ function stringAvatar(name) {
   };
 }
 
-const CommentForm = ({ propertyId }) => {
+const CommentForm = ({ propertyId, ownerId }) => {
   const dispatch = useDispatch();
   const counter = useSelector(counterSelector);
   const [feedbacks, setFeedbacks] = useState([]);
@@ -77,7 +77,7 @@ const CommentForm = ({ propertyId }) => {
           JSON.stringify({
             content: newFeedback,
             userId: user?.id,
-            username: `${user?.lastName}  ${user?.firstName}`,
+            username: `${user?.firstName}  ${user?.lastName}`,
             avatar: user?.avatar,
             propertyId: propertyId,
           })
@@ -143,7 +143,7 @@ const CommentForm = ({ propertyId }) => {
 
       {/* write comment */}
       
-          <div className="w-[75%] mt-8 rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] pl-8 pt-4">
+          <div className={`${user?.id === ownerId ? 'hidden': ''}  w-[75%] mt-8 rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] pl-8 pt-4`}>
             <div className="flex flex-col justify-between">
               <div className="flex items-center">
                 <img
@@ -155,7 +155,7 @@ const CommentForm = ({ propertyId }) => {
                   alt="Image Description"
                 />
                 <p className="text-3xl m-0 font-semibold">
-                      {user?.lastName +" "+ user?.firstName}
+                      {user?.firstName +" "+ user?.lastName}
                 </p>
               </div>
 
