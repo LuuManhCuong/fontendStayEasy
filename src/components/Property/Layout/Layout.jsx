@@ -11,12 +11,12 @@ export default function Layout() {
 
         <Header/>
 
-        <div class="layout row g-0">
-          <div class="col-sm-6 col-md-2">
+        <div className="layout row g-0">
+          <div className="col-6 col-md-2 border">
             <Sidebar />
           </div>
     
-          <div class="col-6 col-md-10 border">
+          <div className="col-6 col-md-10 border">
             <Outlet/>
           </div>
         </div>

@@ -9,21 +9,26 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Category() {
-  
-
+export default function Category({
+  valueOptions
+}) {
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(data);
 
-  const loadData = async() => {
-    const result = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/category/all`);
+
+  const loadData = async () => {
+    const result = await axios.get(
+      `http://localhost:8080/api/v1/stayeasy/category`
+    );
     setData(result.data);
-  }
+  };
 
   useEffect(() => {
     loadData();
-  },[])
+  }, []);
 
+  // CATEGORY
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   return (
     <div className="sm:col-span-2">
@@ -34,9 +39,11 @@ export default function Category() {
               Thể loại
             </Listbox.Label>
             <div className="relative mt-3">
-              <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                <span className="flex items-center block">{selected.category_name}
+              <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-black sm:text-sm sm:leading-6">
+                <span className="flex items-center block">
+                  {selectedOptions}
                 </span>
+
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                   <ChevronUpDownIcon
                     className="h-5 w-5 text-gray-400"
@@ -63,6 +70,19 @@ export default function Category() {
                         )
                       }
                       value={util}
+                      onClick={() => {
+                        if (selectedOptions.includes(util)) {
+                          setSelectedOptions((prev) =>
+                            prev.filter((option) => option !== util)
+                          );
+                        } else if (selectedOptions.length < 3) {
+                          setSelectedOptions((prev) => [
+                            ...prev,
+                            util.categoryName,
+                          ]);
+                        }
+                        valueOptions((prev) => [...prev, util.categoryId]);
+                      }}
                     >
                       {({ selected, active }) => (
                         <>
@@ -73,7 +93,7 @@ export default function Category() {
                                 "ml-3 h-10 pt-2 block truncate"
                               )}
                             >
-                              {util.category_name}
+                              {util.categoryName}
                             </span>
                           </div>
 

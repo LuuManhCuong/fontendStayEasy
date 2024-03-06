@@ -15,14 +15,14 @@ export default function Utilies() {
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(data);
 
-  const loadData = async() => {
-    const result = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/util/all`);
-    setData(result.data);
-  }
+  // const loadData = async() => {
+  //   const result = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/util/all`);
+  //   setData(result.data);
+  // }
 
-  useEffect(() => {
-    loadData();
-  },[])
+  // useEffect(() => {
+  //   loadData();
+  // },[])
 
 
   return (
@@ -34,7 +34,7 @@ export default function Utilies() {
               Tiện ích
             </Listbox.Label>
             <div className="relative mt-3">
-              <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+              <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-black sm:text-sm sm:leading-6">
                 <span className="flex items-center block">{selected.utilitiesName}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">

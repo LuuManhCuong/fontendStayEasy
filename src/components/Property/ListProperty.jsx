@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,15 +10,13 @@ export default function ListProperty() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/v1/stayeasy/property`, {
-          method: "GET",
-          mode: "cors",
-        });
-        if (!response.ok) {
-          throw new Error(`yeu cau khong thanh cong: ${response.status}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/stayeasy/property`
+        );
+
+        if (response.status === 200) {
+          setData(response.data);
         }
-        const newData = await response.json();
-        setData(newData);
       } catch (error) {
         console.error("da xay ra loi: ", error);
       }
@@ -33,12 +32,15 @@ export default function ListProperty() {
 
     // If the user confirms, proceed with the deletion
     if (isConfirmed) {
-      fetch(`http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      fetch(
+        `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
         .then((res) => {
           if (!res.ok) {
             alert(`Xóa không thành công: ${propertyId}`);
@@ -46,7 +48,9 @@ export default function ListProperty() {
           }
 
           // Update the state with the new property list
-          setData((prevData) => prevData.filter((item) => item.id !== propertyId));
+          setData((prevData) =>
+            prevData.filter((item) => item.id !== propertyId)
+          );
           // alert(`Xóa thành công: ${propertyId}`);
         })
         .catch((e) => console.error("Lỗi khi xóa: ", e));
@@ -86,12 +90,12 @@ export default function ListProperty() {
               <td>{index.price}</td>
               <td>
                 {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                  <button
-                    onClick={() => handleDelete(index.propertyId)}
-                    className="bg-danger text-white me-3 p-2 rounded"
-                  >
-                    Xóa
-                  </button>
+                <button
+                  onClick={() => handleDelete(index.propertyId)}
+                  className="bg-danger text-white me-3 p-2 rounded"
+                >
+                  Xóa
+                </button>
                 {/* </Link> */}
                 <Link to={`/property/update/${index.propertyId}`}>
                   <button className="bg-warning text-white p-2 rounded">
