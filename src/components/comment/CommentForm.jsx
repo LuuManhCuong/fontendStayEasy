@@ -165,7 +165,7 @@ const CommentForm = ({ propertyId }) => {
                   id="comment"
                   value={newFeedback}
                   onChange={(e) => setNewFeedback(e.target.value)}
-                  style={{ height: "100px"}}
+                  style={{ height: "100px", width: "100%"}}
                   placeholder="Nhập bình luận của bạn..."
                   className="p-4"
                 ></textarea>
