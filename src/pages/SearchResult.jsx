@@ -29,8 +29,8 @@ function SearchResult() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("keysearch: ", keySearch);
-    console.log("page: ", page);
+    // console.log("keysearch: ", keySearch);
+    // console.log("page: ", page);
     let url;
     if (page === "home") {
       // url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;

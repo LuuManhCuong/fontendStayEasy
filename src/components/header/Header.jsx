@@ -21,6 +21,13 @@ import AuthModal from "../Auth/Authenticate";
 import Authenticated from "../Auth/Authenticated";
 import "./header.scss";
 
+function formatDateToYYMMDD(date) {
+  const year = date.getFullYear().toString().slice(-2);
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
+
 function Header({ page }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,14 +40,34 @@ function Header({ page }) {
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
   const [showHistory, setShowHistory] = React.useState(false);
   const [placeholder, setPlaceholder] = React.useState("Tìm kiếm...");
-  const [suggest, setSuggest] = useState();
+  const [suggest, setSuggest] = useState("");
+  const [address, setAddress] = useState("");
+  const [dataSearch, setDataSearch] = useState([]);
   // check is loginned yet?
   const [isLogined, setIsLogined] = useState(
     localStorage.getItem("access_token") ? true : false
   );
 
+  function handleSearchHome() {
+    const formattedCheckin = formatDateToYYMMDD(new Date(checkin));
+    const formattedCheckout = formatDateToYYMMDD(new Date(checkout));
+    console.log("checkin: " + formattedCheckin);
+    console.log("checkout: " + formattedCheckout);
+    console.log("address: " + address);
+
+    axios
+      .get(
+        `http://localhost:8080/api/v1/stayeasy/property/search?address=${address}&checkin=${formattedCheckin}&checkout=${formattedCheckout}`
+      )
+      .then(function (response) {
+        console.log("data search: ", response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
   const counter = useSelector(counterSelector);
-  const { reloadLike } = useSelector(grouptSelector);
 
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   useEffect(() => {
@@ -57,32 +84,37 @@ function Header({ page }) {
     }
   }, [keySearch]);
 
-  // suggest
+  // suggest explore
   React.useEffect(() => {
-    let url;
-    if (page === "home") {
-      url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
-    } else if (page === "experience") {
-      url = `${page}/search?keySearch=${keySearch}`;
+    if (page === "explore") {
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
+        )
+        .then(function (response) {
+          setSuggest(response.data);
+          // console.log("Data suggest: ", response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     } else {
-      url = `${page}/search?keySearch=${keySearch}`;
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/property/search/suggest?address=${address}`
+        )
+        .then(function (response) {
+          setSuggest(response.data);
+          // console.log("Data suggest: ", response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
-    axios
-      .get(
-        `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
-      )
-      .then(function (response) {
-        setSuggest(response.data);
-        // console.log("Data suggest: ", response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [keySearch]);
+  }, [keySearch, page]);
 
   function handleSearch(page) {
     setShowHistory(false);
-
     if (keySearch.length > 0) {
       // console.log("keysearch: ", keySearch);
       // console.log("page: ", page);
@@ -235,14 +267,40 @@ function Header({ page }) {
             <input
               type="text"
               className="search-text text-[1.4rem]"
-              value={keySearch}
-              onChange={(e) =>
-                dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
-              }
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
               id="keySerch"
               name="keySearch"
               placeholder="Tìm kiếm địa điểm..."
             ></input>
+            {showHistory & (suggest?.length > 0) ? (
+              <div
+                tabindex="1"
+                className="search-history"
+                onBlur={() => {
+                  setShowHistory(false);
+                }}
+              >
+                <h2>Gợi ý</h2>
+                <ul className="suggest">
+                  {suggest.map((e, i) => (
+                    <Link
+                      className="suggest-item"
+                      key={i}
+                      to={`/explore/detail/${e.propertyId}`}
+                      onClick={() => {
+                        setShowHistory(false);
+                      }}
+                    >
+                      <img src={e.thumbnail} alt="thumbnail" />
+                      <h3>{e.propertyName}</h3>
+                    </Link>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           <div className="checkin text-[1.4rem]">
             <label htmlFor="">Nhận phòng</label>
@@ -263,7 +321,7 @@ function Header({ page }) {
             />
           </div>
           <SearchIcon
-            onClick={() => handleSearch("home")}
+            onClick={() => handleSearchHome()}
             className="search-btn"
           ></SearchIcon>
         </div>
