@@ -17,8 +17,6 @@ import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
 
 import Login from "./pages/AccountSetting/Login";
 import { ProtectedRoute, isAuthenticated } from "./pages/ProtectedRoute";
-
-import { useEffect, useState } from "react";
 import { UserContextProvider } from "./components/UserContext";
 
 import BookingPage from "./pages/booking/BookingsPage";
@@ -26,6 +24,11 @@ import BookingDetail from "./pages/booking/BookingDetail";
 import Booking from "./pages/Booking";
 import PaymentSuccsess from "./pages/PaymentSuccsess";
 import AdminDarhBoard from "./pages/admin/AdminDarhBoard";
+import Statistic from "./components/Property/Statistic";
+import ListProperty from "./components/Property/ListProperty";
+import AddProperty from "./components/Property/AddProperty";
+import UpdateProperty from "./components/Property/UpdateProperty";
+import Layout from "./components/Property/Layout/Layout";
 
 function App() {
   return (
@@ -37,6 +40,15 @@ function App() {
           <Route path="/explore" element={<Explore />} />
           <Route path="/search/result" element={<SearchResult />} />
           <Route path="/explore/detail/:id" element={<Detail />} />
+
+          {/* property manager */}
+          <Route path="/property" element={<Layout />}>
+            <Route path="statistic" element={<Statistic />} />
+            <Route path="list" element={<ListProperty />} />
+            <Route path="add" element={<AddProperty />} />
+            <Route path="update/:propertyId" element={<UpdateProperty />} />
+          </Route>
+
           {/* booking */}
           <Route path="/booking" element={<Booking />} />
           <Route path="/booking/:id" element={<Booking />} />

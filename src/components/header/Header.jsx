@@ -141,14 +141,15 @@ function Header({ page }) {
             to="/admin-dashboard"
             className={(navData) =>
               navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
-            }>
+            }
+          >
             Admin
           </NavLink>
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
           <NavLink
-            to="/host/home"
+            to="/property/list"
             className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl max-[1204px]:hidden"
@@ -190,7 +191,11 @@ function Header({ page }) {
                   </svg>
                   {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
                   {user && user?.avatar ? (
-                    <img className="w-14 h-14 rounded-full" alt="avatar" src={user?.avatar}/>
+                    <img
+                      className="w-14 h-14 rounded-full"
+                      alt="avatar"
+                      src={user?.avatar}
+                    />
                   ) : user && !user?.avatar ? (
                     <div class="relative inline-flex items-center justify-center w-14 h-14 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
                       <span class="font-medium text-3xl text-gray-600 dark:text-gray-300">
@@ -224,7 +229,9 @@ function Header({ page }) {
       {page === "home" ? (
         <div className="search-wrap shadow-md">
           <div className="search-address">
-            <label className="text-[1.4rem]" htmlFor="keySearch">Địa điểm</label>
+            <label className="text-[1.4rem]" htmlFor="keySearch">
+              Địa điểm
+            </label>
             <input
               type="text"
               className="search-text text-[1.4rem]"
@@ -255,7 +262,10 @@ function Header({ page }) {
               minDate={checkin.getTime() + 86400000}
             />
           </div>
-          <SearchIcon onClick={() => handleSearch("home")} className="search-btn"></SearchIcon>
+          <SearchIcon
+            onClick={() => handleSearch("home")}
+            className="search-btn"
+          ></SearchIcon>
         </div>
       ) : page === "explore" ? (
         <div className="search-wrap">
@@ -316,11 +326,13 @@ function Header({ page }) {
               ""
             )}
           </div>
-          <div className="clear"
+          <div
+            className="clear"
             onClick={() => {
               dispatch(keySearchSlice.actions.setKeySearch(""));
               navigate("/explore");
-            }}>
+            }}
+          >
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
           <SearchIcon
@@ -336,7 +348,10 @@ function Header({ page }) {
               type="text"
               className="search-text"
               value={keySearch}
-              onChange={(e) => {dispatch(keySearchSlice.actions.setKeySearch(e.target.value)); setShowHistory(true);}}
+              onChange={(e) => {
+                dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
+                setShowHistory(true);
+              }}
               id="keySerch"
               name="keySearch"
               placeholder={placeholder}
@@ -374,7 +389,10 @@ function Header({ page }) {
           >
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
-          <SearchIcon onClick={() => handleSearch("experience")} className="search-btn"></SearchIcon>
+          <SearchIcon
+            onClick={() => handleSearch("experience")}
+            className="search-btn"
+          ></SearchIcon>
         </div>
       ) : (
         " "

@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 
 import AuthModal from "../Auth/Authenticate";
+// import Authenticated from "../Auth/Authenticated";
 import Authenticated from "../Auth/Authenticated";
 
 import {
