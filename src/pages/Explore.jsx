@@ -37,7 +37,7 @@ function Explore() {
           setTotalPage(() => Math.ceil(response.data.totalCount / size));
           // console.log("reload");
           setIsLoading(false);
-          setDataExplore( response.data.properties);
+          setDataExplore(response.data.properties);
         })
         .catch(function (error) {
           setIsLoading(true);

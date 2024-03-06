@@ -46,3 +46,9 @@ body {
 .media-comment {
   margin-top: 20px;
 }
+.show-cm {
+  max-height: 600px;
+  overflow-y: auto;
+  background: #f2f2f2;
+}
+

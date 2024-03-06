@@ -102,8 +102,7 @@ function Card(props) {
       onClick && onClick(e); // Gọi lại hàm onClick nếu có
     };
     return (
-      <div
-        className={className}
+      <div className={className}
         style={{
           ...style,
           display: "block",
@@ -126,8 +125,7 @@ function Card(props) {
       onClick && onClick(e); // Gọi lại hàm onClick nếu có
     };
     return (
-      <div
-        className={className}
+      <div className={className}
         style={{
           ...style,
           display: "block",
@@ -145,77 +143,43 @@ function Card(props) {
 
   // console.log(props.item);
   return (
-    <div
-      onClick={() => handleDetail()}
-      // to={`/explore/detail/${props.item.propertyId}?checkin=${checkinString}&checkout=${checkoutString}`}
-      className="w-full h-auto cursor-pointer flex-initial mb-[2rem]"
-      key={props.index}
-    >
-      <div className="w-full  h-[36rem]  relative">
-        <div className="w-full h-[28rem] rounded-[1.6rem] overflow-hidden">
-
+    <div onClick={() => handleDetail()} className="w-[32.5rem] h-[44rem] cursor-pointer flex-initial"
+      key={props.index}>
+      <div className="w-full h-full relative">
+        <div className="w-full h-[31rem] rounded-[1.6rem] overflow-hidden">
         {props.item.imagesList?.length >0 
         ? <Slider {...settings} className="w-full h-full">
             { props.item.imagesList?.map((item, index) => (
-              <div key={index} className="h-[280px]">
-                <img 
-                  loading="lazy"
-                  className="w-full h-full object-cover rounded-[1.6rem]"
-                  src={item.url}
-                  testindex={index}
-                  alt=""
-                />
+              <div key={index} className="h-[31rem]">
+                <img loading="lazy" className="w-full h-full object-cover rounded-[1.6rem]"
+                  src={item.url} testindex={index} alt=""/>
               </div>
             ))}
           </Slider> 
-        : <div className="h-[280px]">
-        <img 
-          loading="lazy"
-          className="w-full h-full object-cover rounded-[1.6rem]"
-          src={props.item.thumbnail}
-          alt=""
-        />
-      </div> 
-          } 
-        
+        : <div className="h-[31rem]">
+            <img loading="lazy" className="w-full h-full object-cover rounded-[1.6rem]"
+              src={props.item.thumbnail} alt=""/>
+          </div> 
+        }
         </div>
-
-        <div
-          className={`heart-btn flex absolute top-8 right-[30px] text-fav-icon text-5xl ${
-            isActive ? "active" : ""
-          }`}
-          onClick={(e) => handleLike(e, props.item.propertyId)}
-        >
-          <div className="absolute -top-4 -right-[36px]">
-
-          <p className="text-4xl justify-center w-[30px]">
-            <span className="inline-block font-bold max-w-[80%]" style={{ color: 'blue', WebkitTextStroke: '0.2px white' }}>{props.item.likeList?.length}</span>
-          </p>
-          </div>
-          <FontAwesomeIcon
-            className="like-icon"
-            icon={icon({ name: "heart", family: "classic", style: "solid" })}
-          />
+        <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
+              ${isActive ? "active" : ""}`} onClick={(e) => handleLike(e, props.item.propertyId)}>
+          <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
         </div>
         <div className="p-2">
-          <div className="flex justify-between text-3xl font-semibold font-roboto mt-2 h-10">
-            {props.item.propertyName}
-            <div className="flex">
-                  <p className="text-3xl">{props.item.rating}</p>
-                  <FontAwesomeIcon
-                    className=" text-black-300 stroke-black ml-[2px]"
-                    size="1x"
-                    icon={icon({
-                      name: "star",
-                      family: "classic",
-                      style: "solid",
-                    })}
-                  />
+          <div className="flex justify-between items-center text-3xl mt-2 h-10">
+            <div className='h-[2rem] line-clamp-2'>
+              <h3 className="text-[1.6rem]">{props.item.propertyName}</h3>
+            </div>
+            <div className="flex items-center mt-3 gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="block h-5 w-5 mb-3 text-current"><path fill-rule="evenodd" d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"></path></svg>
+                  <p className="text-2xl">{props.item.rating}.0</p>
                 </div>
           </div>
-          <div className="font-roboto font-thin opacity-60 m-0 p-0">{props.item.address}</div>
-          <div>
-            <b>{props.item.price}</b> / đêm
+          <div className="text-[#717171]">{props.item.address}</div>
+          <div className="text-[#717171]">5 đêm · 19 – 24 tháng 3</div>
+          <div className="underline">
+            <p className="font-medium">${props.item.price}<span className="font-normal">/đêm</span></p>
           </div>
         </div>
       </div>

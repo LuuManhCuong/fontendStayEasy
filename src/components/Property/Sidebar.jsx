@@ -6,12 +6,12 @@ export default function Sidebar() {
   const [itemId, setItemId] = useState(1);
 
   const title = [
-    {
-      id: 1,
-      name: "Thống kê",
-      link: "/property/statistic",
-      icon: <ChartBarIcon />,
-    },
+    // {
+    //   id: 1,
+    //   name: "Thống kê",
+    //   link: "/property/statistic",
+    //   icon: <ChartBarIcon />,
+    // },
     {
       id: 2,
       name: "Xem tài sản",

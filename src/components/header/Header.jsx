@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { Dropdown, DropdownToggle } from "react-bootstrap";
@@ -19,7 +18,7 @@ import {
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 
 import AuthModal from "../auth/Authenticate";
-// import Authenticated from "../Auth/Authenticated";
+import Authenticated from "../auth/Authenticated";
 import "./header.scss";
 
 function Header({ page }) {
@@ -97,7 +96,7 @@ function Header({ page }) {
 
   return (
     <header className="header">
-      <div className="cate flex w-[100%] px-[6.2rem] top-0 items-center bg-white max-[320px]:px-10 justify-between">
+      <div className="cate z-[1000] flex w-[100%] px-[6.2rem] top-0 items-center bg-white max-[320px]:px-10 justify-between">
         <div className="w-[33%] max-[1204px]:w-[20%]">
           <a href="/">
             <svg width="102" height="32" color="#FF385C">
@@ -112,24 +111,50 @@ function Header({ page }) {
             </svg>
           </a>
         </div>
-        <div className="flex justify-center w-[33%] max-[1204px]:w-[55%] min-[768px]:flex max-[768px]:hidden gap-5 text-[1.8rem]">
-          <NavLink to="/" className={(navData) => navData.isActive ? "font-medium nav-item" : "nav-item"}>
-            Chỗ ở 
+        <div className="flex justify-center w-[33%] max-[1204px]:w-[55%] min-[768px]:flex max-[768px]:hidden gap-5 text-[1.7rem]">
+          <NavLink
+            to="/"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item" : "nav-item"
+            }
+          >
+            Chỗ ở
           </NavLink>
-          <NavLink to="/experience" className={(navData) => navData.isActive ? "font-medium nav-item" : "nav-item"}>
+          <NavLink
+            to="/experience"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item" : "nav-item"
+            }
+          >
             Trải nghiệm
           </NavLink>
-          <NavLink to="/explore" className={(navData) =>  navData.isActive ? "font-medium nav-item" : "nav-item"}>
+          <NavLink
+            to="/explore"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item" : "nav-item"
+            }
+          >
             Khám phá
+          </NavLink>
+
+          <NavLink
+            to="/admin-dashboard"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
+            }>
+            Admin
           </NavLink>
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
-          <NavLink to="/host/home" className={(navData) =>
+          <NavLink
+            to="/host/home"
+            className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl max-[1204px]:hidden"
                 : "hover:bg-gray-100 p-3 max-[1204px]:hidden rounded-full"
-            }>
+            }
+          >
             Cho thuê chỗ ở qua Stayeasy
           </NavLink>
           <button className="hover:bg-gray-100 p-3 rounded-full" onClick="">
@@ -145,111 +170,49 @@ function Header({ page }) {
             </svg>
           </button>
           {/* Menu */}
-          <div className="flex">
+          <div className="flex mr-4">
             <Dropdown>
-              <DropdownToggle bsPrefix="false" className="bg-transparent border-white p-0" id="dropdown-basic">
+              <DropdownToggle
+                bsPrefix="false"
+                className="bg-transparent border-white p-0"
+                id="dropdown-basic"
+              >
                 <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                  <svg className="ml-3 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path fill="#000000" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
-                  </svg>
-                  <p style={{
-                      margin: "0",
-                      color: "black",
-                      fontSize: "1.6rem",
-                      fontWeight: " 500",
-                    }}
+                  <svg
+                    className="ml-3 h-7 w-7"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
                   >
-                    {user?.lastName + user?.firstName || ""}
-                  </p>
-                  {user && user?.avatar ? 
-                    <img className="w-14 h-14 rounded-full" alt="avatar" src={user?.avatar || "https://mui.com/static/images/avatar/2.jpg"}/>
-                    : !user?.avatar ?
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-14 w-14 text-current"><path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path></svg>
-                    :
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-14 w-14 text-current"><path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path></svg>
-                  }
-                {/* {!user?
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-14 w-14 text-current"><path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path></svg>
-                :("")} */}
+                    <path
+                      fill="#000000"
+                      d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+                    />
+                  </svg>
+                  {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
+                  {user && user?.avatar ? (
+                    <img className="w-14 h-14 rounded-full" alt="avatar" src={user?.avatar}/>
+                  ) : user && !user?.avatar ? (
+                    <div class="relative inline-flex items-center justify-center w-14 h-14 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                      <span class="font-medium text-3xl text-gray-600 dark:text-gray-300">
+                        {user?.lastName.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 32 32"
+                      aria-hidden="true"
+                      role="presentation"
+                      focusable="false"
+                      className="block, h-14 w-14 text-current"
+                    >
+                      <path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path>
+                    </svg>
+                  )}
                 </div>
               </DropdownToggle>
               {isLogined ? (
-                <Dropdown.Menu>
-                  <Dropdown.Item>
-                    <div className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        width="20"
-                        viewBox="0 0 512 512"
-                      >
-                        <path d="M512 240c0 114.9-114.6 208-256 208c-37.1 0-72.3-6.4-104.1-17.9c-11.9 8.7-31.3 20.6-54.3 30.6C73.6 471.1 44.7 480 16 480c-6.5 0-12.3-3.9-14.8-9.9c-2.5-6-1.1-12.8 3.4-17.4l0 0 0 0 0 0 0 0 .3-.3c.3-.3 .7-.7 1.3-1.4c1.1-1.2 2.8-3.1 4.9-5.7c4.1-5 9.6-12.4 15.2-21.6c10-16.6 19.5-38.4 21.4-62.9C17.7 326.8 0 285.1 0 240C0 125.1 114.6 32 256 32s256 93.1 256 208z" />
-                      </svg>
-                      <Link to={"/inbox"} className="text-2xl py-2 px-4">
-                        Tin nhắn
-                      </Link>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    <div className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        width="17.5"
-                        viewBox="0 0 448 512"
-                      >
-                        <path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
-                      </svg>
-                      <button className="text-2xl py-2 px-4">Thông báo</button>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    <Link to="/property/statistic">
-                      <div className="flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 512 512"
-                          height="20"
-                          width="17.5"
-                        >
-                          <path d="M152.1 38.2c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 113C-2.3 103.6-2.3 88.4 7 79s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zm0 160c9.9 8.9 10.7 24 1.8 33.9l-72 80c-4.4 4.9-10.6 7.8-17.2 7.9s-12.9-2.4-17.6-7L7 273c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l22.1 22.1 55.1-61.2c8.9-9.9 24-10.7 33.9-1.8zM224 96c0-17.7 14.3-32 32-32H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H256c-17.7 0-32-14.3-32-32zm0 160c0-17.7 14.3-32 32-32H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H256c-17.7 0-32-14.3-32-32zM160 416c0-17.7 14.3-32 32-32H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H192c-17.7 0-32-14.3-32-32zM48 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
-                        </svg>
-                        <button className="text-2xl py-2 px-4">
-                          Quản lý tài sản
-                        </button>
-                      </div>
-                    </Link>
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    <div className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        width="17.5"
-                        viewBox="0 0 448 512"
-                      >
-                        <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
-                      </svg>
-                      <button className="text-2xl py-2 px-4">Tài khoản</button>
-                    </div>
-                  </Dropdown.Item>
-                  <hr />
-                  <Dropdown.Item>
-                    <div className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        width="20"
-                        viewBox="0 0 512 512"
-                      >
-                        <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" />
-                      </svg>
-                      {/* <button className="text-2xl py-2 px-4" onClick={logout}>
-                        Đăng xuất
-                      </button> */}
-                    </div>
-                  </Dropdown.Item>
-                </Dropdown.Menu>
+                <Authenticated setIsLogined={setIsLogined}></Authenticated>
               ) : (
                 <AuthModal setIsLogined={setIsLogined} />
               )}
@@ -261,10 +224,10 @@ function Header({ page }) {
       {page === "home" ? (
         <div className="search-wrap shadow-md">
           <div className="search-address">
-            <label htmlFor="keySearch">Địa điểm</label>
+            <label className="text-[1.4rem]" htmlFor="keySearch">Địa điểm</label>
             <input
               type="text"
-              className="search-text"
+              className="search-text text-[1.4rem]"
               value={keySearch}
               onChange={(e) =>
                 dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
@@ -274,7 +237,7 @@ function Header({ page }) {
               placeholder="Tìm kiếm địa điểm..."
             ></input>
           </div>
-          <div className="checkin">
+          <div className="checkin text-[1.4rem]">
             <label htmlFor="">Nhận phòng</label>
             <DatePicker
               className="search-text"
@@ -283,7 +246,7 @@ function Header({ page }) {
               minDate={today}
             />
           </div>
-          <div className="checkout">
+          <div className="checkout text-[1.4rem]">
             <label htmlFor="">Trả phòng</label>
             <DatePicker
               className="search-text"
@@ -292,10 +255,7 @@ function Header({ page }) {
               minDate={checkin.getTime() + 86400000}
             />
           </div>
-          <SearchIcon
-            onClick={() => handleSearch("home")}
-            className="search-btn"
-          ></SearchIcon>
+          <SearchIcon onClick={() => handleSearch("home")} className="search-btn"></SearchIcon>
         </div>
       ) : page === "explore" ? (
         <div className="search-wrap">
@@ -356,13 +316,11 @@ function Header({ page }) {
               ""
             )}
           </div>
-          <div
-            className="clear"
+          <div className="clear"
             onClick={() => {
               dispatch(keySearchSlice.actions.setKeySearch(""));
               navigate("/explore");
-            }}
-          >
+            }}>
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
           <SearchIcon
@@ -378,10 +336,7 @@ function Header({ page }) {
               type="text"
               className="search-text"
               value={keySearch}
-              onChange={(e) => {
-                dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
-                setShowHistory(true);
-              }}
+              onChange={(e) => {dispatch(keySearchSlice.actions.setKeySearch(e.target.value)); setShowHistory(true);}}
               id="keySerch"
               name="keySearch"
               placeholder={placeholder}
@@ -419,10 +374,7 @@ function Header({ page }) {
           >
             <HighlightOffIcon className="clear-btn"></HighlightOffIcon>
           </div>
-          <SearchIcon
-            onClick={() => handleSearch("experience")}
-            className="search-btn"
-          ></SearchIcon>
+          <SearchIcon onClick={() => handleSearch("experience")} className="search-btn"></SearchIcon>
         </div>
       ) : (
         " "
