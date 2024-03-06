@@ -2,17 +2,8 @@
   --fav-icon-active-color: #ff385c;
   --fav-icon-color: #rgba(0, 0, 0, 0.5);
 }
-.active svg path {
+.activeHeart svg path {
   fill: var(--fav-icon-active-color);
-}
-
-.fa-heart.active {
-  color: var(--fav-icon-active-color);
-}
-
-.heart-btn svg {
-  stroke: #fff;
-  stroke-width: 30px;
 }
 
 .slider_detail .slick-next:before,

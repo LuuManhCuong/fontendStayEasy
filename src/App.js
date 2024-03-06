@@ -17,7 +17,6 @@ import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
 
 import Login from "./pages/AccountSetting/Login";
 import { ProtectedRoute, isAuthenticated } from "./pages/ProtectedRoute";
-import AdminDarhBoard from "./pages/AdminDarhBoard";
 
 import { useEffect, useState } from "react";
 import { UserContextProvider } from "./components/UserContext";
@@ -26,6 +25,7 @@ import BookingPage from "./pages/booking/BookingsPage";
 import BookingDetail from "./pages/booking/BookingDetail";
 import Booking from "./pages/Booking";
 import PaymentSuccsess from "./pages/PaymentSuccsess";
+import AdminDarhBoard from "./pages/admin/AdminDarhBoard";
 
 function App() {
   return (
