@@ -5,6 +5,9 @@ export const keySearchSlice = createSlice({
   initialState: {
     page: "",
     keySearch: "",
+    address: "",
+    checkin: "",
+    checkout: "",
   },
   reducers: {
     setKeySearch: (state, action) => {
@@ -12,6 +15,15 @@ export const keySearchSlice = createSlice({
     },
     setPageSearch: (state, action) => {
       state.page = action.payload;
+    },
+    setAdderss: (state, action) => {
+      state.address = action.payload;
+    },
+    setCheckinDate: (state, action) => {
+      state.checkin = action.payload;
+    },
+    setCheckoutDate: (state, action) => {
+      state.checkout = action.payload;
     },
   },
 });
