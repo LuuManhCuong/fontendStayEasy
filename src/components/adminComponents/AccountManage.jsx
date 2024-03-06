@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function AccountManage() {
-  return (
-    <div>AccountManage</div>
-  )
+  return <div>AccountManage</div>;
 }
 
-export default AccountManage
+export default AccountManage;

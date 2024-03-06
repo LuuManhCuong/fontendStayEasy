@@ -149,7 +149,7 @@ function Header({ page }) {
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
           <NavLink
-            to="property/list"
+            to="/property/list"
             className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl max-[1204px]:hidden"

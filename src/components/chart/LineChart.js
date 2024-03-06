@@ -3,15 +3,7 @@ import { Line, Chart } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 
 ChartJS.register(...registerables);
-const Revenue = () => {
-  // Dữ liệu doanh thu của tháng này và tháng trước
-  const revenueThisMonth = [
-    1000, 1500, 2000, 2500, 1800, 1200, 1900, 2300, 2600, 2700, 2800, 300,
-  ];
-  const revenueLastMonth = [
-    900, 1400, 1800, 2200, 1700, 2000, 1700, 2100, 2400, 2500, 2600, 2800,
-  ];
-
+const LineChart = ({ title, dataThisMonth, dataLastMonth }) => {
   const data = {
     labels: [
       "Jan",
@@ -30,13 +22,13 @@ const Revenue = () => {
     datasets: [
       {
         label: "This Month",
-        data: revenueThisMonth,
+        data: dataThisMonth,
         borderColor: "red",
         backgroundColor: "rgba(75,192,192,0.4)",
       },
       {
         label: "Last Month",
-        data: revenueLastMonth,
+        data: dataLastMonth,
         borderColor: "rgba(192,75,192,1)",
         backgroundColor: "rgba(192,75,192,0.4)",
       },
@@ -45,10 +37,10 @@ const Revenue = () => {
 
   return (
     <>
-      <h3>Biểu đồ doanh thu</h3>
+      <h3>{title}</h3>
       <Line data={data} />
     </>
   );
 };
 
-export default Revenue;
+export default LineChart;

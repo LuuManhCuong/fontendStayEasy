@@ -38,7 +38,7 @@ function stringAvatar(name) {
   };
 }
 
-const CommentForm = ({ propertyId }) => {
+const CommentForm = ({ propertyId, ownerId }) => {
   const dispatch = useDispatch();
   const counter = useSelector(counterSelector);
   const [feedbacks, setFeedbacks] = useState([]);
@@ -77,7 +77,7 @@ const CommentForm = ({ propertyId }) => {
           JSON.stringify({
             content: newFeedback,
             userId: user?.id,
-            username: `${user?.lastName}  ${user?.firstName}`,
+            username: `${user?.firstName}  ${user?.lastName}`,
             avatar: user?.avatar,
             propertyId: propertyId,
           })
@@ -113,7 +113,7 @@ const CommentForm = ({ propertyId }) => {
   return (
     <div className="ml-24 p-4">
       <h1>{feedbacks?.length} Bình luận</h1>
-      <ul className={`${feedbacks?.length >0 ?"" :"hidden"} show-cm w-[75%] rounded-3xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`} ref={commentContainerRef}>
+      <ul className={`${feedbacks?.length >0 ?"" :"hidden"} show-cm w-[75%] mt-6 rounded-3xl shadow-checkout-shadow border-checkout-bg border-[1px] bg-white`} ref={commentContainerRef}>
         {feedbacks?.map((feedback, index) => (
           <li className="row w-[95%] pl-8 pb-2 pt-8" key={index}>
                 <div>
@@ -143,7 +143,7 @@ const CommentForm = ({ propertyId }) => {
 
       {/* write comment */}
       
-          <div className="w-[75%] mt-8 rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] pl-8 pt-4">
+          <div className={`${user?.id === ownerId ? 'hidden': ''}  w-[75%] mt-8 rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] pl-8 pt-4`}>
             <div className="flex flex-col justify-between">
               <div className="flex items-center">
                 <img
@@ -155,7 +155,7 @@ const CommentForm = ({ propertyId }) => {
                   alt="Image Description"
                 />
                 <p className="text-3xl m-0 font-semibold">
-                      {user?.lastName +" "+ user?.firstName}
+                      {user?.firstName +" "+ user?.lastName}
                 </p>
               </div>
 
@@ -165,7 +165,7 @@ const CommentForm = ({ propertyId }) => {
                   id="comment"
                   value={newFeedback}
                   onChange={(e) => setNewFeedback(e.target.value)}
-                  style={{ height: "100px", width: "100%" }}
+                  style={{ height: "100px", width: "100%"}}
                   placeholder="Nhập bình luận của bạn..."
                   className="p-4"
                 ></textarea>

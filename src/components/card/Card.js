@@ -175,9 +175,10 @@ function Card(props) {
             </div>
           )}
         </div>
+
         <div
           className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
-              ${isActive ? "active" : ""}`}
+              ${isActive ? "activeHeart" : ""}`}
           onClick={(e) => handleLike(e, props.item.propertyId)}
         >
           <div className="absolute -top-4 -right-[36px]">
@@ -190,7 +191,6 @@ function Card(props) {
               </span>
             </p>
           </div>
-
           <FontAwesomeIcon
             style={{ stroke: "white" }}
             className="text-4xl z-10 text-customColor transition-all ease-in duration-200"
