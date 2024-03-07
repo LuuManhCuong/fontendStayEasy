@@ -5,13 +5,14 @@ import { Link } from "react-router-dom";
 
 export default function ListProperty() {
   const [data, setData] = useState([]);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   // get data
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/stayeasy/property`
+          `http://localhost:8080/api/v1/stayeasy/property/user/${user?.id}`
         );
 
         if (response.status === 200) {
