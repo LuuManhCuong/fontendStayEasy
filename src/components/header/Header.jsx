@@ -17,8 +17,8 @@ import {
 } from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 
-import AuthModal from "../Auth/Authenticate";
-import Authenticated from "../Auth/Authenticated";
+import AuthModal from "../auth/Authenticate";
+import Authenticated from "../auth/Authenticated";
 import "./header.scss";
 
 function Header({ page }) {
