@@ -46,11 +46,21 @@ function Statistical() {
         </Col>
         <Col xs={3}>
           <div className="broad">
-            <h2>Tài Khoản</h2>
+            <h2>Lượt truy cập</h2>
             <h1>
-              4653 <AutoGraphIcon></AutoGraphIcon>
+              12653 <AutoGraphIcon></AutoGraphIcon>
             </h1>
             <p>Tăng 10% so với tháng trước</p>
+          </div>
+        </Col>
+
+        <Col xs={3}>
+          <div className="broad">
+            <h2>Bài viết</h2>
+            <h1>
+              356 <TrendingDownIcon></TrendingDownIcon>
+            </h1>
+            <p>Giảm 5% so với tháng trước</p>
           </div>
         </Col>
         <Col xs={3}>
@@ -62,44 +72,33 @@ function Statistical() {
             <p>Giảm 2% so với tháng trước</p>
           </div>
         </Col>
-        <Col xs={3}>
-          <div className="broad">
-            <h2>Bài viết</h2>
-            <h1>
-              356 <TrendingDownIcon></TrendingDownIcon>
-            </h1>
-            <p>Giảm 5% so với tháng trước</p>
-          </div>
-        </Col>
       </Row>
 
       <div className="chart-body">
         <Row>
-          <Col xs={6}>
+          <Col xs={3}>
             <LineChart
               title={"Biểu đồ doanh thu tháng này"}
               dataThisMonth={revenueThisMonth}
               dataLastMonth={revenueLastMonth}
             ></LineChart>
           </Col>
-          <Col xs={6}>
+          <Col xs={3}>
             <BarChart
               title={"Biểu đồ số lượng đặt phòng"}
               dataLabelOne={dataLabelOne}
               dataLabelTwo={dataLabelTwo}
             ></BarChart>
           </Col>
-        </Row>
 
-        <Row>
-          <Col xs={6}>
+          <Col xs={3}>
             <LineChart
               title={"Biểu đồ lưu lượng truy cập website"}
               dataThisMonth={revenueThisMonth}
               dataLastMonth={revenueLastMonth}
             ></LineChart>
           </Col>
-          <Col xs={6}>
+          <Col xs={3}>
             <BarChart
               title={"Biểu đồ số lượng bài đăng"}
               dataLabelOne={amountPostThisMonth}
