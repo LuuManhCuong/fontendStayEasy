@@ -2,6 +2,7 @@ import Footer from "../components/footer/Footer";
 import Header from "../components/header/Header";
 import ListView from "../components/listView/ListView";
 import Filter from "../components/filter/Filter";
+import Filters from "../components/filter/Filters";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
@@ -38,7 +39,7 @@ function Home() {
   return (
     <>
       <Header page="home"></Header>
-      <Filter page="home"></Filter>
+      <Filter />
       {dataHome.length > 0 && <ListView data={dataHome}></ListView>}
 
       {isLoading ? (
@@ -53,8 +54,9 @@ function Home() {
       )}
 
       {!isLoading && dataHome.length === 0 && <h3>Không tìm thấy dữ liệu</h3>}
-
-      <Footer></Footer>
+      <div className="fixed w-full bottom-0 z-50 bg-white">
+        <Footer></Footer>
+      </div>
     </>
   );
 }

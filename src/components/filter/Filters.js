@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./filter.scss";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 import CabinIcon from "@mui/icons-material/Cabin";
 import FestivalIcon from "@mui/icons-material/Festival";
 import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
@@ -20,7 +21,7 @@ import axios from "axios";
 import { dataCategorySlice } from "../../redux-tookit/reducer/dataCategorySlice";
 import { dataHomeSlice } from "../../redux-tookit/reducer/dataHomeSlice";
 
-function Filter() {
+function Filters() {
   const dispatch = useDispatch();
   const { dataCategory } = useSelector(dataCategorySelector);
 
@@ -102,9 +103,9 @@ function Filter() {
 
 
   return (
-    <>
+    <div className="">
       {/* navbar */}
-        <div className="pt-8 px-24">
+        <div className="py-8 px-24">
             <div className="flex items-center gap-2">
                 <div className="flex overflow-hidden pl-6">
                   <div className="flex items-center justify-center">
@@ -118,18 +119,18 @@ function Filter() {
                       <div className="flex gap-1 transition-transform duration-700 ease-in-out" style={{ maxWidth: "fit-content", whiteSpace: "nowrap", width: `${100 * (totalItems / itemsPerSlide)}%`, transform: `translateX(-${(155 / totalItems) * currentIndex}%)`,}}>
                           {dataCategory.map((item, index) => {
                             return (
-                            <div key={index} className="flex flex-col items-center gap-2 px-5 hover:cursor-pointer hover:border-b-2"
+                            <div key={index} className="flex flex-col items-center gap-2 px-5 hover:cursor-pointer"
                               onClick={() => handleClick(item.categoryId)}>
-                                <LandscapeIcon style={{ fontSize: 30, color: '#717171' }}/>
-                                <p className="text-xl text-[#717171] font-medium pb-1">{item.categoryName}</p>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" fill="#717171" viewBox="0 0 640 512"><path d="M560 160A80 80 0 1 0 560 0a80 80 0 1 0 0 160zM55.9 512H381.1h75H578.9c33.8 0 61.1-27.4 61.1-61.1c0-11.2-3.1-22.2-8.9-31.8l-132-216.3C495 196.1 487.8 192 480 192s-15 4.1-19.1 10.7l-48.2 79L286.8 81c-6.6-10.6-18.3-17-30.8-17s-24.1 6.4-30.8 17L8.6 426.4C3 435.3 0 445.6 0 456.1C0 487 25 512 55.9 512z"/></svg>
+                                <p className="text-xl text-[#717171] font-medium">{item.categoryName}</p>
                               </div>
                               );
                           })}
                           {ItemCategories.map((item, index) => (
-                            <div key={index} className="flex flex-col items-center gap-2 px-5 hover:cursor-pointer hover:border-b-2" 
+                            <div key={index} className="flex flex-col items-center gap-2 px-5 hover:cursor-pointer" 
                               onClick={() => handleClick(item.categoryId)}>
                               {item.icon}
-                              <p className="text-xl text-[#717171] font-medium pb-1">{item.categoryName}</p>
+                              <p className="text-xl text-[#717171] font-medium">{item.categoryName}</p>
                             </div>
                           ))}
                       </div>
@@ -156,7 +157,7 @@ function Filter() {
                 </div>
             </div>
         </div>
-    </>
+    </div>
   );
 }
 
@@ -176,4 +177,4 @@ const SwitchToggle = ({ isEnabled, setIsEnabled }) => {
   );
 };
 
-export default Filter;
+export default Filters;

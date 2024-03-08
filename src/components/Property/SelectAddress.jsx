@@ -1,49 +1,31 @@
-import React, { useEffect } from "react";
-
-import { Fragment, useState } from "react";
+import React, { useState, Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import axios from "axios";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Category({
-  valueOptions
+export default function SelectAddress({
+  label,
+  option,
+  value,
+  setValue,
+  type,
 }) {
-  const [data, setData] = useState([]);
-  const [selected, setSelected] = useState(data);
-
-
-  const loadData = async () => {
-    const result = await axios.get(
-      `http://localhost:8080/api/v1/stayeasy/category`
-    );
-    setData(result.data);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  // CATEGORY
-  const [selectedOptions, setSelectedOptions] = useState([]);
-
+    
+  const [selected, setSelected] = useState(value);
   return (
     <div className="sm:col-span-2">
       <Listbox value={selected} onChange={setSelected}>
         {({ open }) => (
           <>
             <Listbox.Label className="block font-medium leading-6 text-gray-900">
-              Thể loại
+              {label}
             </Listbox.Label>
             <div className="relative mt-3">
-              <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-black sm:text-sm sm:leading-6">
-                <span className="flex items-center block">
-                  {selectedOptions}
-                </span>
-
+              <Listbox.Button className="relative w-full h-16 border cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:leading-6">
+                <span className="flex items-center">{selected}</span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                   <ChevronUpDownIcon
                     className="h-5 w-5 text-gray-400"
@@ -60,41 +42,46 @@ export default function Category({
                 leaveTo="opacity-0"
               >
                 <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {data.map((util) => (
+                  {option.map((item) => (
                     <Listbox.Option
-                      key={util.categoryId}
+                      onClick={() =>
+                        setValue(
+                          type === "province"
+                            ? item?.province_id
+                            : type === "district"
+                            ? item?.district_id
+                            : item?.ward_id
+                        )
+                      }
+                      key={
+                        type === "province"
+                          ? item?.province_name
+                          : type === "district"
+                          ? item?.district_name
+                          : item?.ward_name
+                      }
                       className={({ active }) =>
                         classNames(
                           active ? "bg-indigo-600 text-white" : "text-gray-900",
-                          "relative h-14 cursor-default select-none py-2 pl-3 pr-9"
+                          "relative h-14 content-center cursor-default select-none py-2 pl-3 pr-9"
                         )
                       }
-                      value={util}
-                      onClick={() => {
-                        if (selectedOptions.includes(util)) {
-                          setSelectedOptions((prev) =>
-                            prev.filter((option) => option !== util)
-                          );
-                        } else if (selectedOptions.length < 3) {
-                          setSelectedOptions((prev) => [
-                            ...prev,
-                            util.categoryName,
-                          ]);
-                        }
-                        valueOptions((prev) => [...prev, util.categoryId]);
-                      }}
+                      value={
+                        type === "province"
+                          ? item?.province_name
+                          : type === "district"
+                          ? item?.district_name
+                          : item?.ward_name
+                      }
                     >
                       {({ selected, active }) => (
                         <>
-                          <div className="flex items-center">
-                            <span
-                              className={classNames(
-                                selected ? "font-semibold" : "font-normal",
-                                "ml-3 h-10 pt-2 block truncate"
-                              )}
-                            >
-                              {util.categoryName}
-                            </span>
+                          <div className="flex items-center ml-3 block h-10 pt-2 truncate">
+                            {type === "province"
+                              ? item?.province_name
+                              : type === "district"
+                              ? item?.district_name
+                              : item?.ward_name}
                           </div>
 
                           {selected ? (

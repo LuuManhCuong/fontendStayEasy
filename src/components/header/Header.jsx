@@ -19,6 +19,14 @@ import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 import AuthModal from "../auth/Authenticate";
 import Authenticated from "../auth/Authenticated";
 import "./header.scss";
+import { dataHomeSlice } from "../../redux-tookit/reducer/dataHomeSlice";
+
+function formatDateToYYMMDD(date) {
+  const year = date.getFullYear().toString().slice(-2);
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
 
 function Header({ page }) {
   const dispatch = useDispatch();
@@ -32,14 +40,29 @@ function Header({ page }) {
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
   const [showHistory, setShowHistory] = React.useState(false);
   const [placeholder, setPlaceholder] = React.useState("Tìm kiếm...");
-  const [suggest, setSuggest] = useState();
-  // check is loginned yet?
+  const [suggest, setSuggest] = useState("");
+  const [address, setAddress] = useState("");
+  const [dataSearch, setDataSearch] = useState([]);
+
   const [isLogined, setIsLogined] = useState(
     localStorage.getItem("access_token") ? true : false
   );
 
+  function handleSearchHome() {
+    setShowHistory(false);
+    const formattedCheckin = formatDateToYYMMDD(new Date(checkin));
+    const formattedCheckout = formatDateToYYMMDD(new Date(checkout));
+    if (address?.length > 0) {
+      navigate("/search/result");
+      dispatch(keySearchSlice.actions.setPageSearch(page));
+      dispatch(keySearchSlice.actions.setAdderss(address));
+      dispatch(keySearchSlice.actions.setCheckinDate(formattedCheckin));
+      dispatch(keySearchSlice.actions.setCheckoutDate(formattedCheckout));
+    }
+
+  }
+
   const counter = useSelector(counterSelector);
-  const { reloadLike } = useSelector(grouptSelector);
 
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   useEffect(() => {
@@ -56,35 +79,48 @@ function Header({ page }) {
     }
   }, [keySearch]);
 
-  // suggest
   React.useEffect(() => {
-    let url;
-    if (page === "home") {
-      url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
-    } else if (page === "experience") {
-      url = `${page}/search?keySearch=${keySearch}`;
-    } else {
-      url = `${page}/search?keySearch=${keySearch}`;
+    if (address?.length === 0) {
+      setShowHistory(false);
     }
-    axios
-      .get(
-        `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
-      )
-      .then(function (response) {
-        setSuggest(response.data);
-        // console.log("Data suggest: ", response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [keySearch]);
+  }, [address]);
+
+  // suggest explore
+  React.useEffect(() => {
+    if (page === "explore") {
+      console.log(page);
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
+        )
+        .then(function (response) {
+          setSuggest(response.data);
+          // console.log("Data suggest: ", response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else if (page === "home") {
+      console.log(page);
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/property/search/suggest?address=${address}`
+        )
+        .then(function (response) {
+          setSuggest([...new Set(response.data.map((e) => e.address))]);
+          // console.log("Data suggest: ", [
+          //   ...new Set(response.data.map((e) => e.address)),
+          // ]);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }, [keySearch, page, address]);
 
   function handleSearch(page) {
     setShowHistory(false);
-
     if (keySearch.length > 0) {
-      // console.log("keysearch: ", keySearch);
-      // console.log("page: ", page);
       navigate("/search/result");
       dispatch(keySearchSlice.actions.setKeySearch(keySearch));
       dispatch(keySearchSlice.actions.setPageSearch(page));
@@ -110,7 +146,7 @@ function Header({ page }) {
             </svg>
           </a>
         </div>
-        <div className="flex justify-center w-[33%] max-[1204px]:w-[55%] min-[768px]:flex max-[768px]:hidden gap-5 text-[1.8rem]">
+        <div className="flex justify-center w-[33%] max-[1204px]:w-[55%] min-[768px]:flex max-[768px]:hidden gap-5 text-[1.7rem]">
           <NavLink
             to="/"
             className={(navData) =>
@@ -148,7 +184,7 @@ function Header({ page }) {
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
           <NavLink
-            to="/host/home"
+            to="/property/list"
             className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl max-[1204px]:hidden"
@@ -170,7 +206,7 @@ function Header({ page }) {
             </svg>
           </button>
           {/* Menu */}
-          <div className="flex">
+          <div className="flex mr-4">
             <Dropdown>
               <DropdownToggle
                 bsPrefix="false"
@@ -188,16 +224,7 @@ function Header({ page }) {
                       d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
                     />
                   </svg>
-                  <p
-                    style={{
-                      margin: "0",
-                      color: "black",
-                      fontSize: "1.6rem",
-                      fontWeight: " 500",
-                    }}
-                  >
-                    {user?.lastName || ""}
-                  </p>
+                  {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
                   {user && user?.avatar ? (
                     <img
                       className="w-14 h-14 rounded-full"
@@ -237,20 +264,50 @@ function Header({ page }) {
       {page === "home" ? (
         <div className="search-wrap shadow-md">
           <div className="search-address">
-            <label htmlFor="keySearch">Địa điểm</label>
+            <label className="text-[1.4rem]" htmlFor="keySearch">
+              Địa điểm
+            </label>
             <input
               type="text"
-              className="search-text"
-              value={keySearch}
-              onChange={(e) =>
-                dispatch(keySearchSlice.actions.setKeySearch(e.target.value))
-              }
+              className="search-text text-[1.4rem]"
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+                setShowHistory(true);
+              }}
               id="keySerch"
               name="keySearch"
               placeholder="Tìm kiếm địa điểm..."
             ></input>
+            {showHistory & (suggest?.length > 0) ? (
+              <div
+                tabindex="1"
+                className="search-history"
+                onBlur={() => {
+                  setShowHistory(false);
+                }}
+              >
+                <h2>Gợi ý</h2>
+
+                <ul className="suggest">
+                  {suggest.map((e, i) => (
+                    <h3
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setAddress(e);
+                        setShowHistory(false);
+                      }}
+                    >
+                      {e}
+                    </h3>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
-          <div className="checkin">
+          <div className="checkin text-[1.4rem]">
             <label htmlFor="">Nhận phòng</label>
             <DatePicker
               className="search-text"
@@ -259,7 +316,7 @@ function Header({ page }) {
               minDate={today}
             />
           </div>
-          <div className="checkout">
+          <div className="checkout text-[1.4rem]">
             <label htmlFor="">Trả phòng</label>
             <DatePicker
               className="search-text"
@@ -269,7 +326,7 @@ function Header({ page }) {
             />
           </div>
           <SearchIcon
-            onClick={() => handleSearch("home")}
+            onClick={() => handleSearchHome()}
             className="search-btn"
           ></SearchIcon>
         </div>

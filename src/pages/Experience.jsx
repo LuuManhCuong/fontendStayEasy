@@ -15,6 +15,7 @@ import {
   CardVertical,
   CardHorizontal,
 } from "../components/Experience/Cardlist";
+import Header from "../components/header/Header";
 
 function Experience() {
   // slide index
@@ -138,7 +139,8 @@ function Experience() {
 
   return (
     <>
-      <CommonHeader padding="32" />
+      {/* <CommonHeader padding="32" /> */}
+      <Header></Header>
       <div className="mt-[10.6rem] pb-10">
         <div className="flex justify-between items-center px-32">
           <h1 className="text-[3.2rem] font-bold">New this week</h1>
