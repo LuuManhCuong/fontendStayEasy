@@ -4,6 +4,7 @@ import Footer from "../components/footer/Footer";
 import { Navigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import { GoStarFill } from "react-icons/go";
+import { TiHeartFullOutline } from "react-icons/ti";
 import axios from "axios";
 import { differenceInCalendarDays, format } from "date-fns";
 import BookingModal from './booking/BookingModal';
@@ -15,7 +16,7 @@ const Booking = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const checkIn = urlParams.get('checkin');
     const checkOut = urlParams.get('checkout');
-   
+    const numGuest = urlParams.get('numGuest');
     const [redirect, setRedirect] = useState('');
     const numberNight = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
     // show UI
@@ -24,17 +25,28 @@ const Booking = () => {
     const [isOpenHouseRuleModal, setIsOpenHouseRuleModal] = useState(false);
     const [isOpenPolicyModal, setIsOpenPolicyModal] = useState(false);
     const [isOpenChargeForDamageModal, setIsOpenChargeForDamageModal] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenEdit, setIsOpenEdit] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialogOpen1, setIsDialogOpen1] = useState(false);
 
+   
     const currency = 'USD';
     const method = 'SALE';
     const intent = 'PAYPAL';
-    const description = `${user.userName}Payment for booking ${place.propertyName}`
+    const description = `${user.userName} Payment for booking ${place.propertyName}`
 
     const togglePopupCountry = () => {
         setIsOpenCountryModal(!isOpenCountryModal);
     };
-
+    const handleOpenDialog = () => {
+        setIsDialogOpen(!isDialogOpen);
+      };
+      const handleOpenEdit = () => {
+        setIsOpenEdit(!isOpenEdit);
+    };
+      const handleOpenDialog1 = () => {
+        setIsDialogOpen1(!isDialogOpen1);
+      };
     const togglePopupHouseRule = () => {
         setIsOpenHouseRuleModal(!isOpenHouseRuleModal);
     };
@@ -60,16 +72,16 @@ const Booking = () => {
                     console.error('Error fetching data:', error);
                 });
         }, [id]);
-      
-    const total = place.price * numberNight - place.discount;
+    const discount = (place.price * numberNight * (place.discount/100));
+    const total = place.price * numberNight - discount;
     const price = place.price * numberNight ;
-    const numOfGuest = place.numGuests;
+    
     async function bookThisPlace() {
         try {
           const response = await axios.post('http://localhost:8080/api/v1/stayeasy/booking/create', {
             checkIn,
             checkOut,
-            numOfGuest,
+            numGuest,
             numberNight,
             currency,
             method,
@@ -115,11 +127,11 @@ const Booking = () => {
                 <div className='pl-64 pt-28 max-w-[53%]'>
                     <div className='flex flex-col'>
                         <div className='flex items-center'>
-                            <a href='/'>
+                        <a href={`/explore/detail/${id}`} className='flex items-center'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 320 512">
                                     <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
                                 </svg>
-                                <h1>Confirm And Payment</h1>
+                                <h1 className='px-10 pl-6'>Xác nhận và thanh toán</h1>
                             </a>
                         </div>
                     </div>
@@ -127,8 +139,8 @@ const Booking = () => {
                         {/* box */}
                         <div className='w-full px-10 py-6 rounded-3xl border border-black flex justify-between items-center'>
                             <div>
-                                <p className='font-bold'>This is a rare find.</p>
-                                <p>{place.owner?.lastName} place is usually booked.</p>
+                                <p className='font-bold'>Địa điểm có rating cao.</p>
+                                <p>Địa điểm của {place.owner?.lastName} thường được đặt trước.</p>
                             </div>
                             <div className=''>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512">
@@ -139,18 +151,18 @@ const Booking = () => {
 
                         {/* Your Trip */}
                         <div className='w-full my-10'>
-                            <h2 className='text-4xl'>Your Trip</h2>
+                            <h2 className='text-4xl'>Chuyến đi của bạn</h2>
                             <div className='flex justify-between items-center mt-10'>
-                                <p className='font-medium text-3xl'>Dates</p>
-                                <button className='underline font-medium' onClick={() => setIsOpen((prev) => !prev)}>Edit</button>
+                                <p className='font-medium text-3xl'>Ngày</p>
+                                <button className='underline font-medium' onClick={handleOpenEdit}>Sửa</button>
                             </div>
-                            <span> {format(new Date(checkIn), 'MM-dd')} To {format(new Date(checkOut), 'MM-dd')} </span>
+                            <span> {format(new Date(checkIn), 'MM-dd')} Đến {format(new Date(checkOut), 'MM-dd')} </span>
                             <div className='flex justify-between items-center mt-10'>
-                                <p className='font-medium text-3xl'>Guests</p>
-                                <a><span className='underline font-medium'>Edit</span></a>
+                                <p className='font-medium text-3xl'>Số khách</p>
+                                <a><span className='underline font-medium'>Sửa</span></a>
                             </div>
-                            <span>{numOfGuest} guests</span>
-                            {!isOpen ? <BookingModal /> : <hr className='my-5' />}
+                            <span>{numGuest} khách</span>
+                            {isOpenEdit && <BookingModal propertyId={id} isOpen={true} onClose={handleOpenEdit} />}
                             <hr className='my-5' />
 
                         </div>
@@ -159,7 +171,7 @@ const Booking = () => {
                         {/* Pay with */}
                         <div className='w-full'>
                             <div className='flex justify-between items-center'>
-                                <h2 className='text-4xl'>Pay with</h2>
+                                <h2 className='text-4xl'>Thanh toán với</h2>
                                 <div className='flex items-center gap-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" height="20" width="22.5" viewBox="0 0 576 512">
                                         <path d="M470.1 231.3s7.6 37.2 9.3 45H446c3.3-8.9 16-43.5 16-43.5-.2 .3 3.3-9.1 5.3-14.9l2.8 13.4zM576 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48zM152.5 331.2L215.7 176h-42.5l-39.3 106-4.3-21.5-14-71.4c-2.3-9.9-9.4-12.7-18.2-13.1H32.7l-.7 3.1c15.8 4 29.9 9.8 42.2 17.1l35.8 135h42.5zm94.4 .2L272.1 176h-40.2l-25.1 155.4h40.1zm139.9-50.8c.2-17.7-10.6-31.2-33.7-42.3-14.1-7.1-22.7-11.9-22.7-19.2 .2-6.6 7.3-13.4 23.1-13.4 13.1-.3 22.7 2.8 29.9 5.9l3.6 1.7 5.5-33.6c-7.9-3.1-20.5-6.6-36-6.6-39.7 0-67.6 21.2-67.8 51.4-.3 22.3 20 34.7 35.2 42.2 15.5 7.6 20.8 12.6 20.8 19.3-.2 10.4-12.6 15.2-24.1 15.2-16 0-24.6-2.5-37.7-8.3l-5.3-2.5-5.6 34.9c9.4 4.3 26.8 8.1 44.8 8.3 42.2 .1 69.7-20.8 70-53zM528 331.4L495.6 176h-31.1c-9.6 0-16.9 2.8-21 12.9l-59.7 142.5H426s6.9-19.2 8.4-23.3H486c1.2 5.5 4.8 23.3 4.8 23.3H528z" />
@@ -261,25 +273,24 @@ const Booking = () => {
 
                         {/* Required for your trip */}
                         <div className='w-full'>
-                            <h2 className='text-4xl'>Required for your trip</h2>
+                            <h2 className='text-4xl'>Cần thiết cho chuyến đi</h2>
                             <div className='flex justify-between items-center'>
                                 <div className='flex flex-col mt-5'>
-                                    <h4>Phone number</h4>
-                                    <p>Add and confirm your phone number to get trip updates.</p>
+                                    <h4>Số điện thoại</h4>
+                                    <p>Thêm và xác nhận số điện thoại của bạn để nhận thông tin cập nhật về chuyến đi.</p>
                                 </div>
                                 <button className='w-24 h-14 border border-black rounded-xl font-medium'>Add</button>
                             </div>
                             <hr className='my-5' />
                         </div>
-
                         {/* Cancellation policy */}
                         <div className='w-full'>
-                            <h2 className='text-4xl'>Cancellation policy</h2>
+                            <h2 className='text-4xl'>Chính sách hủy</h2>
                             <div className='flex flex-col mt-5'>
                                 <p>
-                                    <span className='font-bold'>Free cancellation before Mar 15. </span>
-                                    Cancel before check-in on Mar 16 for a partial refund.
-                                    <span className='font-medium underline ml-1'>Learn more</span>
+                                    <span className='font-bold'>Hủy miễn phí trước ngày {format(new Date(checkIn), 'dd')-2} tháng {format(new Date(checkIn), 'MM')} . </span>
+                                    Hủy trước khi nhận phòng vào ngày {format(new Date(checkIn), 'dd')} tháng {format(new Date(checkIn), 'MM')}  để được hoàn lại một phần.
+                                    <span className='font-medium underline ml-1'>Tìm hiểu thêm</span>
                                 </p>
                             </div>
                             <hr className='my-5' />
@@ -287,12 +298,12 @@ const Booking = () => {
 
                         {/* Ground rules */}
                         <div className='w-full'>
-                            <h2 className='text-4xl'>Ground rules</h2>
+                            <h2 className='text-4xl'>Quy tắc thuê</h2>
                             <div className='flex flex-col mt-5'>
-                                <p>We ask every guest to remember a few simple things about what makes a great guest.</p>
+                                <p>Chúng tôi mong mỗi vị khách hãy ghi nhớ một số điều đơn giản để tạo nên một vị khách tuyệt vời.</p>
                                 <ul>
-                                    <li>● Follow the house rules</li>
-                                    <li>● Treat your Host’s home like your own</li>
+                                    <li>● Tuân theo nguyên tắc của chủ nhà</li>
+                                    <li>● Hãy xem đây như nhà của  bạn</li>
                                 </ul>
                             </div>
                             <hr className='my-5' />
@@ -301,14 +312,15 @@ const Booking = () => {
                         {/* policy */}
                         <div className='w-full'>
                             <div className='text-lg'>
-                                <p>By selecting the button below, I agree to the
-                                    <button onClick={togglePopupHouseRule} className='font-medium underline ml-1'>Host's House Rules</button>,
-                                    <button className='font-medium underline ml-1'>Ground rules for guests</button>,
-                                    <button onClick={togglePopupPolicy} className='font-medium underline ml-1'>Airbnb's Rebooking and Refund Policy</button>,
-                                    and that Airbnb can
-                                    <button onClick={togglePopupChargeForDamage} className='font-medium underline ml-1 mr-1'>charge my payment method</button>
-                                    if I’m responsible for damage.</p>
+                                <p>Bằng cách chọn nút bên dưới, tôi đồng ý với
+                                    <button onClick={togglePopupHouseRule} className='font-medium underline ml-1'>Quy tắc thuê</button>,
+                                    <button className='font-medium underline ml-1'>Nội quy khách thuê</button>,
+                                    <button onClick={togglePopupPolicy} className='font-medium underline ml-1'>Chính sách dịch vụ và hủy của Airbnb</button>,
+                                    và Airbnb có thể 
+                                    <button onClick={togglePopupChargeForDamage} className='font-medium underline ml-1 mr-1'>tính phí vào phương thức thanh toán</button>
+                                    của tôi nếu tôi gây thiệt hại.</p>
                             </div>
+                             
                         </div>
 
                         {/* button confirm */}
@@ -480,34 +492,60 @@ const Booking = () => {
                         {/* top content */}
                         <div className='flex items-center justify-between mb-5'>
                             <img className='rounded-xl mr-5' width="150" height="150" src={place.thumbnail} />
-                            <div>
-                                <h4>{place.propertyName}</h4>
-                                <p>Room in villa</p>
-                                <div className='flex items-center gap-2'>
-                                    <span className='font-medium'>{place.rating}</span><GoStarFill />
-                                    {/* <span>(106 reviews)</span> */}
-                                    <span>Superhost</span>
+                            <div class="mb-4">
+                                <h4 class="text- font-semibold">{place.propertyName}</h4>
+                                <p class="text-gray-600">{place.address}</p>
+                                <div class="flex items-center mt-2">
+                                  <GoStarFill/>
+                                    <span class="text-black-900 mr-1">{place.rating}</span>
+                                    <span class="text-gray-900 ml-1">({place.feedbackList ?? 106 } reviews)</span>
+                                    <TiHeartFullOutline />
+                                    <span class="ml-2 text-gray-900">Superhost</span>
                                 </div>
                             </div>
+
                         </div>
 
                         {/* center content */}
                         <div className='mt-5'>
-                            <h2 className='text-4xl'>Price details</h2>
+                            <h2 className='text-4xl'>Chi tiết giá</h2>
                             <div className='flex justify-between items-center'>
-                                <p>${place.price} x {numberNight} nights</p>
+                                <p>${place.price} x {numberNight} đêm</p>
                                 <p>${place.price * numberNight}</p>
                             </div>
+                            {/* Khuyen mai */}
                             <div className='flex justify-between items-center'>
-                                <p>Discount</p>
-                                <p>${place.discount}</p>
+                                <a className='underline underline-offset-4 text-black ' onClick={handleOpenDialog}>Khuyến mãi</a>
+                                {isDialogOpen && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z50">
+                                <div className="bg-white p-8 rounded-lg drop-shadow-xl">
+                                <button onClick={handleOpenDialog} className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md">X</button>
+                                    <p className="text-xl">{`Khoản phí một lần do chủ nhà tính`}</p>
+                                    <p className="text-xl">{`để trang trải chi phí vệ sinh chỗ của họ.`}</p>
+                                    
+                                </div>
+                                </div>)}
+                                <p>${discount}</p>
+                            </div>
+                            <div className='flex justify-between items-center'>
+                                <a className='underline underline-offset-4 text-black ' onClick={handleOpenDialog1}>Phí dịch vụ Airbnb</a>
+                                {isDialogOpen1 && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z10">
+                                <div className="bg-white p-8 rounded-lg drop-shadow-xl">
+                                 <button onClick={handleOpenDialog1} className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md">X</button>
+                                    <p className="text-xl">{`Điều này giúp chúng tôi vận hành nền tảng của mình và .`}</p>
+                                    <p className="text-xl" >cung cấp các dịch vụ như hỗ trợ 24/7 trong chuyến đi của bạn</p>
+                                    <p className="text-xl" > Số tiền này đã bao gồm thuế GTGT.</p>
+                                </div>
+                                </div>)}
+                                <p>${discount}</p>
                             </div>
                         </div>
                         <hr />
                         {/* bot content */}
                         <div className='mt-5'>
                             <div className='flex justify-between items-center font-bold'>
-                                <p>Total <span className='underline'>(USD)</span></p>
+                                <p>Tổng <span className='underline'>(USD)</span></p>
                                 <p>${total}</p>
                             </div>
                         </div>

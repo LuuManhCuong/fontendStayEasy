@@ -23,7 +23,6 @@ const PaymentSuccsess = () => {
         .then(response => {
             if (response) {
                 setBill(response.data);
-                console.log(bill);
             } else {
                 console.error('Response data is empty or undefined');
             }
@@ -113,7 +112,7 @@ const PaymentSuccsess = () => {
                   Go Home
                 </a>
                 <p className="mt-6 text-xs leading-5 text-gray-600">
-                  Invoices and receipts available for easy company reimbursement
+                 Ngày tạo {createTime}
                 </p>
               </div>
             </div>

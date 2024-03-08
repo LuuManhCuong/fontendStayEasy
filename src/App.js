@@ -3,9 +3,7 @@ import { Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Experience from "./pages/Experience";
-
 import Detail from "./pages/Detail";
-
 import Inbox from "./pages/Inbox/Inbox";
 import InboxGuest from "./components/InboxGuest/InboxGuest";
 import ShowComponent from "./pages/Inbox/ShowComponent";
@@ -14,7 +12,7 @@ import Account from "./pages/AccountSetting/Account";
 import PersonalInfo from "./pages/AccountSetting/PersonalInfo";
 import LoginAndSecurity from "./pages/AccountSetting/LoginAndSecurity";
 import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
-
+import CancelPayment from "./pages/CancelPayment";
 import Login from "./pages/AccountSetting/Login";
 import { ProtectedRoute, isAuthenticated } from "./pages/ProtectedRoute";
 import AdminDarhBoard from "./pages/AdminDarhBoard";
@@ -43,6 +41,7 @@ function App() {
           <Route path="/account/bookings" element={<BookingPage />} />
           <Route path="/account/bookings/:id" element={<BookingDetail />} />
           <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
+          <Route path="/payment/paypal/cancel" element={<CancelPayment />} />
 
           {/* account setting */}
           <Route element={<ProtectedRoute />}>

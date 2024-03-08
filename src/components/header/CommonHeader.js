@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-
-import AuthModal from "../Auth/Authenticate";
-import Authenticated from "../Auth/Authenticated";
+import AuthModal from "../auth/Authenticate";
+import Authenticated from "../auth/Authenticated";
 
 import {
   Dropdown,
