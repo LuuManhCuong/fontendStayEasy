@@ -1,6 +1,6 @@
 import Footer from "../components/footer/Footer";
 import Header from "../components/header/Header";
-import ListView from "../components/listview/ListView";
+import ListView from "../components/listView/ListView";
 import Filter from "../components/filter/Filter";
 import Filters from "../components/filter/Filters";
 import Stack from "@mui/material/Stack";

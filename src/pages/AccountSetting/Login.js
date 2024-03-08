@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 
-import CommonHeader from "../../components/header/CommonHeader";
-import Footer from "../../components/footer/Footer";
-import ButtonCustom from "../../components/Auth/ButtonCustom";
+import CommonHeader from '../../components/header/CommonHeader';
+import Footer from '../../components/footer/Footer';
+import ButtonCustom from "../../components/auth/ButtonCustom";
+
+// import CommonHeader from "../../components/header/CommonHeader";
+// import Footer from "../../components/footer/Footer";
+// import ButtonCustom from "../../components/Auth/ButtonCustom";
+
 import { useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { login, signup } from "../../service/AuthService";

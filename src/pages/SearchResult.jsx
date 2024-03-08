@@ -4,10 +4,12 @@ import Footer from "../components/footer/Footer";
 import Filter from "../components/filter/Filter";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
-
 import { useSelector, useDispatch } from "react-redux";
+
+import ListView from "../components/listView/ListView";
+
 // import ListView from "../components/listview/ListView";
-import ListView from "../components/listview/ListView";
+
 
 import {
   dataExploreSelector,
