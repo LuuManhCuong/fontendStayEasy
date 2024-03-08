@@ -6,25 +6,26 @@ import { Link } from "react-router-dom";
 export default function ListProperty() {
   const [data, setData] = useState([]);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/stayeasy/property`
+      );
+
+      if (response.status === 200) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error("da xay ra loi: ", error);
+    }
+  };
 
   // get data
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/stayeasy/property/user/${user?.id}`
-        );
-
-        if (response.status === 200) {
-          setData(response.data);
-        }
-      } catch (error) {
-        console.error("da xay ra loi: ", error);
-      }
-    };
+    
 
     fetchData();
-  }, [data]);
+  }, []);
 
   // handle delete property
   const handleDelete = (propertyId) => {
@@ -49,9 +50,7 @@ export default function ListProperty() {
           }
 
           // Update the state with the new property list
-          setData((prevData) =>
-            prevData.filter((item) => item.id !== propertyId)
-          );
+          fetchData();
           // alert(`Xóa thành công: ${propertyId}`);
         })
         .catch((e) => console.error("Lỗi khi xóa: ", e));

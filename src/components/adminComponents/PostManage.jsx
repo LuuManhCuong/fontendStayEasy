@@ -5,22 +5,23 @@ import { Link } from "react-router-dom";
 
 export default function PostManage() {
   const [data, setData] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/stayeasy/property`
+      );
+
+      if (response.status === 200) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error("da xay ra loi: ", error);
+    }
+  };
 
   // get data
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/stayeasy/property`
-        );
-  
-        if (response.status === 200) {
-          setData(response.data);
-        }
-      } catch (error) {
-        console.error("da xay ra loi: ", error);
-      }
-    };
+    
     fetchData();
   }, []);
 
@@ -47,8 +48,7 @@ export default function PostManage() {
           }
           console.log(res.status);
           // Update the state with the new property list
-          const updatedData = data.filter((item) => item.propertyId !== propertyId);
-          setData(updatedData);
+          fetchData();
           // alert(`Xóa thành công: ${propertyId}`);
         })
         .catch((e) => console.error("Lỗi khi xóa: ", e));
