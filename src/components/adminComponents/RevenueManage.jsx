@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Col, Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 
 function RevenueManage({ data }) {
