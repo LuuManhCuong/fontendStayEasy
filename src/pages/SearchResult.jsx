@@ -4,10 +4,12 @@ import Footer from "../components/footer/Footer";
 import Filter from "../components/filter/Filter";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
-
 import { useSelector, useDispatch } from "react-redux";
+
+import ListView from "../components/listView/ListView";
+
 // import ListView from "../components/listview/ListView";
-import ListView from "../components/listview/ListView";
+
 
 import {
   dataExploreSelector,
@@ -24,23 +26,42 @@ function SearchResult() {
   const navigate = useNavigate();
   const { reloadLike } = useSelector(grouptSelector);
 
-  const { page, keySearch } = useSelector(keySearchSelector);
+  const { page, keySearch, address, checkin, checkout } =
+    useSelector(keySearchSelector);
   const [dataSearch, setDataSearch] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log("checkin: " + checkin);
+  console.log("checkout: " + checkout);
+  console.log("address: " + address);
+  // console.log("keysearch: ", keySearch);
+  // console.log("page: ", page);
+
   useEffect(() => {
-    console.log("keysearch: ", keySearch);
-    console.log("page: ", page);
     let url;
     if (page === "home") {
-      // url = `${page}/search?address=${keySearch}&checkin=${checkin}&checkout=${checkout}`;
-    } else if (page === "experience") {
-      url = `${page}/search?keySearch=${keySearch}`;
+      setIsLoading(true);
+      axios
+        .get(
+          `http://localhost:8080/api/v1/stayeasy/property/search?address=${address}&checkin=${checkin}&checkout=${checkout}`
+        )
+        .then(function (response) {
+          navigate("/search/result");
+          setDataSearch(response.data);
+          setIsLoading(false);
+          console.log("data search: ", response.data);
+        })
+        .catch(function (error) {
+          setIsLoading(false);
+
+          console.log(error);
+        });
     } else if (page === "explore" && keySearch.length > 0) {
       url = `${page}/search?keySearch=${keySearch}&page=${0}&size=${50}`;
       searchExplore(url);
     }
-  }, [keySearch, page, reloadLike]);
+  }, [checkin, checkout, address, keySearch, page, reloadLike]);
+
   // method search explore data
   function searchExplore(url) {
     axios
@@ -58,11 +79,22 @@ function SearchResult() {
   }
   return (
     <>
-      <Header page="explore"></Header>
+      <Header page={page}></Header>
       <Filter></Filter>
-      <h3>
-        {dataSearch?.length} Kết quả tìm kiếm cho từ khóa: {keySearch}
-      </h3>
+      {page === "home" ? (
+        <>
+          <h3>
+            {dataSearch?.length} Kết quả tìm kiếm cho từ khóa: {address}
+          </h3>
+          <p>ngày nhận phòng {checkin}</p>
+          <p>ngày trả phòng {checkout}</p>
+        </>
+      ) : (
+        <h3>
+          {dataSearch?.length} Kết quả tìm kiếm cho từ khóa: {keySearch}
+        </h3>
+      )}
+
       {dataSearch?.length > 0 && <ListView data={dataSearch}></ListView>}
       {isLoading ? (
         <Stack

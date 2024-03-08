@@ -4,6 +4,7 @@ import Footer from "../components/footer/Footer";
 import { Navigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import { GoStarFill } from "react-icons/go";
+import { TiHeartFullOutline } from "react-icons/ti";
 import axios from "axios";
 import { differenceInCalendarDays, format } from "date-fns";
 import BookingModal from './booking/BookingModal';
@@ -15,7 +16,7 @@ const Booking = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const checkIn = urlParams.get('checkin');
     const checkOut = urlParams.get('checkout');
-   
+    const numGuest = urlParams.get('numGuest');
     const [redirect, setRedirect] = useState('');
     const numberNight = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
     // show UI
@@ -24,17 +25,34 @@ const Booking = () => {
     const [isOpenHouseRuleModal, setIsOpenHouseRuleModal] = useState(false);
     const [isOpenPolicyModal, setIsOpenPolicyModal] = useState(false);
     const [isOpenChargeForDamageModal, setIsOpenChargeForDamageModal] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenEdit, setIsOpenEdit] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialogOpen1, setIsDialogOpen1] = useState(false);
+
 
     const currency = 'USD';
     const method = 'SALE';
     const intent = 'PAYPAL';
-    const description = `${user.userName}Payment for booking ${place.propertyName}`
+    const description = `${user.userName} Payment for booking ${place.propertyName}`
 
+    const [selectedPayment, setSelectedPayment] = useState("Credit or debit card");
+
+    const handlePaymentSelect = (paymentType) => {
+        setSelectedPayment(paymentType);
+        setIsOpenPayFunction(false);
+    }
     const togglePopupCountry = () => {
         setIsOpenCountryModal(!isOpenCountryModal);
     };
-
+    const handleOpenDialog = () => {
+        setIsDialogOpen(!isDialogOpen);
+    };
+    const handleOpenEdit = () => {
+        setIsOpenEdit(!isOpenEdit);
+    };
+    const handleOpenDialog1 = () => {
+        setIsDialogOpen1(!isDialogOpen1);
+    };
     const togglePopupHouseRule = () => {
         setIsOpenHouseRuleModal(!isOpenHouseRuleModal);
     };
@@ -48,59 +66,59 @@ const Booking = () => {
     };
     useEffect(() => {
         if (!id) return;
-            axios.get(`http://localhost:8080/api/v1/stayeasy/property/${id}`)
-                .then(response => {
-                    if (response) {
-                        setPlace(response.data);
-                        console.log(response.data); // Logging response data instead of place
-                    }
-                })
-                .catch(error => {
-                    // Handle errors
-                    console.error('Error fetching data:', error);
-                });
-        }, [id]);
-      
-    const total = place.price * numberNight - place.discount;
-    const price = place.price * numberNight ;
-    const numOfGuest = place.numGuests;
+        axios.get(`http://localhost:8080/api/v1/stayeasy/property/${id}`)
+            .then(response => {
+                if (response) {
+                    setPlace(response.data);
+                    console.log(response.data); // Logging response data instead of place
+                }
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error fetching data:', error);
+            });
+    }, [id]);
+    const discount = place ? (place.price * numberNight * (place.discount / 100)) : 0;
+  const total = place ? (place.price * numberNight - discount) : 0;
+  const price = place ? (place.price * numberNight) : 0;
+
     async function bookThisPlace() {
         try {
-          const response = await axios.post('http://localhost:8080/api/v1/stayeasy/booking/create', {
-            checkIn,
-            checkOut,
-            numOfGuest,
-            numberNight,
-            currency,
-            method,
-            intent,
-            description,
-            propertyId: id,
-            userId: user.id,
-            price: total,
-            total: price,
-          });
-      
-          // Lấy dữ liệu từ response
-          const { data } = response;
-      
-          // Kiểm tra xem có approvalUrl trong response không
-          if (data && data.approvalUrl) {
-            // Redirect đến approvalUrl
-            window.location.href = data.approvalUrl;
-          } else {
-            // Xử lý trường hợp không có approvalUrl
-            console.error("Không tìm thấy approvalUrl.");
-          }
+            const response = await axios.post('http://localhost:8080/api/v1/stayeasy/booking/create', {
+                checkIn,
+                checkOut,
+                numGuest,
+                numberNight,
+                currency,
+                method,
+                intent,
+                description,
+                propertyId: id,
+                userId: user.id,
+                price: total,
+                total: price,
+            });
+
+            // Lấy dữ liệu từ response
+            const { data } = response;
+
+            // Kiểm tra xem có approvalUrl trong response không
+            if (data && data.approvalUrl) {
+                // Redirect đến approvalUrl
+                window.location.href = data.approvalUrl;
+            } else {
+                // Xử lý trường hợp không có approvalUrl
+                console.error("Không tìm thấy approvalUrl.");
+            }
         } catch (error) {
-          // Xử lý lỗi nếu có
-          console.error("Đã xảy ra lỗi:", error);
+            // Xử lý lỗi nếu có
+            console.error("Đã xảy ra lỗi:", error);
         }
-      }
+    }
 
     return (
         <>
-            <div className="flex items-center h-32 w-full pl-10 shadow-sm shadow-black">
+             <div className="flex items-center h-32 w-full pl-10 shadow-sm shadow-black">
                 <svg width="102" height="32" color='#FF385C'>
                     <path
                         d="M29.3864 22.7101C29.2429 22.3073 29.0752 21.9176 28.9157 21.5565C28.6701 21.0011 28.4129 20.4446 28.1641 19.9067L28.1444 19.864C25.9255 15.0589 23.5439 10.1881 21.0659 5.38701L20.9607 5.18316C20.7079 4.69289 20.4466 4.18596 20.1784 3.68786C19.8604 3.0575 19.4745 2.4636 19.0276 1.91668C18.5245 1.31651 17.8956 0.833822 17.1853 0.502654C16.475 0.171486 15.7005 -9.83959e-05 14.9165 4.23317e-08C14.1325 9.84805e-05 13.3581 0.171877 12.6478 0.503224C11.9376 0.834571 11.3088 1.31742 10.8059 1.91771C10.3595 2.46476 9.97383 3.05853 9.65572 3.68858C9.38521 4.19115 9.12145 4.70278 8.8664 5.19757L8.76872 5.38696C6.29061 10.1884 3.90903 15.0592 1.69015 19.8639L1.65782 19.9338C1.41334 20.463 1.16057 21.0102 0.919073 21.5563C0.75949 21.9171 0.592009 22.3065 0.448355 22.7103C0.0369063 23.8104 -0.094204 24.9953 0.0668098 26.1585C0.237562 27.334 0.713008 28.4447 1.44606 29.3804C2.17911 30.3161 3.14434 31.0444 4.24614 31.4932C5.07835 31.8299 5.96818 32.002 6.86616 32C7.14824 31.9999 7.43008 31.9835 7.71027 31.9509C8.846 31.8062 9.94136 31.4366 10.9321 30.8639C12.2317 30.1338 13.5152 29.0638 14.9173 27.5348C16.3194 29.0638 17.6029 30.1338 18.9025 30.8639C19.8932 31.4367 20.9886 31.8062 22.1243 31.9509C22.4045 31.9835 22.6864 31.9999 22.9685 32C23.8664 32.002 24.7561 31.8299 25.5883 31.4932C26.6901 31.0444 27.6554 30.3161 28.3885 29.3804C29.1216 28.4447 29.5971 27.3341 29.7679 26.1585C29.9287 24.9952 29.7976 23.8103 29.3864 22.7101ZM14.9173 24.377C13.1816 22.1769 12.0678 20.1338 11.677 18.421C11.5169 17.7792 11.4791 17.1131 11.5656 16.4573C11.6339 15.9766 11.8105 15.5176 12.0821 15.1148C12.4163 14.6814 12.8458 14.3304 13.3374 14.0889C13.829 13.8475 14.3696 13.7219 14.9175 13.7219C15.4655 13.722 16.006 13.8476 16.4976 14.0892C16.9892 14.3307 17.4186 14.6817 17.7528 15.1151C18.0244 15.5181 18.201 15.9771 18.2693 16.4579C18.3556 17.114 18.3177 17.7803 18.1573 18.4223C17.7661 20.1349 16.6526 22.1774 14.9173 24.377ZM27.7406 25.8689C27.6212 26.6908 27.2887 27.4674 26.7762 28.1216C26.2636 28.7759 25.5887 29.2852 24.8183 29.599C24.0393 29.9111 23.1939 30.0217 22.3607 29.9205C21.4946 29.8089 20.6599 29.5239 19.9069 29.0824C18.7501 28.4325 17.5791 27.4348 16.2614 25.9712C18.3591 23.3846 19.669 21.0005 20.154 18.877C20.3723 17.984 20.4196 17.0579 20.2935 16.1475C20.1791 15.3632 19.8879 14.615 19.4419 13.9593C18.9194 13.2519 18.2378 12.6768 17.452 12.2805C16.6661 11.8842 15.798 11.6777 14.9175 11.6777C14.0371 11.6777 13.1689 11.8841 12.383 12.2803C11.5971 12.6765 10.9155 13.2515 10.393 13.9589C9.94707 14.6144 9.65591 15.3624 9.5414 16.1465C9.41524 17.0566 9.4623 17.9822 9.68011 18.8749C10.1648 20.9993 11.4748 23.384 13.5732 25.9714C12.2555 27.4348 11.0845 28.4325 9.92769 29.0825C9.17468 29.5239 8.34007 29.809 7.47395 29.9205C6.64065 30.0217 5.79525 29.9111 5.0162 29.599C4.24581 29.2852 3.57092 28.7759 3.05838 28.1217C2.54585 27.4674 2.21345 26.6908 2.09411 25.8689C1.97932 25.0334 2.07701 24.1825 2.37818 23.3946C2.49266 23.0728 2.62663 22.757 2.7926 22.3818C3.0274 21.851 3.27657 21.3115 3.51759 20.7898L3.54996 20.7197C5.75643 15.9419 8.12481 11.0982 10.5894 6.32294L10.6875 6.13283C10.9384 5.64601 11.1979 5.14267 11.4597 4.6563C11.7101 4.15501 12.0132 3.68171 12.3639 3.2444C12.6746 2.86903 13.0646 2.56681 13.5059 2.35934C13.9473 2.15186 14.4291 2.04426 14.9169 2.04422C15.4047 2.04418 15.8866 2.15171 16.3279 2.35911C16.7693 2.56651 17.1593 2.86867 17.4701 3.24399C17.821 3.68097 18.1242 4.15411 18.3744 4.65538C18.6338 5.13742 18.891 5.63623 19.1398 6.11858L19.2452 6.32315C21.7097 11.0979 24.078 15.9415 26.2847 20.7201L26.3046 20.7631C26.5498 21.2936 26.8033 21.8419 27.042 22.382C27.2082 22.7577 27.3424 23.0738 27.4566 23.3944C27.7576 24.1824 27.8553 25.0333 27.7406 25.8689Z"
@@ -110,16 +128,17 @@ const Booking = () => {
                         fill="currentcolor"></path>
                 </svg>
             </div>
-            <div className='flex justify-between'>
+        
+            { place ? (<div className='flex justify-between'>
                 {/* Left content */}
-                <div className='pl-64 pt-28 max-w-[53%]'>
+               <div className='pl-64 pt-28 max-w-[53%]'>
                     <div className='flex flex-col'>
                         <div className='flex items-center'>
-                            <a href='/'>
+                            <a href={`/explore/detail/${id}`} className='flex items-center'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 320 512">
                                     <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
                                 </svg>
-                                <h1>Confirm And Payment</h1>
+                                <h1 className='px-10 pl-6'>Xác nhận và thanh toán</h1>
                             </a>
                         </div>
                     </div>
@@ -127,8 +146,8 @@ const Booking = () => {
                         {/* box */}
                         <div className='w-full px-10 py-6 rounded-3xl border border-black flex justify-between items-center'>
                             <div>
-                                <p className='font-bold'>This is a rare find.</p>
-                                <p>{place.owner?.lastName} place is usually booked.</p>
+                                <p className='font-bold'>Địa điểm có rating cao.</p>
+                                <p>Địa điểm của {place.owner?.lastName} thường được đặt trước.</p>
                             </div>
                             <div className=''>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512">
@@ -139,18 +158,18 @@ const Booking = () => {
 
                         {/* Your Trip */}
                         <div className='w-full my-10'>
-                            <h2 className='text-4xl'>Your Trip</h2>
+                            <h2 className='text-4xl'>Chuyến đi của bạn</h2>
                             <div className='flex justify-between items-center mt-10'>
-                                <p className='font-medium text-3xl'>Dates</p>
-                                <button className='underline font-medium' onClick={() => setIsOpen((prev) => !prev)}>Edit</button>
+                                <p className='font-medium text-3xl'>Ngày</p>
+                                <button className='underline font-medium' onClick={handleOpenEdit}>Sửa</button>
                             </div>
-                            <span> {format(new Date(checkIn), 'MM-dd')} To {format(new Date(checkOut), 'MM-dd')} </span>
+                            <span> {format(new Date(checkIn), 'MM-dd')} Đến {format(new Date(checkOut), 'MM-dd')} </span>
                             <div className='flex justify-between items-center mt-10'>
-                                <p className='font-medium text-3xl'>Guests</p>
-                                <a><span className='underline font-medium'>Edit</span></a>
+                                <p className='font-medium text-3xl'>Số khách</p>
+                                <a><span className='underline font-medium'>Sửa</span></a>
                             </div>
-                            <span>{numOfGuest} guests</span>
-                            {!isOpen ? <BookingModal /> : <hr className='my-5' />}
+                            <span>{numGuest} khách</span>
+                            {isOpenEdit && <BookingModal propertyId={id} isOpen={true} onClose={handleOpenEdit} />}
                             <hr className='my-5' />
 
                         </div>
@@ -159,7 +178,7 @@ const Booking = () => {
                         {/* Pay with */}
                         <div className='w-full'>
                             <div className='flex justify-between items-center'>
-                                <h2 className='text-4xl'>Pay with</h2>
+                                <h2 className='text-4xl'>Thanh toán với</h2>
                                 <div className='flex items-center gap-2'>
                                     <svg xmlns="http://www.w3.org/2000/svg" height="20" width="22.5" viewBox="0 0 576 512">
                                         <path d="M470.1 231.3s7.6 37.2 9.3 45H446c3.3-8.9 16-43.5 16-43.5-.2 .3 3.3-9.1 5.3-14.9l2.8 13.4zM576 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48zM152.5 331.2L215.7 176h-42.5l-39.3 106-4.3-21.5-14-71.4c-2.3-9.9-9.4-12.7-18.2-13.1H32.7l-.7 3.1c15.8 4 29.9 9.8 42.2 17.1l35.8 135h42.5zm94.4 .2L272.1 176h-40.2l-25.1 155.4h40.1zm139.9-50.8c.2-17.7-10.6-31.2-33.7-42.3-14.1-7.1-22.7-11.9-22.7-19.2 .2-6.6 7.3-13.4 23.1-13.4 13.1-.3 22.7 2.8 29.9 5.9l3.6 1.7 5.5-33.6c-7.9-3.1-20.5-6.6-36-6.6-39.7 0-67.6 21.2-67.8 51.4-.3 22.3 20 34.7 35.2 42.2 15.5 7.6 20.8 12.6 20.8 19.3-.2 10.4-12.6 15.2-24.1 15.2-16 0-24.6-2.5-37.7-8.3l-5.3-2.5-5.6 34.9c9.4 4.3 26.8 8.1 44.8 8.3 42.2 .1 69.7-20.8 70-53zM528 331.4L495.6 176h-31.1c-9.6 0-16.9 2.8-21 12.9l-59.7 142.5H426s6.9-19.2 8.4-23.3H486c1.2 5.5 4.8 23.3 4.8 23.3H528z" />
@@ -188,7 +207,7 @@ const Booking = () => {
                                                 <line x1="120" y1="168" x2="136" y2="168" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
                                                 <line x1="24" y1="96.9" x2="232" y2="96.9" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
                                             </svg>
-                                            Credit or debit card
+                                            {selectedPayment}
                                         </div>
                                         {!isOpenPayFunction ? (
                                             <AiOutlineCaretDown className='h-11'></AiOutlineCaretDown>
@@ -197,89 +216,118 @@ const Booking = () => {
                                         )}
                                     </button>
 
-                                    {isOpenPayFunction && <div className='bg-white absolute top-20 flex flex-col items-start rounded-lg mt-[15px] w-full border border-black'>
-                                        <div className='flex w-full p-3 text-2xl text-gray-600 justify-between hover:bg-gray-100 cursor-pointer rounded-r-lg border-l-transparent'>
-                                            <div className='flex items-center gap-3'>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width='35' height='35'>
-                                                    <rect width="256" height="256" fill="none" />
-                                                    <rect x="24" y="56" width="208" height="144" rx="8" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
-                                                    <line x1="168" y1="168" x2="200" y2="168" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
-                                                    <line x1="120" y1="168" x2="136" y2="168" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
-                                                    <line x1="24" y1="96.9" x2="232" y2="96.9" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
-                                                </svg>
-                                                <span>Credit or debit card</span>
+                                    {isOpenPayFunction &&
+                                        <div className='bg-white absolute top-20 flex flex-col items-start rounded-lg mt-[15px] w-full border border-black'>
+                                            <div className='flex w-full p-3 text-2xl text-gray-600 justify-between hover:bg-gray-100 cursor-pointer rounded-r-lg border-l-transparent'>
+                                                <button
+                                                    className="flex items-center gap-3 p-3 text-2xl text-gray-600 hover:bg-gray-100 cursor-pointer rounded-lg border-l-transparent w-full"
+                                                    onClick={() => handlePaymentSelect('Credit or debit card')}>
+                                                    <div className=''>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width='35' height='35'>
+                                                            <rect width="256" height="256" fill="none" />
+                                                            <rect x="24" y="56" width="208" height="144" rx="8" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
+                                                            <line x1="168" y1="168" x2="200" y2="168" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
+                                                            <line x1="120" y1="168" x2="136" y2="168" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
+                                                            <line x1="24" y1="96.9" x2="232" y2="96.9" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" />
+                                                        </svg>
+                                                    </div>
+                                                    Credit or debit card
+                                                </button>
                                             </div>
-                                            <span>check</span>
-                                        </div>
-                                        <div className='flex w-full p-3 text-2xl text-gray-600 justify-between hover:bg-gray-100 cursor-pointer rounded-r-lg border-l-transparent'>
-                                            <div className='flex items-center gap-3'>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width='35' height='35' viewBox="0 0 576 512">
-                                                    <path d="M186.3 258.2c0 12.2-9.7 21.5-22 21.5-9.2 0-16-5.2-16-15 0-12.2 9.5-22 21.7-22 9.3 0 16.3 5.7 16.3 15.5zM80.5 209.7h-4.7c-1.5 0-3 1-3.2 2.7l-4.3 26.7 8.2-.3c11 0 19.5-1.5 21.5-14.2 2.3-13.4-6.2-14.9-17.5-14.9zm284 0H360c-1.8 0-3 1-3.2 2.7l-4.2 26.7 8-.3c13 0 22-3 22-18-.1-10.6-9.6-11.1-18.1-11.1zM576 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48zM128.3 215.4c0-21-16.2-28-34.7-28h-40c-2.5 0-5 2-5.2 4.7L32 294.2c-.3 2 1.2 4 3.2 4h19c2.7 0 5.2-2.9 5.5-5.7l4.5-26.6c1-7.2 13.2-4.7 18-4.7 28.6 0 46.1-17 46.1-45.8zm84.2 8.8h-19c-3.8 0-4 5.5-4.2 8.2-5.8-8.5-14.2-10-23.7-10-24.5 0-43.2 21.5-43.2 45.2 0 19.5 12.2 32.2 31.7 32.2 9 0 20.2-4.9 26.5-11.9-.5 1.5-1 4.7-1 6.2 0 2.3 1 4 3.2 4H200c2.7 0 5-2.9 5.5-5.7l10.2-64.3c.3-1.9-1.2-3.9-3.2-3.9zm40.5 97.9l63.7-92.6c.5-.5 .5-1 .5-1.7 0-1.7-1.5-3.5-3.2-3.5h-19.2c-1.7 0-3.5 1-4.5 2.5l-26.5 39-11-37.5c-.8-2.2-3-4-5.5-4h-18.7c-1.7 0-3.2 1.8-3.2 3.5 0 1.2 19.5 56.8 21.2 62.1-2.7 3.8-20.5 28.6-20.5 31.6 0 1.8 1.5 3.2 3.2 3.2h19.2c1.8-.1 3.5-1.1 4.5-2.6zm159.3-106.7c0-21-16.2-28-34.7-28h-39.7c-2.7 0-5.2 2-5.5 4.7l-16.2 102c-.2 2 1.3 4 3.2 4h20.5c2 0 3.5-1.5 4-3.2l4.5-29c1-7.2 13.2-4.7 18-4.7 28.4 0 45.9-17 45.9-45.8zm84.2 8.8h-19c-3.8 0-4 5.5-4.3 8.2-5.5-8.5-14-10-23.7-10-24.5 0-43.2 21.5-43.2 45.2 0 19.5 12.2 32.2 31.7 32.2 9.3 0 20.5-4.9 26.5-11.9-.3 1.5-1 4.7-1 6.2 0 2.3 1 4 3.2 4H484c2.7 0 5-2.9 5.5-5.7l10.2-64.3c.3-1.9-1.2-3.9-3.2-3.9zm47.5-33.3c0-2-1.5-3.5-3.2-3.5h-18.5c-1.5 0-3 1.2-3.2 2.7l-16.2 104-.3 .5c0 1.8 1.5 3.5 3.5 3.5h16.5c2.5 0 5-2.9 5.2-5.7L544 191.2v-.3zm-90 51.8c-12.2 0-21.7 9.7-21.7 22 0 9.7 7 15 16.2 15 12 0 21.7-9.2 21.7-21.5 .1-9.8-6.9-15.5-16.2-15.5z" />
-                                                </svg>
-                                                <span>Pay Pal</span>
+                                            <div className='flex w-full p-3 text-2xl text-gray-600 justify-between hover:bg-gray-100 cursor-pointer rounded-r-lg border-l-transparent'>
+                                                <button
+                                                    className="flex items-center gap-3 p-3 text-2xl text-gray-600 hover:bg-gray-100 cursor-pointer rounded-lg border-l-transparent w-full"
+                                                    onClick={() => handlePaymentSelect('PayPal')}>
+                                                    <div className=''>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width='35' height='35' viewBox="0 0 576 512">
+                                                            <path d="M186.3 258.2c0 12.2-9.7 21.5-22 21.5-9.2 0-16-5.2-16-15 0-12.2 9.5-22 21.7-22 9.3 0 16.3 5.7 16.3 15.5zM80.5 209.7h-4.7c-1.5 0-3 1-3.2 2.7l-4.3 26.7 8.2-.3c11 0 19.5-1.5 21.5-14.2 2.3-13.4-6.2-14.9-17.5-14.9zm284 0H360c-1.8 0-3 1-3.2 2.7l-4.2 26.7 8-.3c13 0 22-3 22-18-.1-10.6-9.6-11.1-18.1-11.1zM576 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h480c26.5 0 48 21.5 48 48zM128.3 215.4c0-21-16.2-28-34.7-28h-40c-2.5 0-5 2-5.2 4.7L32 294.2c-.3 2 1.2 4 3.2 4h19c2.7 0 5.2-2.9 5.5-5.7l4.5-26.6c1-7.2 13.2-4.7 18-4.7 28.6 0 46.1-17 46.1-45.8zm84.2 8.8h-19c-3.8 0-4 5.5-4.2 8.2-5.8-8.5-14.2-10-23.7-10-24.5 0-43.2 21.5-43.2 45.2 0 19.5 12.2 32.2 31.7 32.2 9 0 20.2-4.9 26.5-11.9-.5 1.5-1 4.7-1 6.2 0 2.3 1 4 3.2 4H200c2.7 0 5-2.9 5.5-5.7l10.2-64.3c.3-1.9-1.2-3.9-3.2-3.9zm40.5 97.9l63.7-92.6c.5-.5 .5-1 .5-1.7 0-1.7-1.5-3.5-3.2-3.5h-19.2c-1.7 0-3.5 1-4.5 2.5l-26.5 39-11-37.5c-.8-2.2-3-4-5.5-4h-18.7c-1.7 0-3.2 1.8-3.2 3.5 0 1.2 19.5 56.8 21.2 62.1-2.7 3.8-20.5 28.6-20.5 31.6 0 1.8 1.5 3.2 3.2 3.2h19.2c1.8-.1 3.5-1.1 4.5-2.6zm159.3-106.7c0-21-16.2-28-34.7-28h-39.7c-2.7 0-5.2 2-5.5 4.7l-16.2 102c-.2 2 1.3 4 3.2 4h20.5c2 0 3.5-1.5 4-3.2l4.5-29c1-7.2 13.2-4.7 18-4.7 28.4 0 45.9-17 45.9-45.8zm84.2 8.8h-19c-3.8 0-4 5.5-4.3 8.2-5.5-8.5-14-10-23.7-10-24.5 0-43.2 21.5-43.2 45.2 0 19.5 12.2 32.2 31.7 32.2 9.3 0 20.5-4.9 26.5-11.9-.3 1.5-1 4.7-1 6.2 0 2.3 1 4 3.2 4H484c2.7 0 5-2.9 5.5-5.7l10.2-64.3c.3-1.9-1.2-3.9-3.2-3.9zm47.5-33.3c0-2-1.5-3.5-3.2-3.5h-18.5c-1.5 0-3 1.2-3.2 2.7l-16.2 104-.3 .5c0 1.8 1.5 3.5 3.5 3.5h16.5c2.5 0 5-2.9 5.2-5.7L544 191.2v-.3zm-90 51.8c-12.2 0-21.7 9.7-21.7 22 0 9.7 7 15 16.2 15 12 0 21.7-9.2 21.7-21.5 .1-9.8-6.9-15.5-16.2-15.5z" />
+                                                        </svg>
+                                                    </div>
+                                                    Pay Pal
+                                                </button>
                                             </div>
-                                            <span>check</span>
-                                        </div>
-                                        <div className='flex w-full p-3 text-2xl text-gray-600 justify-between hover:bg-gray-100 cursor-pointer rounded-r-lg border-l-transparent'>
-                                            <div className='flex items-center gap-3'>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width='35' height='35' viewBox="0 0 640 512">
-                                                    <path d="M105.7 215v41.3h57.1a49.7 49.7 0 0 1 -21.1 32.6c-9.5 6.6-21.7 10.3-36 10.3-27.6 0-50.9-18.9-59.3-44.2a65.6 65.6 0 0 1 0-41l0 0c8.4-25.5 31.7-44.4 59.3-44.4a56.4 56.4 0 0 1 40.5 16.1L176.5 155a101.2 101.2 0 0 0 -70.8-27.8 105.6 105.6 0 0 0 -94.4 59.1 107.6 107.6 0 0 0 0 96.2v.2a105.4 105.4 0 0 0 94.4 59c28.5 0 52.6-9.5 70-25.9 20-18.6 31.4-46.2 31.4-78.9A133.8 133.8 0 0 0 205.4 215zm389.4-4c-10.1-9.4-23.9-14.1-41.4-14.1-22.5 0-39.3 8.3-50.5 24.9l20.9 13.3q11.5-17 31.3-17a34.1 34.1 0 0 1 22.8 8.8A28.1 28.1 0 0 1 487.8 248v5.5c-9.1-5.1-20.6-7.8-34.6-7.8-16.4 0-29.7 3.9-39.5 11.8s-14.8 18.3-14.8 31.6a39.7 39.7 0 0 0 13.9 31.3c9.3 8.3 21 12.5 34.8 12.5 16.3 0 29.2-7.3 39-21.9h1v17.7h22.6V250C510.3 233.5 505.3 220.3 495.1 211zM475.9 300.3a37.3 37.3 0 0 1 -26.6 11.2A28.6 28.6 0 0 1 431 305.2a19.4 19.4 0 0 1 -7.8-15.6c0-7 3.2-12.8 9.5-17.4s14.5-7 24.1-7C470 265 480.3 268 487.6 273.9 487.6 284.1 483.7 292.9 475.9 300.3zm-93.7-142A55.7 55.7 0 0 0 341.7 142H279.1V328.7H302.7V253.1h39c16 0 29.5-5.4 40.5-15.9 .9-.9 1.8-1.8 2.7-2.7A54.5 54.5 0 0 0 382.3 158.3zm-16.6 62.2a30.7 30.7 0 0 1 -23.3 9.7H302.7V165h39.6a32 32 0 0 1 22.6 9.2A33.2 33.2 0 0 1 365.7 220.5zM614.3 201 577.8 292.7h-.5L539.9 201H514.2L566 320.6l-29.4 64.3H561L640 201z" />
-                                                </svg>
-                                                <span>Google Pay</span>
+                                            <div className='flex w-full p-3 text-2xl text-gray-600 justify-between hover:bg-gray-100 cursor-pointer rounded-r-lg border-l-transparent'>
+                                                <button
+                                                    className="flex items-center gap-3 p-3 text-2xl text-gray-600 hover:bg-gray-100 cursor-pointer rounded-lg border-l-transparent w-full"
+                                                    onClick={() => handlePaymentSelect('Google Pay')}>
+                                                    <div className=''>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width='35' height='35' viewBox="0 0 640 512">
+                                                            <path d="M105.7 215v41.3h57.1a49.7 49.7 0 0 1 -21.1 32.6c-9.5 6.6-21.7 10.3-36 10.3-27.6 0-50.9-18.9-59.3-44.2a65.6 65.6 0 0 1 0-41l0 0c8.4-25.5 31.7-44.4 59.3-44.4a56.4 56.4 0 0 1 40.5 16.1L176.5 155a101.2 101.2 0 0 0 -70.8-27.8 105.6 105.6 0 0 0 -94.4 59.1 107.6 107.6 0 0 0 0 96.2v.2a105.4 105.4 0 0 0 94.4 59c28.5 0 52.6-9.5 70-25.9 20-18.6 31.4-46.2 31.4-78.9A133.8 133.8 0 0 0 205.4 215zm389.4-4c-10.1-9.4-23.9-14.1-41.4-14.1-22.5 0-39.3 8.3-50.5 24.9l20.9 13.3q11.5-17 31.3-17a34.1 34.1 0 0 1 22.8 8.8A28.1 28.1 0 0 1 487.8 248v5.5c-9.1-5.1-20.6-7.8-34.6-7.8-16.4 0-29.7 3.9-39.5 11.8s-14.8 18.3-14.8 31.6a39.7 39.7 0 0 0 13.9 31.3c9.3 8.3 21 12.5 34.8 12.5 16.3 0 29.2-7.3 39-21.9h1v17.7h22.6V250C510.3 233.5 505.3 220.3 495.1 211zM475.9 300.3a37.3 37.3 0 0 1 -26.6 11.2A28.6 28.6 0 0 1 431 305.2a19.4 19.4 0 0 1 -7.8-15.6c0-7 3.2-12.8 9.5-17.4s14.5-7 24.1-7C470 265 480.3 268 487.6 273.9 487.6 284.1 483.7 292.9 475.9 300.3zm-93.7-142A55.7 55.7 0 0 0 341.7 142H279.1V328.7H302.7V253.1h39c16 0 29.5-5.4 40.5-15.9 .9-.9 1.8-1.8 2.7-2.7A54.5 54.5 0 0 0 382.3 158.3zm-16.6 62.2a30.7 30.7 0 0 1 -23.3 9.7H302.7V165h39.6a32 32 0 0 1 22.6 9.2A33.2 33.2 0 0 1 365.7 220.5zM614.3 201 577.8 292.7h-.5L539.9 201H514.2L566 320.6l-29.4 64.3H561L640 201z" />
+                                                        </svg>                                                        
+                                                    </div>
+                                                    Google Pay
+                                                </button>
                                             </div>
-                                            <span>check</span>
                                         </div>
-                                    </div>}
+                                    }
                                 </div>
                             </div>
-
-                            <div className="mt-4">
-                                <input className='w-full p-4 border border-black text-2xl rounded-t-lg placeholder-gray-600' placeholder='Card number' />
-                            </div>
-
-                            <div className='flex items-center'>
-                                <input className='w-full p-4 border border-black text-2xl rounded-bl-lg placeholder-gray-600' placeholder='Expiration' />
-                                <input className='w-full p-4 border border-black text-2xl rounded-br-lg placeholder-gray-600' placeholder='CVV' />
-                            </div>
-
-                            <div className="mt-4">
-                                <input className='w-full p-4 border border-black text-2xl rounded-lg placeholder-gray-600' placeholder='Zip code' />
-                            </div>
-
-                            <button className='w-full p-3 mt-4 border border-black rounded-lg flex justify-between items-center' onClick={togglePopupCountry}>
-                                <div className='flex flex-col items-start'>
-                                    <span className='font-thin text-xl'>Country/region</span>
-                                    <span className='text-2xl'>Vietnam</span>
+                            {selectedPayment === 'Credit or debit card' && (
+                                <div className="mt-4">
+                                    <input
+                                        className='w-full p-4 border border-black text-2xl rounded-t-lg placeholder-gray-600'
+                                        placeholder='Card number'
+                                    />
+                                    <div className='flex items-center'>
+                                        <input
+                                            className='w-full p-4 border border-black text-2xl rounded-bl-lg placeholder-gray-600'
+                                            placeholder='Expiration'
+                                        />
+                                        <input
+                                            className='w-full p-4 border border-black text-2xl rounded-br-lg placeholder-gray-600'
+                                            placeholder='CVV'
+                                        />
+                                    </div>
+                                    <div className="mt-4">
+                                        <input
+                                            className='w-full p-4 border border-black text-2xl rounded-lg placeholder-gray-600'
+                                            placeholder='Zip code'
+                                        />
+                                    </div>
+                                    <button
+                                        className='w-full p-3 mt-4 border border-black rounded-lg flex justify-between items-center'
+                                        onClick={togglePopupCountry}
+                                    >
+                                        <div className='flex flex-col items-start'>
+                                            <span className='font-thin text-xl'>Country/region</span>
+                                            <span className='text-2xl'>Vietnam</span>
+                                        </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width='20' height='20'>
+                                            <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
+                                        </svg>
+                                    </button>
+                                    <hr className='my-5' />
                                 </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width='20' height='20'>
-                                    <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
-                                </svg>
-                            </button>
-                            <hr className='my-5' />
+                            )}
+
+                            {selectedPayment && selectedPayment == 'Paypal' && (
+                                <div className="mt-4">
+                                    <span>Selected payment method: {selectedPayment}</span>
+                                </div>
+                            )}
                         </div>
 
 
                         {/* Required for your trip */}
                         <div className='w-full'>
-                            <h2 className='text-4xl'>Required for your trip</h2>
+                            <h2 className='text-4xl'>Cần thiết cho chuyến đi</h2>
                             <div className='flex justify-between items-center'>
                                 <div className='flex flex-col mt-5'>
-                                    <h4>Phone number</h4>
-                                    <p>Add and confirm your phone number to get trip updates.</p>
+                                    <h4>Số điện thoại</h4>
+                                    <p>Thêm và xác nhận số điện thoại của bạn để nhận thông tin cập nhật về chuyến đi.</p>
                                 </div>
                                 <button className='w-24 h-14 border border-black rounded-xl font-medium'>Add</button>
                             </div>
                             <hr className='my-5' />
                         </div>
-
                         {/* Cancellation policy */}
                         <div className='w-full'>
-                            <h2 className='text-4xl'>Cancellation policy</h2>
+                            <h2 className='text-4xl'>Chính sách hủy</h2>
                             <div className='flex flex-col mt-5'>
                                 <p>
-                                    <span className='font-bold'>Free cancellation before Mar 15. </span>
-                                    Cancel before check-in on Mar 16 for a partial refund.
-                                    <span className='font-medium underline ml-1'>Learn more</span>
+                                    <span className='font-bold'>Hủy miễn phí trước ngày {format(new Date(checkIn), 'dd') - 2} tháng {format(new Date(checkIn), 'MM')} . </span>
+                                    Hủy trước khi nhận phòng vào ngày {format(new Date(checkIn), 'dd')} tháng {format(new Date(checkIn), 'MM')}  để được hoàn lại một phần.
+                                    <span className='font-medium underline ml-1'>Tìm hiểu thêm</span>
                                 </p>
                             </div>
                             <hr className='my-5' />
@@ -287,12 +335,12 @@ const Booking = () => {
 
                         {/* Ground rules */}
                         <div className='w-full'>
-                            <h2 className='text-4xl'>Ground rules</h2>
+                            <h2 className='text-4xl'>Quy tắc thuê</h2>
                             <div className='flex flex-col mt-5'>
-                                <p>We ask every guest to remember a few simple things about what makes a great guest.</p>
+                                <p>Chúng tôi mong mỗi vị khách hãy ghi nhớ một số điều đơn giản để tạo nên một vị khách tuyệt vời.</p>
                                 <ul>
-                                    <li>● Follow the house rules</li>
-                                    <li>● Treat your Host’s home like your own</li>
+                                    <li>● Tuân theo nguyên tắc của chủ nhà</li>
+                                    <li>● Hãy xem đây như nhà của  bạn</li>
                                 </ul>
                             </div>
                             <hr className='my-5' />
@@ -301,24 +349,25 @@ const Booking = () => {
                         {/* policy */}
                         <div className='w-full'>
                             <div className='text-lg'>
-                                <p>By selecting the button below, I agree to the
-                                    <button onClick={togglePopupHouseRule} className='font-medium underline ml-1'>Host's House Rules</button>,
-                                    <button className='font-medium underline ml-1'>Ground rules for guests</button>,
-                                    <button onClick={togglePopupPolicy} className='font-medium underline ml-1'>Airbnb's Rebooking and Refund Policy</button>,
-                                    and that Airbnb can
-                                    <button onClick={togglePopupChargeForDamage} className='font-medium underline ml-1 mr-1'>charge my payment method</button>
-                                    if I’m responsible for damage.</p>
+                                <p>Bằng cách chọn nút bên dưới, tôi đồng ý với
+                                    <button onClick={togglePopupHouseRule} className='font-medium underline ml-1'>Quy tắc thuê</button>,
+                                    <button className='font-medium underline ml-1'>Nội quy khách thuê</button>,
+                                    <button onClick={togglePopupPolicy} className='font-medium underline ml-1'>Chính sách dịch vụ và hủy của Airbnb</button>,
+                                    và Airbnb có thể
+                                    <button onClick={togglePopupChargeForDamage} className='font-medium underline ml-1 mr-1'>tính phí vào phương thức thanh toán</button>
+                                    của tôi nếu tôi gây thiệt hại.</p>
                             </div>
+
                         </div>
 
                         {/* button confirm */}
                         <div className="max-w-[40%] my-5">
-                        <button onClick={() => bookThisPlace()} type="submit"
-                                className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white text-3xl font-bold py-4 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"> Book now
-                            {numberNight > 0 && (
-                                <span>  ${total}</span>
-                            )}
-                    </button>
+                            <button onClick={() => bookThisPlace()} type="submit"
+                                className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white text-3xl font-bold py-4 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"> Xác nhận đặt
+                                {numberNight > 0 && (
+                                    <span>  ${total}</span>
+                                )}
+                            </button>
                         </div>
 
                         {/* modal start */}
@@ -473,51 +522,77 @@ const Booking = () => {
                         )}
                     </div>
                 </div>
-
+            
                 {/* Right content */}
                 <div>
                     <div className='fixed top-[23.5rem] left-[85rem] w-[32%] p-5 rounded-3xl border border-black'>
                         {/* top content */}
                         <div className='flex items-center justify-between mb-5'>
                             <img className='rounded-xl mr-5' width="150" height="150" src={place.thumbnail} />
-                            <div>
-                                <h4>{place.propertyName}</h4>
-                                <p>Room in villa</p>
-                                <div className='flex items-center gap-2'>
-                                    <span className='font-medium'>{place.rating}</span><GoStarFill />
-                                    {/* <span>(106 reviews)</span> */}
-                                    <span>Superhost</span>
+                            <div class="mb-4">
+                                <h4 class="text- font-semibold">{place.propertyName}</h4>
+                                <p class="text-gray-600">{place.address}</p>
+                                <div class="flex items-center mt-2">
+                                    <GoStarFill />
+                                    <span class="text-black-900 mr-1">{place.rating}</span>
+                                    <span class="text-gray-900 ml-1">({place.feedbackList ?? 106} reviews)</span>
+                                    <TiHeartFullOutline />
+                                    <span class="ml-2 text-gray-900">Superhost</span>
                                 </div>
                             </div>
+
                         </div>
 
                         {/* center content */}
                         <div className='mt-5'>
-                            <h2 className='text-4xl'>Price details</h2>
+                            <h2 className='text-4xl'>Chi tiết giá</h2>
                             <div className='flex justify-between items-center'>
-                                <p>${place.price} x {numberNight} nights</p>
+                                <p>${place.price} x {numberNight} đêm</p>
                                 <p>${place.price * numberNight}</p>
                             </div>
+                            {/* Khuyen mai */}
                             <div className='flex justify-between items-center'>
-                                <p>Discount</p>
-                                <p>${place.discount}</p>
+                                <a className='underline underline-offset-4 text-black ' onClick={handleOpenDialog}>Khuyến mãi</a>
+                                {isDialogOpen && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z50">
+                                        <div className="bg-white p-8 rounded-lg drop-shadow-xl">
+                                            <button onClick={handleOpenDialog} className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md">X</button>
+                                            <p className="text-xl">{`Khoản phí một lần do chủ nhà tính`}</p>
+                                            <p className="text-xl">{`để trang trải chi phí vệ sinh chỗ của họ.`}</p>
+
+                                        </div>
+                                    </div>)}
+                                <p>${discount}</p>
+                            </div>
+                            <div className='flex justify-between items-center'>
+                                <a className='underline underline-offset-4 text-black ' onClick={handleOpenDialog1}>Phí dịch vụ Airbnb</a>
+                                {isDialogOpen1 && (
+                                    <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z10">
+                                        <div className="bg-white p-8 rounded-lg drop-shadow-xl">
+                                            <button onClick={handleOpenDialog1} className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md">X</button>
+                                            <p className="text-xl">{`Điều này giúp chúng tôi vận hành nền tảng của mình và .`}</p>
+                                            <p className="text-xl" >cung cấp các dịch vụ như hỗ trợ 24/7 trong chuyến đi của bạn</p>
+                                            <p className="text-xl" > Số tiền này đã bao gồm thuế GTGT.</p>
+                                        </div>
+                                    </div>)}
+                                <p>${discount}</p>
                             </div>
                         </div>
                         <hr />
                         {/* bot content */}
                         <div className='mt-5'>
                             <div className='flex justify-between items-center font-bold'>
-                                <p>Total <span className='underline'>(USD)</span></p>
+                                <p>Tổng <span className='underline'>(USD)</span></p>
                                 <p>${total}</p>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
             </div>
+            ): (<div>Loadingg....</div>)} : 
             <Footer></Footer>
         </>
     )
-    
-}
 
+}
 export default Booking;
