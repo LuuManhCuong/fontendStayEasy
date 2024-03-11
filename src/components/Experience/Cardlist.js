@@ -9,7 +9,7 @@ export const CardVertical = ({ data, totalItems, itemsPerSlide, currentIndex }) 
                 <button className="overflow-hidden text-start w-[15.6%]" key={index}>
                     {/* Header */}
                     <div className="relative">
-                        <img src={card.imageUrl} alt="Header" className="w-full h-[28.5rem] rounded-2xl border border-black" />
+                        <img src={card.imageUrl} alt="Header" className="w-full h-[28.5rem] rounded-2xl border border-gray-500" />
                         {/* Button trên ảnh */}
                         <button className="absolute top-0 right-0 mt-4 mr-4 px-2 py-1">
                         <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
@@ -42,9 +42,9 @@ export const CardHorizontal = ({ data, totalItems, itemsPerSlide, currentIndex }
     return (
         <div className="flex gap-4 transition-transform duration-700 ease-in-out" style={{ width: `${100 * (totalItems / itemsPerSlide)}%`, transform: `translateX(-${(100 / totalItems) * currentIndex}%)` }}>
             {data.map((card, index) => (
-                <button className="flex justify-between text-start overflow-hidden w-[32.5%] p-[1rem] border border-black rounded-2xl" key={index}>
+                <button className="flex justify-between text-start overflow-hidden w-[32.5%] p-[1rem] border border-gray-500 rounded-2xl" key={index}>
                     {/* Header */}
-                    <img src={card.imageUrl} alt="Header" className="w-[13rem] h-[16.5rem] rounded-2xl border border-black" />
+                    <img src={card.imageUrl} alt="Header" className="w-[13rem] h-[16.5rem] rounded-2xl border border-gray-500" />
                     {/* Body */}
                     <div className="flex flex-col ml-6">
                         <div className="flex justify-end">
@@ -60,9 +60,9 @@ export const CardHorizontal = ({ data, totalItems, itemsPerSlide, currentIndex }
                         <p className="text-gray-800 text-2xl">{card.text}</p>
                         <p><span className="font-medium text-2xl">From $15 </span>/ person</p>
                         <div className=" flex gap-3">
-                            <button className="border border-black py-[0.5rem] px-3 rounded-xl text-xl font-medium">3:30 PM</button>
-                            <button className="border border-black py-[0.5rem] px-3 rounded-xl text-xl font-medium">4:30 PM</button>
-                            <button className="border border-black py-[0.5rem] px-3 rounded-xl text-xl font-medium">5:30 PM</button>
+                            <button className="border border-gray-500 py-[0.5rem] px-3 rounded-xl text-xl font-medium">3:30 PM</button>
+                            <button className="border border-gray-500 py-[0.5rem] px-3 rounded-xl text-xl font-medium">4:30 PM</button>
+                            <button className="border border-gray-500 py-[0.5rem] px-3 rounded-xl text-xl font-medium">5:30 PM</button>
                         </div>
                     </div>
                 </button>

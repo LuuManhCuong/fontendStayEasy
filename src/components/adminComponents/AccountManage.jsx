@@ -16,8 +16,8 @@ function AccountManage() {
       });
   }, []);
   return (
-    <div className="shadow-lg m-8 rounded-lg">
-      <h1>Bảng thống kê accoutn</h1>
+    <div className="shadow-lg bg-white p-8 rounded-lg h-[calc(100vh-0px)]">
+      <h1>Bảng thống kê account</h1>
       <Table striped bordered hover>
         <thead>
           <tr>

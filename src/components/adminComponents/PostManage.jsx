@@ -59,35 +59,28 @@ export default function PostManage() {
   };
 
   return (
-    <div className="mx-4">
-      <div className="d-flex justify-content-between mb-4">
-        <h2>Danh sách phòng</h2>
-      </div>
-
-      <table class="table table-hover">
+    <div className="px-4">
+      <h1>Danh sách phòng</h1>
+      <table className="bg-white w-full rounded-xl">
         <thead>
           <tr>
-            <th scope="col">Property Info</th>
-            <th scope="col">Address</th>
-            <th scope="col">Price</th>
-            <th scope="col">Thao tác</th>
+            <th className="p-4" scope="col">Property Info</th>
+            <th className="py-4" scope="col">Address</th>
+            <th className="py-4" scope="col">Price</th>
+            <th className="py-4" scope="col">Thao tác</th>
           </tr>
         </thead>
         <tbody>
           {data.map((index) => (
             <tr key={index.propertyId}>
-              <td scope="row" className="p-4">
-                <div className="flex justify-start items-center">
+              <td scope="row" className="p-4 justify-center">
                   <div>
                     <img
                       src={index.thumbnail}
                       alt=""
                       style={{ width: "100px", height: "100px" }}
                     />
-                  </div>
-                  <div className="ml-6">
-                    <p className="text-3xl font-semibold m-0">{index.propertyName}</p>
-                  </div>
+                    <p className="text-3xl font-semibold mt-2">{index.propertyName}</p>
                 </div>
               </td>
               <td className="align-middle">
