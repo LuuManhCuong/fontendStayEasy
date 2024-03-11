@@ -353,8 +353,8 @@ function Detail() {
               <div className="p-3">
                 <div className="text-base font-semibold">
                   <p className="text-[17px]">
-                    Hosted by {dataDetail.owner?.firstName}{" "}
-                    {dataDetail.owner?.lastName}
+                    Hosted by {dataDetail.owner?.lastName}{" "}
+                    {dataDetail.owner?.firstName}
                   </p>
                 </div>
                 <div className="text-base">
@@ -641,7 +641,7 @@ function Detail() {
             </div>
           </div>
         )}
-        <CommentForm propertyId={id}></CommentForm>
+        <CommentForm propertyId={id} ownerId={dataDetail.owner?.id}></CommentForm>
       </div>
     </>
   );

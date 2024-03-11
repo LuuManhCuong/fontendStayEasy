@@ -12,11 +12,13 @@ import AccountManage from "../../components/adminComponents/AccountManage";
 import Seting from "../../components/adminComponents/Seting";
 import { Link } from "react-router-dom";
 import ListProperty from "../../components/Property/ListProperty";
+import RevenueManage from "../../components/adminComponents/RevenueManage";
 
 function AdminDarhBoard() {
   const sidebar = [
     { cate: "Thống kê", component: <Statistical></Statistical> },
-    { cate: "Bài đăng", component: <ListProperty/>, link: "/property/list" },
+    // { cate: "Doanh thu", component: <RevenueManage></RevenueManage> },
+    { cate: "Bài đăng", component: <PostManage></PostManage> },
     { cate: "Đặt phòng", component: <BookingManage></BookingManage> },
     { cate: "Tài khoản", component: <AccountManage></AccountManage> },
     { cate: "Cài đặt", component: <Seting></Seting> },
