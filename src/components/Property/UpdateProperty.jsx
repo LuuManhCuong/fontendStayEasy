@@ -1,11 +1,22 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import SelectAddress from "./SelectAddress";
-import Category from "../category/Category";
+/* eslint-disable array-callback-return */
+import React, { useEffect } from "react";
+import { useState } from "react";
+import {
+  PhotoIcon,
+  XMarkIcon,
+  ChevronLeftIcon,
+} from "@heroicons/react/24/solid";
 import Utilies from "../utilies/Utilies";
+import Category from "../category/Category";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../Services/firebaseService";
+import axios from "axios";
+import { counterSelector } from "../../redux-tookit/selector";
+import { useSelector } from "react-redux";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import ToastMessage from "./ToastMessage";
 
 export default function UpdateProperty() {
   const navigate = useNavigate();
@@ -13,20 +24,75 @@ export default function UpdateProperty() {
   const { propertyId } = useParams();
 
   const [property, setProperty] = useState({
+    owner: {},
     propertyName: "",
-    address: "",
+    description: "",
+    numGuests: "",
     price: "",
+    discount: "",
+    imagesList: [
+      {
+        url: "",
+      },
+    ],
   });
 
-  const { owner, propertyName, address, price, description } = property;
+  const {
+    owner,
+    propertyName,
+    description,
+    numGuests,
+    price,
+    discount,
+    imagesList,
+  } = property;
 
-  // const [userName, setUserName] = useState(
-  //   `${owner.lastName} ${owner.firstName}`
-  // );
+  const [ownerName, setOwnerName] = useState("");
+  useEffect(() => {
+    setOwnerName(`${owner.lastName} ${owner.firstName}`);
+  }, [owner]);
 
-  console.log(owner.email);
+  // get user
+  const counter = useSelector(counterSelector);
 
-  const handleInputChange = (e) => {
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
+  const [userId, setUserId] = useState(user.id);
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, [counter]);
+
+  const [urls, setUrls] = useState([]);
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    const newUrls2 = imagesList.map((image) => image.url);
+    setUrls([...newUrls2]);
+  }, [imagesList]);
+
+  // handle remove url
+  const handleRemoveImage = (index) => {
+    const newUrls1 = [...urls];
+    // remove image at index
+    newUrls1.splice(index, 1);
+
+    setUrls(newUrls1);
+  };
+
+  const handleChange = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      const newImage = e.target.files[i];
+      newImage["id"] = Math.random();
+      setImages((prevState) => [...prevState, newImage]);
+
+      const currentUrl = URL.createObjectURL(newImage);
+      setUrls((prev) => [...prev, currentUrl]);
+    }
+  };
+
+  // input handle change
+  const change = (e) => {
     const { name, value } = e.target;
     setProperty({
       ...property,
@@ -34,86 +100,129 @@ export default function UpdateProperty() {
     });
   };
 
+  // Images upload
+  const uploadMultipleFiles = async (images) => {
+    const storageRef = ref(storage); // Thay 'storage' bằng đường dẫn đến thư mục bạn muốn lưu trữ ảnh
+
+    try {
+      const uploadPromises = images.map(async (file) => {
+        const imageRef = ref(storageRef, `images/${file.name}`);
+        await uploadBytes(imageRef, file);
+        const downloadUrl = await getDownloadURL(imageRef);
+        return downloadUrl;
+      });
+
+      const downloadUrls = await Promise.all(uploadPromises);
+      setImages((url) => [...url, downloadUrls]);
+      return downloadUrls;
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  };
+
+  const [status, setStatus] = useState();
+
+  // save property
+  const saveProperty = async (urls, userId, selectedOptions) => {
+    const dataThum = {
+      ...property,
+      ownerId: userId,
+      thumbnail: urls[0],
+      imagesList: [...urls.map((url) => ({ url }))],
+      categoryIds: [...selectedOptions.map((id) => id)],
+    };
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/stayeasy/property/edit/${propertyId}`,
+        dataThum
+      );
+
+      if (response.status === 200) {
+        setStatus(response.status);
+        // console.log("data update: ", response.data);
+      }
+    } catch (error) {
+      console.log("error!", error);
+    }
+  };
+  // end save property
+
+  // category
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  // submit
+  const uploadAndSave = async (e) => {
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    try {
+      const listImage = await uploadMultipleFiles(images);
+      await saveProperty(urls, userId, selectedOptions);
+    } catch (error) {
+      alert("Đã xãy ra lỗi.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // get property by id
   const loadData = async () => {
     const result = await axios.get(
       `http://localhost:8080/api/v1/stayeasy/property/${propertyId}`
     );
     setProperty(result.data);
-    console.log(result.data);
   };
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const res = await axios.put(
-      `http://localhost:8080/api/v1/stayeasy/property/edit/${propertyId}`,
-      property
+  useEffect(() => {
+    if (status === 200) {
+      const timeoutId = setTimeout(() => {
+        navigate("/property/list");
+      }, 1000);
+
+      // Cleanup effect để tránh lỗi memory leak
+      return () => clearTimeout(timeoutId);
+    }
+  }, [status, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="mx-4 my-4">
+        <p>Đang tải...</p>
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress />
+        </Box>
+      </div>
     );
-    setProperty(res.data);
-    navigate("/property/list");
-  };
+  }
+
+  if (status === 200) {
+    return (
+      <div className="flex justify-center">
+        <ToastMessage />
+      </div>
+    );
+  }
 
   return (
-    // <div className="mx-4 my-2">
-    //   <h2> Cập nhật tài sản</h2>
-
-    //   <form className="row g-3" onSubmit={(e) => onSubmit(e)}>
-    //     <div className="col-md-6">
-    //       <label htmlFor="propertyName" className="form-label">
-    //         Tên tài sản
-    //       </label>
-    //       <input
-    //         type="text"
-    //         className="form-control"
-    //         id="propertyName"
-    //         name="propertyName"
-    //         value={propertyName}
-    //         onChange={handleInputChange}
-    //       />
-    //     </div>
-    //     <div className="col-md-6">
-    //       <label htmlFor="address" className="form-label">
-    //         Địa chỉ
-    //       </label>
-    //       <input
-    //         type="text"
-    //         className="form-control"
-    //         id="address"
-    //         name="address"
-    //         value={address}
-    //         onChange={handleInputChange}
-    //       />
-    //     </div>
-    //     <div className="col-12">
-    //       <label htmlFor="price" className="form-label">
-    //         Giá
-    //       </label>
-    //       <input
-    //         type="number"
-    //         className="form-control"
-    //         id="price"
-    //         name="price"
-    //         value={price}
-    //         onChange={handleInputChange}
-    //       />
-    //     </div>
-
-    //     <div className="col-12">
-    //       <button type="submit" className="bg-primary text-white p-2 rounded">
-    //         Cập nhật
-    //       </button>
-    //     </div>
-    //   </form>
-    // </div>
-    <div className="mx-4 mt-3 mb-4">
+    <div className="mx-4 mt-4 mb-4 w-[80vw]">
       <form>
-        <div className="space-y-12">
-          <div className="font-medium text-gray-900 text-[2rem]">
-            TẠO TÀI SẢN MỚI
+        <div className="mb-56">
+          <div className="font-medium mt-8 flex items-center text-gray-900 text-[2rem]">
+            <span className="w-7 me-2 ">
+              <Link to="/property/list">
+                <ChevronLeftIcon />
+              </Link>
+            </span>
+            <span>Cập nhật tài sản</span>
           </div>
+
+          <hr />
 
           {/* row 1 */}
           <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -127,12 +236,11 @@ export default function UpdateProperty() {
               </label>
               <input
                 disabled
-                // onChange={(e) => setUserName(e.target.value)}
-                // value={userName}
+                value={ownerName}
                 type="text"
                 name="username"
                 id="username"
-                className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
               />
             </div>
 
@@ -145,62 +253,13 @@ export default function UpdateProperty() {
                 Tên tài sản
               </label>
               <input
-                // onChange={change}
+                value={propertyName}
+                onChange={change}
                 type="text"
                 name="propertyName"
                 id="propertyName"
-                className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
               />
-            </div>
-
-            {/* address */}
-            {/* province / city */}
-            {/* <SelectAddress
-              label="Tỉnh / Thành phố"
-              // value={province}
-              // setValue={setProvince}
-              // option={ArrayProVince}
-              type="province"
-              // onChange={change}
-            /> */}
-
-            {/* District */}
-            {/* <SelectAddress
-              label="Quận / Huyện"
-              // value={district}
-              // setValue={setDistrict}
-              // option={ArrayDistrict}
-              type="district"
-              // onChange={change}
-            /> */}
-
-            {/* wards */}
-            {/* <SelectAddress
-              // value={ward}
-              // setValue={setWard}
-              // option={ArrayWard}
-              type="ward"
-              label="Xã / Thị trấn"
-              // onChange={change}
-            /> */}
-
-            {/* detail address */}
-            <div className="col-span-full">
-              <label
-                htmlFor="street-address"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Địa chỉ cụ thể
-              </label>
-              <div className="mt-2">
-                <input
-                  // onChange={(e) => setDetailAddress(e.target.value)}
-                  type="text"
-                  name="detailAddress"
-                  id="detailAddress"
-                  className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
-                />
-              </div>
             </div>
 
             {/* description */}
@@ -213,11 +272,12 @@ export default function UpdateProperty() {
               </label>
               <div className="mt-2">
                 <textarea
-                  // onChange={change}
+                  value={description}
+                  onChange={change}
                   id="description"
                   name="description"
                   rows={3}
-                  className="block pl-5 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                  className="block pl-5 w-full rounded-md border-0 py-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
                   defaultValue={""}
                 />
               </div>
@@ -226,7 +286,7 @@ export default function UpdateProperty() {
             {/* detail */}
             {/* CATEGORIES */}
             <Category
-            // valueOptions={(newOption) => setSelectedOptions(newOption)}
+              valueOptions={(newOption) => setSelectedOptions(newOption)}
             />
 
             {/* UILITIS */}
@@ -242,11 +302,12 @@ export default function UpdateProperty() {
                 Số người
               </label>
               <input
-                // onChange={change}
+                value={numGuests}
+                onChange={change}
                 type="number"
                 name="numGuests"
                 id="numGuests"
-                className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
               />
             </div>
 
@@ -264,11 +325,12 @@ export default function UpdateProperty() {
                     $
                   </div>
                   <input
-                    // onChange={change}
+                    value={price}
+                    onChange={change}
                     type="number"
                     name="price"
                     id="price"
-                    className="block rounded-s-none focus:ring-1 focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                    className="block rounded-s-none focus:ring-1 focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -286,11 +348,12 @@ export default function UpdateProperty() {
                     %
                   </div>
                   <input
-                    // onChange={change}
+                    value={discount}
+                    onChange={change}
                     type="number"
                     name="discount"
                     id="discount"
-                    className="block rounded-s-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                    className="block rounded-s-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -322,7 +385,7 @@ export default function UpdateProperty() {
                         type="file"
                         className="sr-only"
                         multiple
-                        // onChange={handleChange}
+                        onChange={handleChange}
                       />
                     </label>
                   </div>
@@ -334,32 +397,40 @@ export default function UpdateProperty() {
             </div>
 
             {/* image preview  */}
-            {/* {urls.map((url, index) => (
-              <div key={index} className="relative sm:col-span-2">
+            {urls.map((url, index) => (
+              <div key={url} className="relative sm:col-span-2">
                 <button
                   onClick={() => handleRemoveImage(index)}
                   className="bg-pink-600 absolute right-0"
                 >
                   <XMarkIcon className="w-7 text-white" />
                 </button>
-                <img className="h-96" src={url} alt="preview" />
+                <img className="h-96 w-full" src={url} alt="" />
               </div>
-            ))} */}
+            ))}
           </div>
         </div>
 
-        <div className="mt-10 flex items-center justify-start gap-x-4">
+        <div
+          style={{
+            bottom: "5rem",
+            marginTop: "5rem",
+            justifyContent: "flex-end",
+          }}
+          className="bg-white w-[80vw] fixed flex items-center gap-x-4"
+        >
+          <Link to="/property/list">
+            <button
+              type="submit"
+              className="block rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-[#ff385c] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
+            >
+              Hủy
+            </button>
+          </Link>
           <button
-            // onClick={uploadAndSave}
+            onClick={uploadAndSave}
             type="submit"
-            className="block rounded-lg px-3 py-2 font-semibold text-black border shadow-md hover:bg-[#ff385c] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Hủy
-          </button>
-          <button
-            // onClick={uploadAndSave}
-            type="submit"
-            className="block rounded-lg bg-indigo-600 px-3 py-2 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="block bg-indigo-600 text-white rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-indigo-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
           >
             Lưu
           </button>

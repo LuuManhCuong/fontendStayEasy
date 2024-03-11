@@ -1,18 +1,31 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  PhotoIcon,
+  XMarkIcon,
+  ChevronLeftIcon,
+} from "@heroicons/react/24/solid";
 import * as ProvinceService from "../../Services/ProvinceService";
 import SelectAddress from "./SelectAddress";
 import Utilies from "../utilies/Utilies";
 import Category from "../category/Category";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../../Services/firebaseService";
+// import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// import { storage } from "../../Services/firebaseService";
 import axios from "axios";
 import { counterSelector } from "../../redux-tookit/selector";
 import { useSelector } from "react-redux";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import ToastMessage from "./ToastMessage";
+import { ConvertToBase64 } from "./ConvertToBase64";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../Services/firebaseService";
+
 
 export default function AddProperty() {
+  const navigate = useNavigate();
+
   // get user
   const counter = useSelector(counterSelector);
 
@@ -47,6 +60,7 @@ export default function AddProperty() {
 
   const [images, setImages] = useState([]);
   const [urls, setUrls] = useState([]);
+  console.log(urls);
   // handle remove url
   const handleRemoveImage = (index) => {
     const newUrls1 = [...urls];
@@ -63,6 +77,17 @@ export default function AddProperty() {
       setImages((prevState) => [...prevState, newImage]);
 
       setUrls((prev) => [...prev, URL.createObjectURL(newImage)]);
+
+      
+      // ConvertToBase64(newImage)
+      // .then((result) => {
+      //   // console.log("base: ", result);
+      //   setUrls((prev) => [...prev, result])
+      // })
+      // .catch((error) => {
+      //   console.log("loi: ", error);
+      // })
+      
     }
   };
 
@@ -181,8 +206,12 @@ export default function AddProperty() {
     }
   };
 
+  const [dataSave, setDataSave] = useState(null);
+
+  console.log("data: ", data);
+
   // save property
-  const saveProperty = async (listImage, userId) => {
+  const saveProperty = async (listImage, userId, selectedOptions) => {
     const dataThum = {
       ...data,
       ownerId: userId,
@@ -199,22 +228,37 @@ export default function AddProperty() {
       if (response.status === 200) {
         // alert("add successfully!");
         console.log("oke");
+        setDataSave(response.data);
       }
     } catch (error) {
-      console.log("error!");
+      console.log("error!", error);
     }
   };
   // end save property
 
   // category
   const [selectedOptions, setSelectedOptions] = useState([]);
+  console.log("category: ", selectedOptions);
 
   const [isLoading, setIsLoading] = useState(false);
-  console.log("loading: ", isLoading);
 
   // submit
   const uploadAndSave = async (e) => {
     e.preventDefault();
+
+    if (
+      !userName ||
+      !data ||
+      !province ||
+      !district ||
+      !ward ||
+      !detailAddress ||
+      !selectedOptions.length ||
+      images.length === 0
+    ) {
+      alert("Vui lòng điền đầy đủ thông tin vào các trường.");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -225,24 +269,55 @@ export default function AddProperty() {
       alert("Đã xãy ra lỗi.");
     } finally {
       setIsLoading(false);
-      alert("oke")
     }
   };
 
+  useEffect(() => {
+    if (dataSave) {
+      const timeoutId = setTimeout(() => {
+        navigate("/property/list");
+      }, 1000);
+
+      // Cleanup effect để tránh lỗi memory leak
+      return () => clearTimeout(timeoutId);
+    }
+  }, [dataSave, navigate]);
+
   if (isLoading) {
-    return <p>Loading....</p>
+    return (
+      <div className="mx-4 my-4">
+        <p>Đang tải...</p>
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress />
+        </Box>
+      </div>
+    );
+  }
+
+  if (dataSave) {
+    return (
+      <div className="flex justify-center">
+        <ToastMessage />
+      </div>
+    );
   }
 
   return (
-    <div className="mx-4 mt-3 mb-4">
+    <div className="mx-4 mt-3 mb-4 w-[80vw]">
       <form>
-        <div className="space-y-12">
-          <div className="font-medium text-gray-900 text-[2rem]">
-            TẠO TÀI SẢN MỚI
+        <div className="mb-40">
+          <div className="font-medium mt-8 flex items-center text-gray-900 text-[2rem]">
+            <span className="w-7 me-2 ">
+              <Link to="/property/list">
+                <ChevronLeftIcon />
+              </Link>
+            </span>
+            <span>TẠO TÀI SẢN MỚI</span>
           </div>
+          <hr />
 
           {/* row 1 */}
-          <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div className="mt-8 mb-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             {/* owner */}
             <div className="sm:col-span-3">
               <label
@@ -253,12 +328,13 @@ export default function AddProperty() {
               </label>
               <input
                 disabled
+                required
                 onChange={(e) => setUserName(e.target.value)}
                 value={userName}
                 type="text"
                 name="username"
                 id="username"
-                className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
               />
             </div>
 
@@ -272,10 +348,11 @@ export default function AddProperty() {
               </label>
               <input
                 onChange={change}
+                required
                 type="text"
                 name="propertyName"
                 id="propertyName"
-                className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
               />
             </div>
 
@@ -288,6 +365,7 @@ export default function AddProperty() {
               option={ArrayProVince}
               type="province"
               onChange={change}
+              required
             />
 
             {/* District */}
@@ -298,6 +376,7 @@ export default function AddProperty() {
               option={ArrayDistrict}
               type="district"
               onChange={change}
+              required
             />
 
             {/* wards */}
@@ -308,6 +387,7 @@ export default function AddProperty() {
               type="ward"
               label="Xã / Thị trấn"
               onChange={change}
+              required
             />
 
             {/* detail address */}
@@ -320,11 +400,12 @@ export default function AddProperty() {
               </label>
               <div className="mt-2">
                 <input
+                  required
                   onChange={(e) => setDetailAddress(e.target.value)}
                   type="text"
                   name="detailAddress"
                   id="detailAddress"
-                  className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                  className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -339,11 +420,12 @@ export default function AddProperty() {
               </label>
               <div className="mt-2">
                 <textarea
+                  required
                   onChange={change}
                   id="description"
                   name="description"
                   rows={3}
-                  className="block pl-5 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                  className="block pl-5 w-full rounded-md border-0 py-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black  sm:leading-6"
                   defaultValue={""}
                 />
               </div>
@@ -352,7 +434,9 @@ export default function AddProperty() {
             {/* detail */}
             {/* CATEGORIES */}
             <Category
+              required
               valueOptions={(newOption) => setSelectedOptions(newOption)}
+              onChange={change}
             />
 
             {/* UILITIS */}
@@ -360,7 +444,7 @@ export default function AddProperty() {
             <Utilies />
 
             {/* NUMGUEST */}
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-1">
               <label
                 htmlFor="numguest"
                 className="block text-sm font-medium leading-6 text-gray-900"
@@ -368,11 +452,30 @@ export default function AddProperty() {
                 Số người
               </label>
               <input
+                required
                 onChange={change}
                 type="number"
                 name="numGuests"
                 id="numGuests"
-                className="block mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+              />
+            </div>
+
+            {/*  */}
+            <div className="sm:col-span-2">
+              <label
+                htmlFor="numguest"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Phí dịch vụ
+              </label>
+              <input
+                required
+                onChange={change}
+                type="number"
+                name="numGuests"
+                id="numGuests"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
               />
             </div>
 
@@ -390,11 +493,12 @@ export default function AddProperty() {
                     $
                   </div>
                   <input
+                    required
                     onChange={change}
                     type="number"
                     name="price"
                     id="price"
-                    className="block rounded-s-none focus:ring-1 focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                    className="block rounded-s-none focus:ring-1 focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -412,11 +516,12 @@ export default function AddProperty() {
                     %
                   </div>
                   <input
+                    required
                     onChange={change}
                     type="number"
                     name="discount"
                     id="discount"
-                    className="block rounded-s-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                    className="block rounded-s-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -443,6 +548,7 @@ export default function AddProperty() {
                     >
                       <span className="px-4">Chọn ảnh</span>
                       <input
+                        required
                         id="file-upload"
                         name="file-upload"
                         type="file"
@@ -468,24 +574,33 @@ export default function AddProperty() {
                 >
                   <XMarkIcon className="w-7 text-white" />
                 </button>
-                <img className="h-96" src={url} alt="preview" />
+                <img className="h-96 border w-full" src={url} alt="preview" />
               </div>
             ))}
           </div>
+          <hr />
         </div>
 
-        <div className="mt-10 flex items-center justify-start gap-x-4">
+        <div
+          style={{
+            bottom: "5rem",
+            marginTop: "5rem",
+            justifyContent: "flex-end",
+          }}
+          className="bg-white w-[80vw] fixed flex items-center gap-x-4"
+        >
+          <Link to="/property/list">
+            <button
+              type="submit"
+              className="block rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-[#ff385c] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
+            >
+              Hủy
+            </button>
+          </Link>
           <button
             onClick={uploadAndSave}
             type="submit"
-            className="block rounded-lg px-3 py-2 font-semibold text-black border shadow-md hover:bg-[#ff385c] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Hủy
-          </button>
-          <button
-            onClick={uploadAndSave}
-            type="submit"
-            className="block rounded-lg bg-indigo-600 px-3 py-2 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="block bg-indigo-600 text-white rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-indigo-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
           >
             Lưu
           </button>

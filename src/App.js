@@ -48,6 +48,7 @@ function App() {
             <Route path="add" element={<AddProperty />} />
             <Route path="update/:propertyId" element={<UpdateProperty />} />
           </Route>
+          {/* <Route path="/property/list" com/> */}
 
           {/* booking */}
           <Route path="/booking" element={<Booking />} />

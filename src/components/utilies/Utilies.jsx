@@ -1,105 +1,101 @@
-import React, { useEffect } from "react";
+//
 
-import { Fragment, useState } from "react";
-import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+// import { Fragment, useState } from "react";
+// import { Listbox, Transition } from "@headlessui/react";
+
+// function classNames(...classes) {
+//   return classes.filter(Boolean).join(" ");
+// }
+
+// export default function Utilies() {
+
+//   return (
+//     <div className="sm:col-span-2">
+
+//     </div>
+//   );
+// }
+
+import React, { useEffect, Fragment, useState } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  MinusIcon,
+  PlusIcon,
+} from "@heroicons/react/20/solid";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Utilies() {
-  
-
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState(data);
 
-  // const loadData = async() => {
-  //   const result = await axios.get(`http://localhost:8080/api/v1/stayeasy/property/util/all`);
-  //   setData(result.data);
-  // }
+  const loadData = async () => {
+    const result = await axios.get(
+      `http://localhost:8080/api/v1/stayeasy/util`
+    );
+    setData(result.data);
+    console.log(result.data);
+  };
 
-  // useEffect(() => {
-  //   loadData();
-  // },[])
-
-
+  useEffect(() => {
+    loadData();
+  }, []);
   return (
-    <div className="sm:col-span-2">
-      <Listbox value={selected} onChange={setSelected}>
-        {({ open }) => (
-          <>
-            <Listbox.Label className="block font-medium leading-6 text-gray-900">
-              Tiện ích
-            </Listbox.Label>
-            <div className="relative mt-3">
-              <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-black sm:text-sm sm:leading-6">
-                <span className="flex items-center block">{selected.utilitiesName}
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                  <ChevronUpDownIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </span>
-              </Listbox.Button>
+    <div className="col-span-2">
+      <div className="block font-medium leading-6 text-gray-900">Tiện ích</div>
+      <Menu as="div" className="relative inline-block text-left w-full">
+        <div>
+          <Menu.Button className="mt-3 border inline-flex w-full justify-center items-center gap-x-1.5 rounded-md px-3 py-2 h-16 text-gray-900 ring-1 ring-inset ring-gray-300">
+            Thêm tiện ích
+            <ChevronDownIcon
+              className="-mr-1 h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
+          </Menu.Button>
+        </div>
 
-              <Transition
-                show={open}
-                as={Fragment}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {data.map((util) => (
-                    <Listbox.Option
-                      key={util.id}
-                      className={({ active }) =>
-                        classNames(
-                          active ? "bg-indigo-600 text-white" : "text-gray-900",
-                          "relative h-14 cursor-default select-none py-2 pl-3 pr-9"
-                        )
-                      }
-                      value={util}
-                    >
-                      {({ selected, active }) => (
-                        <>
-                          <div className="flex items-center">
-                            <span
-                              className={classNames(
-                                selected ? "font-semibold" : "font-normal",
-                                "ml-3 h-10 pt-2 block truncate"
-                              )}
-                            >
-                              {util.utilitiesName}
-                            </span>
-                          </div>
-
-                          {selected ? (
-                            <span
-                              className={classNames(
-                                active ? "text-white" : "text-indigo-600",
-                                "absolute inset-y-0 right-0 flex items-center pr-4"
-                              )}
-                            >
-                              <CheckIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Transition>
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
+        >
+          {/* utilitis 1 */}
+          <Menu.Items className="border bg-white w-full absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <div className="py-1">
+              {data.map((index) => (
+                <Menu.Item key={index} className=" p-4 h-14 flex items-center">
+                  <div className="flex justify-between items-center">
+                    <span>{index.utilitiesName}</span>
+                    <div className="flex gap-3 items-center">
+                      <button className="border border-1 border-black w-6 h-6 rounded-md">
+                        <MinusIcon />
+                      </button>
+                      <button>1</button>
+                      <button className="border border-1 border-black w-6 h-6 rounded-md">
+                        <PlusIcon />
+                      </button>
+                    </div>
+                  </div>
+                </Menu.Item>
+              ))}
+              <Menu.Item>
+                <Link>khac</Link>
+              </Menu.Item>
             </div>
-          </>
-        )}
-      </Listbox>
+          </Menu.Items>
+        </Transition>
+      </Menu>
     </div>
   );
 }

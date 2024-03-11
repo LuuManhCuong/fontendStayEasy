@@ -31,17 +31,17 @@ export default function Category({
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   return (
-    <div className="sm:col-span-2">
+    <div className="sm:col-span-1">
       <Listbox value={selected} onChange={setSelected}>
         {({ open }) => (
           <>
             <Listbox.Label className="block font-medium leading-6 text-gray-900">
-              Thể loại
+              Danh mục
             </Listbox.Label>
             <div className="relative mt-3">
               <Listbox.Button className="relative h-16 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-black sm:text-sm sm:leading-6">
                 <span className="flex items-center block">
-                  {selectedOptions}
+                  {selectedOptions ? (`${selectedOptions}`) : (<p>chọn</p>)}
                 </span>
 
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
