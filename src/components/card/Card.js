@@ -24,6 +24,8 @@ function Card(props) {
     (like) => like?.idUser === user?.id
   );
 
+  console.log("isActive: ", isActive);
+  console.log(props.item.likeList);
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, [counter]);
@@ -71,6 +73,7 @@ function Card(props) {
     }
   };
 
+  
   const handleDetail = () => {
     const checkinString = checkin.toISOString().split("T")[0];
     const checkoutString = checkout.toISOString().split("T")[0];

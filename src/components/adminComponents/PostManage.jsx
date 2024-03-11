@@ -2,9 +2,11 @@ import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function PostManage() {
   const [data, setData] = useState([]);
+  const [keySearch, setKeySearch] = useState("");
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -58,16 +60,51 @@ export default function PostManage() {
     }
   };
 
+  const handleSearch = () => {
+    console.log("keySearch: ", keySearch);
+    axios
+      .get(
+        `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${0}&size=${50}`
+      )
+      .then(function (response) {
+        console.log("response: ", response.data);
+        setData(response.data.properties);
+      })
+      .catch(function (error) {
+        console.log("error: ", error);
+      });
+  };
+
   return (
     <div className="mx-4">
-      <div className="d-flex justify-content-between mb-4">
+      <div className="mb-4">
         <h2>Danh sách phòng</h2>
+        <div className="flex justify-start border-2 border-black w-[30%] rounded-full p-2">
+        <input
+              type="text"
+              className="search-text pl-4 rounded-lg w-[90%]"
+              value={keySearch}
+              onChange={(e) => {
+                setKeySearch(e.target.value);
+              }}
+              id="keySerch"
+              name="keySearch"
+              placeholder="Tìm kiếm"
+            />
+          <SearchIcon
+            onClick={handleSearch}
+            className="cursor-pointer p-2 bg-primary text-white rounded-full"
+            style={{ width: "30px", height: "30px" }}
+          ></SearchIcon>
+        </div>
+       
       </div>
 
       <table class="table table-hover">
         <thead>
           <tr>
             <th scope="col">Property Info</th>
+            <th scope="col">Owner</th>
             <th scope="col">Address</th>
             <th scope="col">Price</th>
             <th scope="col">Thao tác</th>
@@ -87,6 +124,19 @@ export default function PostManage() {
                   </div>
                   <div className="ml-6">
                     <p className="text-3xl font-semibold m-0">{index.propertyName}</p>
+                  </div>
+                </div>
+              </td>
+              <td scope="row" className="align-middle">
+              <div className="flex justify-start items-center">
+                  <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden">
+                    <img
+                      src={index.owner.avatar}
+                      alt=""
+                    />
+                  </div>
+                  <div className="ml-6">
+                    <p className="text-3xl font-semibold m-0">{`${index.owner.firstName} ${index.owner.lastName}`}</p>
                   </div>
                 </div>
               </td>
