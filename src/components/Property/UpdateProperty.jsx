@@ -24,7 +24,6 @@ export default function UpdateProperty() {
   //   `${owner.lastName} ${owner.firstName}`
   // );
 
-  console.log(owner.email);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -268,7 +267,7 @@ export default function UpdateProperty() {
                     type="number"
                     name="price"
                     id="price"
-                    className="block rounded-s-none focus:ring-1 focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                    className="block rounded-s-none focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>

@@ -5,8 +5,6 @@ import Avatar from "@mui/material/Avatar";
 import AuthModal from "../auth/Authenticate";
 import Authenticated from "../auth/Authenticated";
 
-// import AuthModal from "../Auth/Authenticate";
-// import Authenticated from "../Auth/Authenticated";
 
 import {
   Dropdown,
