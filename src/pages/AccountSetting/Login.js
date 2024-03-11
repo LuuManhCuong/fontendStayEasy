@@ -5,7 +5,7 @@ import Footer from '../../components/footer/Footer';
 import ButtonCustom from "../../components/Auth/ButtonCustom";
 import { useDispatch } from "react-redux";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { login, signup } from "../../service/AuthService";
+import { login, signup } from "../../redux-tookit/actions/authActions";
 
 
 export default function Login() {
@@ -49,7 +49,6 @@ export default function Login() {
     "firstName" : firstName,
     "lastName" : lastName,
     "toggleClosePopup" : null,
-    "setIsLogined" : null,
     "setErrorMessage" : setErrorMessage,
     "setSuccessMessage" : setSuccessMessage,
     "setErrorLoginMessage" : setErrorLoginMessage,
@@ -70,6 +69,14 @@ export default function Login() {
       setErrorMessage("Vui lòng nhập thông tin!");
     }
   }
+
+  const handleLogin = () => {
+    dispatch(login(data));
+  };
+
+  const handleSignup = () => {
+    dispatch(signup(data));
+  };
 
   return (
     <>
@@ -158,8 +165,8 @@ export default function Login() {
                 }
               {/* button */}
               <div className="flex items-center justify-between">
-                <button onClick={isLogin ? ()=>{login(data);}
-                  : isSecondForm ? ()=>{signup(data);} 
+                <button onClick={isLogin ? ()=>{handleLogin();}
+                  : isSecondForm ? ()=>{handleSignup();} 
                   : validateFirstForm} type="button" className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
                   {isLogin ? "Đăng nhập" : isSecondForm ? "Đăng ký" : "Tiếp tục"}
                 </button>

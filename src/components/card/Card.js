@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { counterSelector, grouptSelector } from "../../redux-tookit/selector";
 import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import axios from "axios";
-import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 import Slider from "react-slick";
 function Card(props) {
   // console.log("property: ", props.item);
@@ -162,7 +161,7 @@ function Card(props) {
           </div> 
         }
         </div>
-        <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
+        <div className={`heart-btn absolute top-5 right-[2rem] text-fav-icon text-5xl
               ${isActive ? "active" : ""}`} onClick={(e) => handleLike(e, props.item.propertyId)}>
           <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
         </div>

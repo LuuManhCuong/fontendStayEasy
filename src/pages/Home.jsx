@@ -2,13 +2,11 @@ import Footer from "../components/footer/Footer";
 import Header from "../components/header/Header";
 import ListView from "../components/listview/ListView";
 import Filter from "../components/filter/Filter";
-import Filters from "../components/filter/Filters";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  counterSelector,
   dataHomeSelector,
   grouptSelector,
 } from "../redux-tookit/selector";
