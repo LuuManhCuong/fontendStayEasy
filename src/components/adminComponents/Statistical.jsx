@@ -7,6 +7,7 @@ import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import LineChart from "../chart/LineChart";
 import axios from "axios";
 import RevenuePieChart from "../chart/RevenuePieChart";
+import RevenueManage from "./RevenueManage";
 function Statistical() {
   // Dữ liệu doanh thu của tháng này và tháng trước ({lastMonth.revenue})
   // const revenueThisMonth = [
@@ -17,14 +18,17 @@ function Statistical() {
   // ];
   const [revenueThisMonth, setRevenueThisMonth] = useState([]);
   const [revenueLastMonth, setRevenueLastMonth] = useState([]);
+  const [statisticsMonthly, setStatisticsMonthly] = useState([]);
+  const [dataBooking, setDataBooking] = useState([]);
+  const [dataCancelBooking, setDataCancelBooking] = useState([]);
 
-  const dataLabelOne = {
+  const countBooking = {
     label: "Room Bookings",
-    data: revenueThisMonth,
+    data: dataBooking,
   };
-  const dataLabelTwo = {
+  const countCancelBooking = {
     label: "Cancel Bookings",
-    data: revenueLastMonth,
+    data: dataCancelBooking,
   };
   const amountPostThisMonth = {
     label: "Posts This Month",
@@ -37,7 +41,6 @@ function Statistical() {
 
   const [thisMonth, setThisMonth] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
-  const [revenueDaily, setRevenueDaily] = useState([]);
 
   // console.log("thisMonth: ", thisMonth);
   useEffect(() => {
@@ -66,14 +69,14 @@ function Statistical() {
       lastMonth.totalBookings) *
     100;
 
-  console.log("revenue daily: ", revenueDaily);
+  // console.log("revenue daily: ", revenueDaily);
   useEffect(() => {
     axios
       .get(
         `http://localhost:8080/api/v1/stayeasy/admin/revenue/daily?date=2024-03-1`
       )
       .then(function (response) {
-        console.log("data: ", response.data);
+        // console.log("data: ", response.data);
         // Lấy ngày đầu tiên của tháng hiện tại
         const startDate = new Date(
           new Date().getFullYear(),
@@ -107,8 +110,50 @@ function Statistical() {
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
 
+    axios
+      .get(`http://localhost:8080/api/v1/stayeasy/admin/booking/daily`)
+      .then(function (response) {
+        console.log("data booking daily: ", response.data);
+        const currentDate = new Date();
+        const day = currentDate.getDate();
+        // Tạo mảng mới để lưu trữ số booking của mỗi ngày trong tháng
+        let bookingThisMonth = Array.from({ length: day }).fill(0);
+        // Lưu dữ liệu số lượng đặt phòng của tháng hiện tại
+        response.data.map((item) => {
+          const day = new Date(item[0]).getDate();
+          // console.log("day: ", day);
+          const index = day - 1;
+          bookingThisMonth[index] = item[1];
+        });
+        setDataBooking(bookingThisMonth);
+
+        // Tạo mảng mới để lưu trữ số cancel booking của mỗi ngày trong tháng
+        let cancelBookingThisMonth = Array.from({ length: day }).fill(0);
+        // Lưu dữ liệu số lượng đặt phòng của tháng hiện tại
+        response.data.map((item) => {
+          const day = new Date(item[0]).getDate();
+          // console.log("day: ", day);
+          const index = day - 1;
+          cancelBookingThisMonth[index] = item[2];
+        });
+        setDataCancelBooking(cancelBookingThisMonth);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    axios
+      .get(`http://localhost:8080/api/v1/stayeasy/admin/statistics/monthly`)
+      .then(function (response) {
+        console.log("data monthly: ", response.data);
+        setStatisticsMonthly(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+  // console.log("cancel booking: ", dataCancelBooking);
   return (
     <div className="statistical">
       <Row className="statistical-broad">
@@ -176,7 +221,7 @@ function Statistical() {
 
         <Col xs={3}>
           <div className="broad">
-            <h2>Bài viết</h2>
+            <h2>Bài đăng mới</h2>
             <h1>
               {thisMonth.totalPost}{" "}
               {compareTotalPost > 0 ? (
@@ -236,38 +281,26 @@ function Statistical() {
 
       <div className="chart-body">
         <Row>
-          <Col xs={8}>
+          <Col xs={6}>
             <LineChart
               title={"Biểu đồ doanh thu tháng này"}
               dataThisMonth={revenueThisMonth}
               dataLastMonth={revenueLastMonth}
             ></LineChart>
           </Col>
-          <Col xs={4}>
-            <RevenuePieChart></RevenuePieChart>
-          </Col>
-          <Col xs={10}>
-            <BarChart
-              title={"Biểu đồ số lượng đặt phòng"}
-              dataLabelOne={dataLabelOne}
-              dataLabelTwo={dataLabelTwo}
-            ></BarChart>
-          </Col>
 
-          {/* <Col xs={6}>
-            <LineChart
-              title={"Biểu đồ lưu lượng truy cập website"}
-              dataThisMonth={revenueThisMonth}
-              dataLastMonth={revenueLastMonth}
-            ></LineChart>
-          </Col>
           <Col xs={6}>
             <BarChart
-              title={"Biểu đồ số lượng bài đăng"}
-              dataLabelOne={amountPostThisMonth}
-              dataLabelTwo={amountPostLastMonth}
+              title={"Biểu đồ số lượt đặt phòng tháng này"}
+              dataLabelOne={countBooking}
+              dataLabelTwo={countCancelBooking}
             ></BarChart>
-          </Col> */}
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <RevenueManage data={statisticsMonthly}></RevenueManage>
+          </Col>
         </Row>
       </div>
     </div>
