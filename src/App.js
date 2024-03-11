@@ -28,6 +28,7 @@ import ListProperty from "./components/Property/ListProperty";
 import AddProperty from "./components/Property/AddProperty";
 import UpdateProperty from "./components/Property/UpdateProperty";
 import Layout from "./components/Property/Layout/Layout";
+import Host from "./pages/host/Host";
 
 function App() {
   return (
@@ -95,6 +96,8 @@ function App() {
               path="/account-settings/payments/payout-methods"
               element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
             />
+
+            <Route path="/host" element={<Host />} />
           </Route>
 
           {/* login */}
