@@ -57,7 +57,7 @@ function Statistical() {
   }, []);
 
   let compareRevenue =
-    ((thisMonth.revenue - lastMonth.revenue) / lastMonth.revenue) * 100;
+    ((thisMonth?.revenue - lastMonth?.revenue) / lastMonth?.revenue) * 100;
   let compareTotalAccount =
     ((thisMonth.totalAccount - lastMonth.totalAccount) /
       lastMonth.totalAccount) *
@@ -164,7 +164,7 @@ function Statistical() {
           <div className="broad">
             <h2>Doanh thu</h2>
             <h1>
-              {thisMonth.revenue}$
+              {thisMonth?.revenue}$
               {compareRevenue > 0 ? (
                 <>
                   <AutoGraphIcon
