@@ -15,6 +15,7 @@ function Card(props) {
   const dispatch = useDispatch();
   // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const user = useContext(UserContext).user;
+  
   const counter = useSelector(counterSelector);
   const { reloadLike } = useSelector(grouptSelector);
   const checkin = new Date();
