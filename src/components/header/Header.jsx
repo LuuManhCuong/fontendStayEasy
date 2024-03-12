@@ -9,13 +9,13 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { keySearchSelector } from "../../redux-tookit/selector";
+import { counterSelector, keySearchSelector } from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 import AuthModal from "../auth/Authenticate";
 import Authenticated from "../auth/Authenticated";
 import "./header.scss";
-<<<<<<< HEAD
 import { dataHomeSlice } from "../../redux-tookit/reducer/dataHomeSlice";
+import { UserContext } from "../UserContext";
 
 function formatDateToYYMMDD(date) {
   const year = date.getFullYear().toString().slice(-2);
@@ -23,9 +23,6 @@ function formatDateToYYMMDD(date) {
   const day = ("0" + date.getDate()).slice(-2);
   return `${year}-${month}-${day}`;
 }
-=======
-import { UserContext } from "../UserContext";
->>>>>>> origin/namhh-update-account
 
 function Header({ page }) {
   const dispatch = useDispatch();
@@ -39,14 +36,9 @@ function Header({ page }) {
   const [checkout, setCheckout] = React.useState(new Date(timeStamp));
   const [showHistory, setShowHistory] = React.useState(false);
   const [placeholder, setPlaceholder] = React.useState("Tìm kiếm...");
-<<<<<<< HEAD
   const [suggest, setSuggest] = useState("");
   const [address, setAddress] = useState("");
-  const [dataSearch, setDataSearch] = useState([]);
-
-  const [isLogined, setIsLogined] = useState(
-    localStorage.getItem("access_token") ? true : false
-  );
+  
 
   function handleSearchHome() {
     setShowHistory(false);
@@ -59,22 +51,14 @@ function Header({ page }) {
       dispatch(keySearchSlice.actions.setCheckinDate(formattedCheckin));
       dispatch(keySearchSlice.actions.setCheckoutDate(formattedCheckout));
     }
-
   }
 
   const counter = useSelector(counterSelector);
 
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, [counter]);
-=======
-  const [suggest, setSuggest] = useState();
-
   //check login and get user from userContext
   const isAuthenticated = useContext(UserContext).isAuthenticated;
   const user = useContext(UserContext).user;
->>>>>>> origin/namhh-update-account
+
 
   React.useEffect(() => {
     setCheckout(new Date(checkin.getTime() + 86400000));
@@ -199,12 +183,8 @@ function Header({ page }) {
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
-<<<<<<< HEAD
           <NavLink
             to="/property/list"
-=======
-        <NavLink to="/host/home"
->>>>>>> origin/namhh-update-account
             className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl text-[1.5rem]"
@@ -225,15 +205,7 @@ function Header({ page }) {
                   <svg className="ml-3 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#000000" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
                   {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
                   {user && user?.avatar ? (
-<<<<<<< HEAD
-                    <img
-                      className="w-14 h-14 rounded-full"
-                      alt="avatar"
-                      src={user?.avatar}
-                    />
-=======
                     <img className="w-[3.3rem] h-[3.3rem] rounded-full" alt="avatar" src={user?.avatar}/>
->>>>>>> origin/namhh-update-account
                   ) : user && !user?.avatar ? (
                     <div class="relative inline-flex items-center justify-center w-[3.3rem] h-[3.3rem] overflow-hidden bg-black rounded-full dark:bg-gray-600">
                       <span class="font-medium text-2xl text-white dark:text-gray-300">

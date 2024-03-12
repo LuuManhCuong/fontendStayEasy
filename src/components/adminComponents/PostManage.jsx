@@ -82,30 +82,7 @@ export default function PostManage() {
   };
 
   return (
-<<<<<<< HEAD
-    <Row>
-      <Col xs={4}>
-        <div className="listProperty mx-4 shadow-lg m-8 rounded-lg">
-          <div className="d-flex justify-content-between mb-4">
-            <h2>Danh sách phòng</h2>
-          </div>
-
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Property Info</th>
-                <th scope="col">Address</th>
-                <th scope="col">Price</th>
-                <th scope="col">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((index, i) => (
-                <tr
-                  className={active === index.propertyId ? "activePro" : ""}
-                  key={index.propertyId}
-                  onClick={() => setActive(index.propertyId)}
-=======
+    <>
     <div className="px-4">
       <h1>Danh sách phòng</h1>
       <table className="bg-white w-full rounded-xl">
@@ -122,11 +99,7 @@ export default function PostManage() {
             <tr key={index.propertyId}>
               <td scope="row" className="p-4 justify-center">
                   <div>
-                    <img
-                      src={index.thumbnail}
-                      alt=""
-                      style={{ width: "100px", height: "100px" }}
-                    />
+                    <img src={index.thumbnail} alt="" style={{ width: "100px", height: "100px" }}/>
                     <p className="text-3xl font-semibold mt-2">{index.propertyName}</p>
                 </div>
               </td>
@@ -141,20 +114,11 @@ export default function PostManage() {
                 </div>
               </td>
               <td className="align-middle">
-                {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                <button
-                  onClick={() => handleDelete(index.propertyId)}
-                  className="bg-danger text-white p-2 rounded text-3xl "
->>>>>>> a0fcbad1b2eba33e3faa8af741e12abada4c2d55
-                >
+                <button onClick={() => handleDelete(index.propertyId)} className="bg-danger text-white p-2 rounded text-3xl">
                   <td scope="row" className="p-4">
                     <div className="flex justify-start items-center">
                       <div>
-                        <img
-                          src={index.thumbnail}
-                          alt=""
-                          style={{ width: "100px", height: "100px" }}
-                        />
+                        <img src={index.thumbnail} alt="" style={{ width: "100px", height: "100px" }}/>
                       </div>
                       <div className="ml-6">
                         <p className="text-3xl font-semibold m-0">
@@ -175,22 +139,20 @@ export default function PostManage() {
                   </td>
                   <td className="align-middle">
                     {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                    <button
-                      onClick={() => handleDelete(index.propertyId)}
-                      className="bg-danger text-white p-2 rounded text-3xl "
-                    >
+                    <button onClick={() => handleDelete(index.propertyId)} className="bg-danger text-white p-2 rounded text-3xl">
                       Xóa
                     </button>
                   </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Col>
-      <Col xs={4}>
-        <Calendar propertyId={active}></Calendar>
-      </Col>
-    </Row>
+                </button>
+              </td>
+            </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+    <Col xs={4}>
+      <Calendar propertyId={active}></Calendar>
+    </Col>
+    </>
   );
 }

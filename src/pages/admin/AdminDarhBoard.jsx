@@ -14,20 +14,11 @@ import { PresentationChartBarIcon, UserCircleIcon, Cog6ToothIcon, ClipboardDocum
 
 function AdminDarhBoard() {
   const sidebar = [
-<<<<<<< HEAD
-    { cate: "Thống kê", component: <Statistical></Statistical> },
-    // { cate: "Doanh thu", component: <RevenueManage></RevenueManage> },
-    { cate: "Bài đăng", component: <PostManage></PostManage> },
-    // { cate: "Đặt phòng", component: <BookingManage></BookingManage> },
-    { cate: "Tài khoản", component: <AccountManage></AccountManage> },
-    { cate: "Cài đặt", component: <Seting></Seting> },
-=======
     { cate: "Thống kê", icon:<PresentationChartBarIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />,  component: <Statistical></Statistical> },
     { cate: "Bài đăng", icon:<ArchiveBoxIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />, component: <PostManage></PostManage> },
     { cate: "Đặt phòng", icon:<ClipboardDocumentListIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />, component: <BookingManage></BookingManage> },
     { cate: "Tài khoản", icon:<UserCircleIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />, component: <AccountManage></AccountManage> },
     { cate: "Cài đặt", icon:<Cog6ToothIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />, component: <Seting></Seting> },
->>>>>>> a0fcbad1b2eba33e3faa8af741e12abada4c2d55
   ];
 
   const [isActive, setActive] = useState(sidebar[0]);

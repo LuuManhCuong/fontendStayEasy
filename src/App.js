@@ -2,11 +2,9 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useNavigate,
 } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import React, { useContext, useEffect } from "react";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import React, { useContext } from "react";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Experience from "./pages/Experience";
@@ -21,20 +19,13 @@ import LoginAndSecurity from "./pages/AccountSetting/LoginAndSecurity";
 import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
 
 import Login from "./pages/AccountSetting/Login";
-<<<<<<< HEAD
-import { ProtectedRoute, isAuthenticated } from "./pages/ProtectedRoute";
-import { UserContextProvider } from "./components/UserContext";
-=======
-import AdminDarhBoard from "./pages/AdminDarhBoard";
 
 import { UserContext } from "./components/UserContext";
->>>>>>> origin/namhh-update-account
 
 import BookingPage from "./pages/booking/BookingsPage";
 import BookingDetail from "./pages/booking/BookingDetail";
 import Booking from "./pages/Booking";
 import PaymentSuccsess from "./pages/PaymentSuccsess";
-<<<<<<< HEAD
 import CancelPayment from "./pages/CancelPayment";
 import AdminDarhBoard from "./pages/admin/AdminDarhBoard";
 import Statistic from "./components/Property/Statistic";
@@ -43,9 +34,7 @@ import AddProperty from "./components/Property/AddProperty";
 import UpdateProperty from "./components/Property/UpdateProperty";
 import Layout from "./components/Property/Layout/Layout";
 import Host from "./pages/host/Host";
-=======
 import { ProtectedRoute } from "./redux-tookit/actions/ProtectedRoute";
->>>>>>> origin/namhh-update-account
 
 function App() {
   // Sử dụng useSelector để truy cập các trạng thái từ Redux store
@@ -53,8 +42,6 @@ function App() {
 
   return (
     <>
-<<<<<<< HEAD
-      <UserContextProvider>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/experience" element={<Experience />} />
@@ -78,67 +65,8 @@ function App() {
           <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
           <Route path="/payment/paypal/cancel" element={<CancelPayment />} />
 
-          {/* account setting */}
-          <Route element={<ProtectedRoute />}>
-            <Route
-              path="/admin-dashboard"
-              element={<AdminDarhBoard></AdminDarhBoard>}
-            />
-
-            <Route
-              path="/account-settings"
-              element={<Account title="Tài khoản" />}
-            />
-            <Route
-              path="/account-settings/personal-info"
-              element={<PersonalInfo title="Thông tin cá nhân" />}
-            />
-
-            {/* Đăng nhập và bảo mật */}
-            <Route
-              path="/account-settings/login-and-security"
-              element={<LoginAndSecurity title="Đăng nhập và bảo mật" />}
-            />
-            <Route
-              path="/account-settings/login-and-security/login-requests"
-              element={<LoginAndSecurity title="Đăng nhập và bảo mật" />}
-            />
-            <Route
-              path="/account-settings/login-and-security/shared-access"
-              element={<LoginAndSecurity title="Đăng nhập và bảo mật" />}
-            />
-
-            {/* Thanh toán và Hoàn tiền */}
-            <Route
-              path="/account-settings/payments/payment-methods"
-              element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
-            />
-            <Route
-              path="/account-settings/payments/payout-methods"
-              element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
-            />
-
-            <Route path="/host" element={<Host />} />
-          </Route>
-
-          {/* login */}
-=======
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/experience" element={<Explore />} />
-        <Route path="/explore" element={<Experience />} />
-        <Route path="/search/result" element={<SearchResult />} />
-        <Route path="/explore/detail/:id" element={<Detail />} />
-        {/* booking */}
-        <Route path="/booking" element={<Booking />} />
-        <Route path="/booking/:id" element={<Booking />} />
-        <Route path="/account/bookings" element={<BookingPage />} />
-        <Route path="/account/bookings/:id" element={<BookingDetail />} />
-        <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
-
         {/* account setting */}
         <Route element={<ProtectedRoute />}>
->>>>>>> origin/namhh-update-account
           <Route
             path="/admin-dashboard"
             element={<AdminDarhBoard></AdminDarhBoard>}
@@ -175,6 +103,12 @@ function App() {
           <Route
             path="/account-settings/payments/payout-methods"
             element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
+          />
+
+          {/* host */}
+          <Route
+            path="/host"
+            element={<Host />}
           />
         </Route>
 
