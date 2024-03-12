@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./cart.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,11 +8,13 @@ import { counterSelector, grouptSelector } from "../../redux-tookit/selector";
 import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import axios from "axios";
 import Slider from "react-slick";
+import { UserContext } from "../UserContext";
 function Card(props) {
   // console.log("property: ", props.item);
 
   const dispatch = useDispatch();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const user = useContext(UserContext).user;
   const counter = useSelector(counterSelector);
   const { reloadLike } = useSelector(grouptSelector);
   const checkin = new Date();
@@ -23,9 +25,9 @@ function Card(props) {
     (like) => like?.idUser === user?.id
   );
 
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, [counter]);
+  // useEffect(() => {
+  //   setUser(JSON.parse(localStorage.getItem("user")));
+  // }, [counter]);
 
   // Kiểm tra xem người dùng đã like property này hay chưa => true/false
 
@@ -174,9 +176,16 @@ function Card(props) {
             </div>
           )}
         </div>
-        <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
-              ${isActive ? "active" : ""}`} onClick={(e) => handleLike(e, props.item.propertyId)}>
-          <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
+        <div
+          className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
+              ${isActive ? "active" : ""}`}
+          onClick={(e) => handleLike(e, props.item.propertyId)}
+        >
+          <FontAwesomeIcon
+            style={{ stroke: "white" }}
+            className="text-4xl z-10 text-customColor transition-all ease-in duration-200"
+            icon={icon({ name: "heart", family: "classic", style: "solid" })}
+          />
         </div>
         <div className="p-2">
           <div className="flex justify-between items-center text-3xl mt-2 h-10">
