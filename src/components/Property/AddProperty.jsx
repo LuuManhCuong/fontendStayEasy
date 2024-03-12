@@ -443,31 +443,15 @@ export default function AddProperty() {
 
             <Utilies />
 
-            {/* NUMGUEST */}
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="numguest"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Số người
-              </label>
-              <input
-                required
-                onChange={change}
-                type="number"
-                name="numGuests"
-                id="numGuests"
-                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
-              />
-            </div>
+            
 
-            {/*  */}
+            {/* NUMGUEST */}
             <div className="sm:col-span-2">
               <label
                 htmlFor="numguest"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Phí dịch vụ
+                Số người
               </label>
               <input
                 required
