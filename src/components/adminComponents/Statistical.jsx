@@ -114,7 +114,7 @@ function Statistical() {
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/admin/booking/daily`)
       .then(function (response) {
-        console.log("data booking daily: ", response.data);
+        // console.log("data booking daily: ", response.data);
         const currentDate = new Date();
         const day = currentDate.getDate();
         // Tạo mảng mới để lưu trữ số booking của mỗi ngày trong tháng
@@ -146,7 +146,7 @@ function Statistical() {
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/admin/statistics/monthly`)
       .then(function (response) {
-        console.log("data monthly: ", response.data);
+        // console.log("data monthly: ", response.data);
         setStatisticsMonthly(response.data);
       })
       .catch(function (error) {

@@ -19,7 +19,7 @@ function AdminDarhBoard() {
     { cate: "Thống kê", component: <Statistical></Statistical> },
     // { cate: "Doanh thu", component: <RevenueManage></RevenueManage> },
     { cate: "Bài đăng", component: <PostManage></PostManage> },
-    { cate: "Đặt phòng", component: <BookingManage></BookingManage> },
+    // { cate: "Đặt phòng", component: <BookingManage></BookingManage> },
     { cate: "Tài khoản", component: <AccountManage></AccountManage> },
     { cate: "Cài đặt", component: <Seting></Seting> },
   ];
