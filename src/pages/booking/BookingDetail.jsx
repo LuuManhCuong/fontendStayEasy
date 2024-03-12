@@ -5,8 +5,7 @@ import axios from "axios";
 import AddressLink from "../../components/listView/AddressLink";
 import PlaceGallery from "../../components/listView/PlaceGallery";
 
-// import PlaceGallery from "../../components/listview/PlaceGallery";
-// import AddressLink from "../../components/listview/AddressLink";
+
 
 
 import Booking from "../Booking";
