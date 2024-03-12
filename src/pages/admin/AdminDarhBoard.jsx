@@ -2,17 +2,21 @@ import React, { useState } from "react";
 import "./admin.scss";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Statistical from "../../components/adminComponents/Statistical";
 import PostManage from "../../components/adminComponents/PostManage";
 import BookingManage from "../../components/adminComponents/BookingManage";
 import AccountManage from "../../components/adminComponents/AccountManage";
 import Seting from "../../components/adminComponents/Seting";
 import { Link } from "react-router-dom";
-import ListProperty from "../../components/Property/ListProperty";
-import RevenueManage from "../../components/adminComponents/RevenueManage";
+
+import { Card, List, ListItem, ListItemPrefix } from "@material-tailwind/react";
+import {
+  PresentationChartBarIcon,
+  UserCircleIcon,
+  Cog6ToothIcon,
+  ClipboardDocumentListIcon,
+  ArchiveBoxIcon,
+} from "@heroicons/react/24/solid";
 
 function AdminDarhBoard() {
   const sidebar = [
@@ -28,30 +32,24 @@ function AdminDarhBoard() {
   return (
     <>
       <Header></Header>
-      <Container>
-        <Row>
-          <Col xs={2}>
-            <div className="sidebar">
-              {sidebar.map((e, i) => (
-                <Link to={e.link}>
-                  <div
-                    className={
-                      isActive.cate === e.cate
-                        ? "active sidebar-item"
-                        : "sidebar-item"
-                    }
-                    key={i}
-                    onClick={() => setActive(e)}
-                  >
-                    <h3>{e.cate} </h3>
-                  </div>
+      <div className="flex h-full">
+        {/* right menu */}
+        <Card className="h-[calc(100vh-0)] w-full max-w-[24rem] py-4 px-2 shadow-xl shadow-blue-gray-900/5">
+          <List>
+            {sidebar.map((e, i) => {
+              return (
+                <Link to={e.link} onClick={() => setActive(e)}>
+                  <ListItem>
+                    <ListItemPrefix>{e.icon}</ListItemPrefix>
+                    <h4 className="max-[1200px]:hidden w-full">{e.cate}</h4>
+                  </ListItem>
                 </Link>
-              ))}
-            </div>
-          </Col>
-          <Col xs={10}>{isActive.component}</Col>
-        </Row>
-      </Container>
+              );
+            })}
+          </List>
+        </Card>
+        <div className="w-full p-4 bg-gray-100">{isActive.component}</div>
+      </div>
       <Footer></Footer>
     </>
   );

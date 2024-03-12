@@ -25,17 +25,17 @@ export default function LoginAndSecurity({ title }) {
       <h1 className='text-[3.5rem] font-bold my-2'>{title}</h1>
       <div className='mt-16 lg:w-[55%]'>
         <div className='flex gap-5 font-medium'>
-          <NavLink to="/account-settings/login-and-security" onClick={() => setCurrentActive(0)}>
+          <NavLink to="/account-settings/login-and-security" className="bg-transparent" onClick={() => setCurrentActive(0)}>
             <div className={currentActive==0?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
               <p>ĐĂNG NHẬP</p>
             </div>
           </NavLink>
-          <NavLink to="/account-settings/login-and-security/login-requests" onClick={() => setCurrentActive(1)}>
+          <NavLink to="/account-settings/login-and-security/login-requests" className="bg-transparent" onClick={() => setCurrentActive(1)}>
             <div className={currentActive==1?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
               <p>YÊU CẦU ĐĂNG NHẬP</p>
             </div>
           </NavLink>
-          <NavLink to="/account-settings/login-and-security/shared-access" onClick={() => setCurrentActive(2)}>
+          <NavLink to="/account-settings/login-and-security/shared-access" className="bg-transparent" onClick={() => setCurrentActive(2)}>
             <div className={currentActive==2?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
               <p>TRUY CẬP CHIA SẺ</p>
             </div>

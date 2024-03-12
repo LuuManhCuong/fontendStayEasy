@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="mt-auto border border-black text-center py-3 px-40 flex justify-between">
+    <footer className="mt-auto border border-gray-500 text-center py-3 px-40 flex justify-between">
       {/* Left content */}
       <div className="my-2 md:mb-0 flex items-center text-2xl">
         <span className="mr-4">© 2024 Airbnb, Inc.</span>
