@@ -64,11 +64,11 @@ export default function PostManage() {
     console.log("keySearch: ", keySearch);
     axios
       .get(
-        `http://localhost:8080/api/v1/stayeasy/explore/search?keySearch=${keySearch}&page=${0}&size=${50}`
+        `http://localhost:8080/api/v1/stayeasy/admin/property/search?keySearch=${keySearch}`
       )
       .then(function (response) {
         console.log("response: ", response.data);
-        setData(response.data.properties);
+        setData(response.data);
       })
       .catch(function (error) {
         console.log("error: ", error);
