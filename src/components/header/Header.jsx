@@ -59,7 +59,6 @@ function Header({ page }) {
       dispatch(keySearchSlice.actions.setCheckinDate(formattedCheckin));
       dispatch(keySearchSlice.actions.setCheckoutDate(formattedCheckout));
     }
-
   }
 
   const counter = useSelector(counterSelector);

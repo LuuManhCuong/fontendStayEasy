@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import Footer from "../../components/footer/Footer";
 import Card from "../../components/AccountSetting/Card";
 import CommonHeader from "../../components/header/CommonHeader";
+import { UserContext } from "../../components/UserContext";
+
 
 export default function Account({ title }) {
-  // check is loginned yet?
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
+  const user = useContext(UserContext).user;
 
   return (
     <>
@@ -15,10 +17,10 @@ export default function Account({ title }) {
     <div className='flex flex-col py-[4.5rem] mt-[9.1rem] max-[768px]:mt-9 min-[1286px]:px-[25.5rem] min-[640px]:px-[7rem] max-[640px]:px-[2rem]'>
         {/* title */}
         <div className="mb-20 px-2 py-2">
-          <h1 className="text-[3.3rem] font-medium">{title}</h1>
+          <h1 className="text-[3.3rem] font-medium  ">{title}</h1>
           <p className="text-3xl font-medium">
-            {user.firstName} {user.lastName},{" "}
-            <span className="font-normal">{user.email} · </span>
+            {user?.firstName} {user?.lastName},{" "}
+            <span className="font-normal">{user?.email} · </span>
             <button className="underline">Truy cập hồ sơ</button>
           </p>
         </div>
