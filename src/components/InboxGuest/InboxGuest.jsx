@@ -7,18 +7,20 @@ import { ShowContext } from "../../pages/Inbox/ShowComponent";
 import SockJS from "sockjs-client";
 import EmojiPicker from "emoji-picker-react";
 import { Spinner } from "react-bootstrap";
+import {UserContext} from '../../components/UserContext'
 export default function InboxGuest() {
   const active = useContext(ShowContext).active;
   const changeActive = useContext(ShowContext).changeActive;
   const roomId = useParams().roomId;
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
-  const idUser = JSON.parse(localStorage.getItem("user"))?.id;
+  // const idUser = JSON.parse(localStorage.getItem("user"))?.id;
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
   const [isPickkerVisible, setPickkerVisible] = useState(false);
   const [perm, setPerm] = useState(false);
   const navigate = useNavigate()
+  const user = useContext(UserContext).user
   // useEffect(() => {
   //   fetch(`http://localhost:8080/api/v1/stayeasy/chatroom/check-room/${roomId}`, {
   //     headers: {
@@ -51,7 +53,7 @@ export default function InboxGuest() {
     fetch(`http://localhost:8080/api/v1/stayeasy/chatroom/get/all/${roomId}`,
       {
         headers: {
-          'Authorization': `BEARER ${JSON.parse(localStorage.getItem("access_token"))}`
+          'Authorization': `BEARER ${localStorage.getItem("access_token")}`
         }
       }
     )
@@ -74,7 +76,6 @@ export default function InboxGuest() {
       client.connect({}, () => {
         if (client.connected) {
           client.subscribe(`/api/v1/stayeasy/topic/${roomId}`, (message) => {
-            console.log("ok");
             const receivedMessage = JSON.parse(message.body);
             setMessages((prevMessages) => [...prevMessages, receivedMessage]);
           });
@@ -101,12 +102,12 @@ export default function InboxGuest() {
       if (message) {
         const chatMessage = {
           chatRoomId: roomId,
-          userId: idUser,
+          userId: user.id,
           content: message,
         };
         stompClient.send(
           `/api/v1/stayeasy/app/chat/${roomId}`,
-          { token: `${JSON.parse(localStorage.getItem("access_token"))}` },
+          { token: `${localStorage.getItem("access_token")}` },
           JSON.stringify(chatMessage)
         );
         setMessage("");

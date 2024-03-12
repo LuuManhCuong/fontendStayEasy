@@ -4,42 +4,49 @@ import { Chart as ChartJS, registerables } from "chart.js";
 
 ChartJS.register(...registerables);
 const LineChart = ({ title, dataThisMonth, dataLastMonth }) => {
+  // console.log("oke: ", dataThisMonth);
+  // Tạo mảng các ngày trong tháng
+  const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  // Sử dụng mảng các ngày như là nhãn
+  const labels = daysInMonth.map((i) => `day ${i}`);
   const data = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    // labels: [
+    //   "Jan",
+    //   "Feb",
+    //   "Mar",
+    //   "Apr",
+    //   "May",
+    //   "Jun",
+    //   "Jul",
+    //   "Aug",
+    //   "Sep",
+    //   "Oct",
+    //   "Nov",
+    //   "Dec",
+    // ],
+    labels: labels,
     datasets: [
       {
-        label: "This Month",
+        label: "This Month ",
         data: dataThisMonth,
-        borderColor: "red",
+        borderColor: "green",
         backgroundColor: "rgba(75,192,192,0.4)",
       },
       {
-        label: "Last Month",
+        label: "Last Month ",
         data: dataLastMonth,
-        borderColor: "rgba(192,75,192,1)",
+        borderColor: "red",
         backgroundColor: "rgba(192,75,192,0.4)",
       },
     ],
   };
 
   return (
-    <>
+    <div className="shadow-lg m-8 rounded-lg">
       <h3>{title}</h3>
       <Line data={data} />
-    </>
+    </div>
   );
 };
 

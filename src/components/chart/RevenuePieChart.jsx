@@ -63,7 +63,7 @@ const RevenuePieChart = () => {
   };
 
   return (
-    <div>
+    <div className="shadow-lg m-8 rounded-lg">
       <h2>Doanh thu 12 tháng</h2>
       <Pie data={data} options={options} />
     </div>

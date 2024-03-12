@@ -2,13 +2,11 @@ import Footer from "../components/footer/Footer";
 import Header from "../components/header/Header";
 import ListView from "../components/listView/ListView";
 import Filter from "../components/filter/Filter";
-import Filters from "../components/filter/Filters";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  counterSelector,
   dataHomeSelector,
   grouptSelector,
 } from "../redux-tookit/selector";
@@ -22,6 +20,7 @@ function Home() {
 
   const { reloadLike } = useSelector(grouptSelector);
   useEffect(() => {
+    // console.log("reload: ", reloadLike);
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/property`)

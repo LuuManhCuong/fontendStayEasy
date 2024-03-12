@@ -3,9 +3,15 @@ import { Line, Chart, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 
 const BarChart = ({ title, dataLabelOne, dataLabelTwo }) => {
-  console.log(dataLabelOne);
+  // console.log(dataLabelOne);
+  // const currentDate = new Date();
+  // const day = currentDate.getDate();
+  const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  // Sử dụng mảng các ngày như là nhãn
+  const labels = daysInMonth.map((i) => `day ${i}`);
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: labels,
     datasets: [
       {
         label: dataLabelOne.label,
@@ -30,7 +36,7 @@ const BarChart = ({ title, dataLabelOne, dataLabelTwo }) => {
   };
 
   return (
-    <div>
+    <div className="shadow-lg m-8 rounded-lg">
       <h3>{title}</h3>
       <Bar data={data} />
     </div>

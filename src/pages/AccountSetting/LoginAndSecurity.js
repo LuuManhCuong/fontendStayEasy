@@ -3,6 +3,7 @@ import Footer from "../../components/footer/Footer";
 import CommonHeader from "../../components/header/CommonHeader";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { UpdatePassword } from "../../components/AccountSetting/UpdatePassword";
 
 export default function LoginAndSecurity({ title }) {
   var [currentActive, setCurrentActive] = useState(0);
@@ -25,17 +26,17 @@ export default function LoginAndSecurity({ title }) {
       <h1 className='text-[3.5rem] font-bold my-2'>{title}</h1>
       <div className='mt-16 lg:w-[55%]'>
         <div className='flex gap-5 font-medium'>
-          <NavLink to="/account-settings/login-and-security" onClick={() => setCurrentActive(0)}>
+          <NavLink to="/account-settings/login-and-security" className="bg-transparent" onClick={() => setCurrentActive(0)}>
             <div className={currentActive==0?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
               <p>ĐĂNG NHẬP</p>
             </div>
           </NavLink>
-          <NavLink to="/account-settings/login-and-security/login-requests" onClick={() => setCurrentActive(1)}>
+          <NavLink to="/account-settings/login-and-security/login-requests" className="bg-transparent" onClick={() => setCurrentActive(1)}>
             <div className={currentActive==1?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
               <p>YÊU CẦU ĐĂNG NHẬP</p>
             </div>
           </NavLink>
-          <NavLink to="/account-settings/login-and-security/shared-access" onClick={() => setCurrentActive(2)}>
+          <NavLink to="/account-settings/login-and-security/shared-access" className="bg-transparent" onClick={() => setCurrentActive(2)}>
             <div className={currentActive==2?"text-[#008489] border-b-2 border-[#008489] py-2":"py-2"}>
               <p>TRUY CẬP CHIA SẺ</p>
             </div>
@@ -63,10 +64,11 @@ const Login = () => {
         <div className="lg:w-[55%]">
           <h1 className="font-bold text-gray-600 mt-12 mb-12">Login</h1>
           {/* password */}
-          <Infor
+          <UpdatePassword
             title="Mật khẩu"
             value="Cập nhật lần cuối 7 ngày trước"
             button="Thay đổi"
+            toggleBtn=""
           />
           <hr />
 
@@ -84,7 +86,7 @@ const Login = () => {
             Device history
           </h1>
           {/* Name */}
-          <Infor
+          <DeviceHistory
             title="Thiết bị"
             value="Last updated 7 days ago"
             button="Đăng xuất thiết bị"
@@ -260,7 +262,7 @@ const SharedAccess = () => {
   );
 };
 
-const Infor = ({ title, value, button }) => {
+const Infor = ({ title, value, button, toggleBtn }) => {
   return (
     <div className="flex justify-between my-8">
       <div>
@@ -268,6 +270,25 @@ const Infor = ({ title, value, button }) => {
           {title}
         </p>
         <p className="text-gray-500">{value}</p>
+      </div>
+      <button onClick={toggleBtn} className="font-medium text-[1.7rem] ml-3 text-[#008489]">
+        {button}
+      </button>
+    </div>
+  );
+};
+
+const DeviceHistory = ({ title, value, button }) => {
+  return (
+    <div className="flex justify-between my-8">
+      <div className="flex gap-4">
+      <svg viewBox="0 0 24 24" role="img" aria-hidden="false" aria-label="Desktop device" focusable="false" className="h-[30px] w-[30px] block"><path d="m22.5 2h-21c-.8271484 0-1.5.6728516-1.5 1.5v14c0 .8271484.6728516 1.5 1.5 1.5h8.5v3h-5.5c-.2763672 0-.5.2236328-.5.5s.2236328.5.5.5h15c.2763672 0 .5-.2236328.5-.5s-.2236328-.5-.5-.5h-5.5v-3h8.5c.8271484 0 1.5-.6728516 1.5-1.5v-14c0-.8271484-.6728516-1.5-1.5-1.5zm-21 1h21c.2753906 0 .5.2241211.5.5v11.5h-22v-11.5c0-.2758789.2241211-.5.5-.5zm11.5 19h-2v-3h2zm9.5-4h-21c-.2758789 0-.5-.2246094-.5-.5v-1.5h22v1.5c0 .2753906-.2246094.5-.5.5z"></path></svg>
+      <div>
+        <p className="text-[1.7rem] text-gray-700 font-medium p-0 m-0">
+          {title}
+        </p>
+        <p className="text-gray-500">{value}</p>
+      </div>
       </div>
       <button className="font-medium text-[1.7rem] ml-3 text-[#008489]">
         {button}

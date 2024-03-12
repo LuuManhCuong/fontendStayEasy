@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
-import CommonHeader from "../../components/header/CommonHeader";
-import Footer from "../../components/footer/Footer";
+import CommonHeader from '../../components/header/CommonHeader';
+import Footer from '../../components/footer/Footer';
 import ButtonCustom from "../../components/auth/ButtonCustom";
 import { useDispatch } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
-import { login, signup } from "../../service/AuthService";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { login, signup } from "../../redux-tookit/actions/authActions";
+
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -40,25 +41,24 @@ export default function Login() {
     setFirstName("");
     setLastName("");
   };
-
-  var data = {
-    username: username,
-    password: password,
-    confirmPassword: confirmPassword,
-    firstName: firstName,
-    lastName: lastName,
-    toggleClosePopup: null,
-    setIsLogined: null,
-    setErrorMessage: setErrorMessage,
-    setSuccessMessage: setSuccessMessage,
-    setErrorLoginMessage: setErrorLoginMessage,
-    setMessage: setMessage,
-    setisLogin: setisLogin,
-    setIsSecondForm: setIsSecondForm,
-    dispatch: dispatch,
-    navigate: navigate,
-    location: location,
-  };
+  
+  var data ={
+    "username" : username,
+    "password" : password,
+    "confirmPassword" : confirmPassword,
+    "firstName" : firstName,
+    "lastName" : lastName,
+    "toggleClosePopup" : null,
+    "setErrorMessage" : setErrorMessage,
+    "setSuccessMessage" : setSuccessMessage,
+    "setErrorLoginMessage" : setErrorLoginMessage,
+    "setMessage" : setMessage,
+    "setisLogin" : setisLogin,
+    "setIsSecondForm" : setIsSecondForm,
+    "dispatch" : dispatch,
+    "navigate" : navigate,
+    "location" : location
+  }
 
   // validate form
   const validateFirstForm = () => {
@@ -68,6 +68,14 @@ export default function Login() {
     } else {
       setErrorMessage("Vui lòng nhập thông tin!");
     }
+  };
+
+  const handleLogin = () => {
+    dispatch(login(data));
+  };
+
+  const handleSignup = () => {
+    dispatch(signup(data));
   };
 
   return (
@@ -224,26 +232,10 @@ export default function Login() {
               )}
               {/* button */}
               <div className="flex items-center justify-between">
-                <button
-                  onClick={
-                    isLogin
-                      ? () => {
-                          login(data);
-                        }
-                      : isSecondForm
-                      ? () => {
-                          signup(data);
-                        }
-                      : validateFirstForm
-                  }
-                  type="button"
-                  className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-                >
-                  {isLogin
-                    ? "Đăng nhập"
-                    : isSecondForm
-                    ? "Đăng ký"
-                    : "Tiếp tục"}
+                <button onClick={isLogin ? ()=>{handleLogin();}
+                  : isSecondForm ? ()=>{handleSignup();} 
+                  : validateFirstForm} type="button" className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
+                  {isLogin ? "Đăng nhập" : isSecondForm ? "Đăng ký" : "Tiếp tục"}
                 </button>
               </div>
               {/* button */}

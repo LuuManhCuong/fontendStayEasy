@@ -23,7 +23,6 @@ const PaymentSuccsess = () => {
         .then(response => {
             if (response) {
                 setBill(response.data);
-                console.log(bill);
             } else {
                 console.error('Response data is empty or undefined');
             }
@@ -45,6 +44,7 @@ const PaymentSuccsess = () => {
     const checkOut = bill[0].bookingDTO.checkOut;
     const price = bill[0].amount;
     const createTime = bill[0].createTime;
+    const confirm = bill[0].confirmation;
  
     return (
       <div className="bg-white py-24 sm:py-32 md:container md:mx-auto">
@@ -101,9 +101,9 @@ const PaymentSuccsess = () => {
           <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
             <div className="rounded-2xl bg-gray-50 py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
               <div className="mx-auto max-w-xs px-8">
-                <p className="text-base font-semibold text-gray-600">Pay once, own it forever</p>
+                <p className="text-base font-semibold text-gray-600">Số tiền thanh toán </p>
                 <p className="mt-6 flex items-baseline justify-center gap-x-2">
-                  <span className="text-5xl font-bold tracking-tight text-gray-900"></span>
+                  <span className="text-5xl font-bold tracking-tight text-gray-900"> {confirm === "FENDING" ? "Đang chờ xác nhận từ chủ nhà" : confirm === "CONFIRM" ? "Chủ nhà đã xác nhận" : ""}</span>
                   <span className="text-sm font-semibold leading-6 tracking-wide text-gray-900"> {price} USD</span>
                 </p>
                 <a
@@ -113,7 +113,7 @@ const PaymentSuccsess = () => {
                   Go Home
                 </a>
                 <p className="mt-6 text-xs leading-5 text-gray-600">
-                  Invoices and receipts available for easy company reimbursement
+                 Ngày tạo {createTime}
                 </p>
               </div>
             </div>

@@ -1,29 +1,39 @@
 import React from "react";
-import RevenuePieChart from "../chart/RevenuePieChart";
-import { Col, Row } from "react-bootstrap";
-import LineChart from "../chart/LineChart";
 
-function RevenueManage() {
-  // Dữ liệu doanh thu của tháng này và tháng trước
-  const revenueThisMonth = [
-    1000, 1500, 2000, 2500, 1800, 1200, 1900, 2300, 2600, 2700, 2800, 300,
-  ];
-  const revenueLastMonth = [
-    900, 1400, 1800, 2200, 1700, 2000, 1700, 2100, 2400, 2500, 2600, 2800,
-  ];
+import Table from "react-bootstrap/Table";
+
+function RevenueManage({ data }) {
+  // console.log("daa: ", data);
   return (
-    <Row>
-      <Col xs={6}>
-        <LineChart
-          title={"Biểu đồ doanh thu tháng này"}
-          dataThisMonth={revenueThisMonth}
-          dataLastMonth={revenueLastMonth}
-        ></LineChart>
-      </Col>
-      <Col xs={6}>
-        <RevenuePieChart></RevenuePieChart>
-      </Col>
-    </Row>
+    <div className="shadow-lg m-8 rounded-lg">
+      <h1>Bảng thống kê hằng tháng</h1>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Tháng</th>
+            <th>Ngày thống kê</th>
+            <th>Doanh thu</th>
+            <th>Tài khoản mới</th>
+            <th>Bài đăng mới</th>
+            <th>Lượt đặt phòng</th>
+            <th>Lượt hủy phòng</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((e, i) => (
+            <tr key={i}>
+              <td>{i + 1}</td>
+              <td>{e.date}</td>
+              <td>{e.revenue}$</td>
+              <td>{e.totalAccount}</td>
+              <td>{e.totalPost}</td>
+              <td>{e.totalBookings}</td>
+              <td>{e.totalCancelBooking}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
   );
 }
 
