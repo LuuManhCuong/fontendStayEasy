@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 
-import CommonHeader from "../../components/header/CommonHeader";
-import Footer from "../../components/footer/Footer";
+import CommonHeader from '../../components/header/CommonHeader';
+import Footer from '../../components/footer/Footer';
+<<<<<<< HEAD
 import ButtonCustom from "../../components/auth/ButtonCustom";
+=======
+import ButtonCustom from "../../components/Auth/ButtonCustom";
 import { useDispatch } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { login, signup } from "../../redux-tookit/actions/authActions";
+>>>>>>> origin/namhh-update-account
 
 // import CommonHeader from "../../components/header/CommonHeader";
 // import Footer from "../../components/footer/Footer";
 // import ButtonCustom from "../../components/Auth/ButtonCustom";
 
-// import { login, signup } from "../../service/AuthService";
+import { useDispatch } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import { login, signup } from "../../service/AuthService";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -46,6 +52,7 @@ export default function Login() {
     setFirstName("");
     setLastName("");
   };
+<<<<<<< HEAD
 
   var data = {
     username: username,
@@ -54,6 +61,7 @@ export default function Login() {
     firstName: firstName,
     lastName: lastName,
     toggleClosePopup: null,
+    setIsLogined: null,
     setErrorMessage: setErrorMessage,
     setSuccessMessage: setSuccessMessage,
     setErrorLoginMessage: setErrorLoginMessage,
@@ -64,6 +72,26 @@ export default function Login() {
     navigate: navigate,
     location: location,
   };
+=======
+  
+  var data ={
+    "username" : username,
+    "password" : password,
+    "confirmPassword" : confirmPassword,
+    "firstName" : firstName,
+    "lastName" : lastName,
+    "toggleClosePopup" : null,
+    "setErrorMessage" : setErrorMessage,
+    "setSuccessMessage" : setSuccessMessage,
+    "setErrorLoginMessage" : setErrorLoginMessage,
+    "setMessage" : setMessage,
+    "setisLogin" : setisLogin,
+    "setIsSecondForm" : setIsSecondForm,
+    "dispatch" : dispatch,
+    "navigate" : navigate,
+    "location" : location
+  }
+>>>>>>> origin/namhh-update-account
 
   // validate form
   const validateFirstForm = () => {
@@ -237,15 +265,16 @@ export default function Login() {
               )}
               {/* button */}
               <div className="flex items-center justify-between">
+<<<<<<< HEAD
                 <button
                   onClick={
                     isLogin
                       ? () => {
-                          handleLogin();
+                          login(data);
                         }
                       : isSecondForm
                       ? () => {
-                          handleSignup();
+                          signup(data);
                         }
                       : validateFirstForm
                   }
@@ -257,6 +286,12 @@ export default function Login() {
                     : isSecondForm
                     ? "Đăng ký"
                     : "Tiếp tục"}
+=======
+                <button onClick={isLogin ? ()=>{handleLogin();}
+                  : isSecondForm ? ()=>{handleSignup();} 
+                  : validateFirstForm} type="button" className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
+                  {isLogin ? "Đăng nhập" : isSecondForm ? "Đăng ký" : "Tiếp tục"}
+>>>>>>> origin/namhh-update-account
                 </button>
               </div>
               {/* button */}

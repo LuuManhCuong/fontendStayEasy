@@ -82,6 +82,7 @@ export default function PostManage() {
   };
 
   return (
+<<<<<<< HEAD
     <Row>
       <Col xs={4}>
         <div className="listProperty mx-4 shadow-lg m-8 rounded-lg">
@@ -104,6 +105,47 @@ export default function PostManage() {
                   className={active === index.propertyId ? "activePro" : ""}
                   key={index.propertyId}
                   onClick={() => setActive(index.propertyId)}
+=======
+    <div className="px-4">
+      <h1>Danh sách phòng</h1>
+      <table className="bg-white w-full rounded-xl">
+        <thead>
+          <tr>
+            <th className="p-4" scope="col">Property Info</th>
+            <th className="py-4" scope="col">Address</th>
+            <th className="py-4" scope="col">Price</th>
+            <th className="py-4" scope="col">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((index) => (
+            <tr key={index.propertyId}>
+              <td scope="row" className="p-4 justify-center">
+                  <div>
+                    <img
+                      src={index.thumbnail}
+                      alt=""
+                      style={{ width: "100px", height: "100px" }}
+                    />
+                    <p className="text-3xl font-semibold mt-2">{index.propertyName}</p>
+                </div>
+              </td>
+              <td className="align-middle">
+                <div className="flex w-full h-full justify-start items-center">
+                  <p className="text-3xl m-0">{index.address}</p>
+                </div>
+              </td>
+              <td className="align-middle">
+                <div className="flex w-full h-full justify-start items-center">
+                  <p className="text-3xl m-0">{index.price}</p>
+                </div>
+              </td>
+              <td className="align-middle">
+                {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
+                <button
+                  onClick={() => handleDelete(index.propertyId)}
+                  className="bg-danger text-white p-2 rounded text-3xl "
+>>>>>>> a0fcbad1b2eba33e3faa8af741e12abada4c2d55
                 >
                   <td scope="row" className="p-4">
                     <div className="flex justify-start items-center">
