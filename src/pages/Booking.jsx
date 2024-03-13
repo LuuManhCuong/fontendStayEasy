@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai";
 import Footer from "../components/footer/Footer";
 import { useParams } from "react-router-dom";
@@ -12,9 +12,8 @@ import { UserContext } from "../components/UserContext";
 const Booking = () => {
   const [place, setPlace] = useState([]);
   const { id } = useParams();
+  //   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const user = useContext(UserContext).user;
-  console.table(user);
-  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const urlParams = new URLSearchParams(window.location.search);
   const checkIn = urlParams.get("checkin");
   const checkOut = urlParams.get("checkout");
@@ -37,7 +36,7 @@ const Booking = () => {
   const currency = "USD";
   const method = "SALE";
   const intent = "PAYPAL";
-  const description = `${user?.firstName} Payment for booking ${place.propertyName}`;
+  const description = `${user?.useName} Payment for booking ${place.propertyName}`;
 
   const [selectedPayment, setSelectedPayment] = useState(
     "Credit or debit card"
