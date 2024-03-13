@@ -112,7 +112,7 @@ function BookingModal(props) {
               <input
                 type="number"
                 id="guests"
-                value={guests}
+                value={numGuest}
                 onChange={(e) => setGuests(e.target.value)}
                 className="w-full border mt-2 rounded px-3 py-2 bg-gray-100 text-gray-900"
               />

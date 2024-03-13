@@ -42,6 +42,7 @@ export const login = (data) => (dispatch) => {
         data.toggleClosePopup();
       }
       if(data.location){
+        // const search = data.location.state?.search || '';
         // Kiểm tra nếu có thông tin trang trước đó, chuyển hướng lại đó sau khi đăng nhập thành công
         const from = data.location.state?.from?.pathname || '/'; data.navigate(from, { replace: true });
       }

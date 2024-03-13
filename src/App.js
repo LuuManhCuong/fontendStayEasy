@@ -57,16 +57,17 @@ function App() {
             <Route path="update/:propertyId" element={<UpdateProperty />} />
           </Route>
 
+
+        {/* account setting */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/booking/:id" element={<Booking />} />
           {/* booking */}
           <Route path="/booking" element={<Booking />} />
-          <Route path="/booking/:id" element={<Booking />} />
           <Route path="/account/bookings" element={<BookingPage />} />
           <Route path="/account/bookings/:id" element={<BookingDetail />} />
           <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
           <Route path="/payment/paypal/cancel" element={<CancelPayment />} />
 
-        {/* account setting */}
-        <Route element={<ProtectedRoute />}>
           <Route
             path="/admin-dashboard"
             element={<AdminDarhBoard></AdminDarhBoard>}
