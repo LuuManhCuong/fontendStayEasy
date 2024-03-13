@@ -27,6 +27,7 @@ import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
 
 import { differenceInCalendarDays, format } from "date-fns";
+import Rules from "../components/rules/Rules";
 
 function Detail() {
   const { id } = useParams();
@@ -364,63 +365,8 @@ function Detail() {
               </div>
             </div>
 
-            {/* info-service */}
-            <div className="w-full pt-6 pb-6 flex flex-col border-b-2 border-black/30 justify-between box-border">
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Hủy miễn phí trước</p>
-                  <p className="m-0">
-                    Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.
-                  </p>
-                </div>
-              </div>
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Không gian riêng để làm việc</p>
-                  <p className="m-0">
-                    Một căn phòng có Wi-fi, rất phù hợp để làm việc.
-                  </p>
-                </div>
-              </div>
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Tự nhận phòng</p>
-                  <p className="m-0">
-                    Tự nhận phòng bằng cách nhập mã số vào cửa.
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* info-rules */}
+            <Rules rulesList={dataDetail.rulesList}></Rules>
 
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
