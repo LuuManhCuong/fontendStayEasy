@@ -3,14 +3,27 @@ import { Divider } from 'semantic-ui-react';
 
 export default function Room({ data }) {
     const [user, setUser] = useState()
+    const [firstMess, setFirstMess] = useState('')
+    console.log(data);
     useEffect(() => {
         fetch(`http://localhost:8080/api/v1/stayeasy/chatroom/get-host/${data.userId}`)
             .then(data => data.json())
             .then(data => {
-                console.log(data);
                 setUser(data)
             })
     }, [data.userId])
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/v1/stayeasy/message/get-first/${data.roomChatId}`,
+            {
+                headers: {
+                    'Authorization': `BEARER ${localStorage.getItem("access_token")}`
+                }
+            })
+            .then(data => data.json())
+            .then(data => {
+                setFirstMess(data.content)
+            })
+    }, [data])
     return (
         <div>{user ?
             <>
@@ -22,7 +35,7 @@ export default function Room({ data }) {
                         </span>
                     </div>
                     <div className='text-start'>
-                        {/* <h4>123</h4> */}
+                        <h4>{firstMess}</h4>
                         <p className='text-xl'><span className='font-medium'>{user.firstName} {user.lastName}</span></p>
                     </div>
                 </a>

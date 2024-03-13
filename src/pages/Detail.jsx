@@ -9,7 +9,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
 import React from "react";
@@ -25,11 +25,12 @@ import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
-
+import {UserContext} from '../components/UserContext'
 import { differenceInCalendarDays, format } from "date-fns";
 import Rules from "../components/rules/Rules";
 
 function Detail() {
+  const user = useContext(UserContext).user
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
@@ -242,11 +243,10 @@ function Detail() {
   }
 
   function sendMessageHost() {
-    const idUser = JSON.parse(localStorage.getItem("user"))?.id;
-    if (message && idUser) {
+    if (message && user) {
       const idHost = dataDetail.owner.id;
       const data = {
-        userId: idUser,
+        userId: user.id,
         hostId: idHost,
         content: message,
       };
@@ -254,6 +254,7 @@ function Detail() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `BEARER ${localStorage.getItem("access_token")}`
         },
         body: JSON.stringify(data),
       })
