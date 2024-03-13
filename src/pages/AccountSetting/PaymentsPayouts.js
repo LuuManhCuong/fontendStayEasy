@@ -24,13 +24,13 @@ export default function PaymentsPayouts({ title }) {
       <h1 className='text-[3.5rem] font-bold my-2'>{title}</h1>
       <div className='mt-16 lg:w-[55%]'>
         <div className='flex gap-3 font-medium'>
-          <NavLink to="/account-settings/payments/payment-methods" onClick={() => setCurrentActive(0)}>
+          <NavLink to="/account-settings/payments/payment-methods" className="bg-transparent" onClick={() => setCurrentActive(0)}>
             <div className={currentActive==0?"text-black px-3 border-b-[3px] border-black mb-0"
               :"text-gray-500 hover:bg-gray-100 px-3 rounded-lg mb-0"}>
               <p className="hover:bg-gray-100 hover:rounded-lg p-2">Thanh toán</p>
             </div>
           </NavLink>
-          <NavLink to="/account-settings/payments/payout-methods" onClick={() => setCurrentActive(1)}>
+          <NavLink to="/account-settings/payments/payout-methods" className="bg-transparent" onClick={() => setCurrentActive(1)}>
             <div className={currentActive==1?"text-black px-3 border-b-[3px] border-black mb-0"
             :"text-gray-500 hover:bg-gray-100 px-3 rounded-lg mb-0"}>
             <p className="hover:bg-gray-100 hover:rounded-lg p-2">Hoàn tiền</p>

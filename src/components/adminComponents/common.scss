@@ -27,3 +27,15 @@
     border-top-right-radius: 10px;
   }
 }
+
+.calendar {
+  zoom: 0.7;
+}
+.listProperty {
+  zoom: 0.8;
+}
+.activePro {
+  td {
+    background-color: #ccc !important;
+  }
+}

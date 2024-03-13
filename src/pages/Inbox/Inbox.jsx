@@ -7,6 +7,8 @@ import Header from "../../components/header/Header";
 import { useSelector } from "react-redux";
 import { counterSelector } from "../../redux-tookit/selector";
 import { Navigate } from "react-router-dom";
+import CommonHeader from "../../components/header/CommonHeader";
+
 export default function Inbox({ children }) {
   const counter = useSelector(counterSelector);
 
@@ -22,8 +24,8 @@ export default function Inbox({ children }) {
       {/* <HeaderInbox></HeaderInbox> */}
       {user ? (
         <>
-          <Header></Header>
-          <div className={style.box_message}>
+          <CommonHeader padding="20"/>
+          <div className={`mt-32 ${style.box_message}`}>
             <InboxListMessage></InboxListMessage>
 
             {children}

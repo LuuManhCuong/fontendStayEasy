@@ -288,6 +288,7 @@ function Detail() {
           key={id}
         >
           <Slider {...settings} className="w-[80%]">
+        
             {dataDetail.imagesList?.map((item, index) => (
               <div key={index} className=" h-[450px]">
                 <img
@@ -295,9 +296,11 @@ function Detail() {
                   src={item.url}
                   testindex={index}
                   alt=""
-                  onClick={() => onClickImage(item)}
+                  onClick={() => onClickImage(item)
+                  }
                 />
               </div>
+               
             ))}
           </Slider>
         </div>
