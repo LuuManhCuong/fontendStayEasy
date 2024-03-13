@@ -99,12 +99,15 @@ export default function PostManage() {
   };
 
   return (
-    <>
-    <div className="mx-4">
-      <div className="mb-4">
-        <h2>Danh sách phòng</h2>
-        <div className="flex justify-start border-2 border-black w-[30%] rounded-full p-2">
-        <input
+    <Row>
+      <Col xs={6}>
+        <Calendar propertyId={active}></Calendar>
+      </Col>
+      <Col xs={6}>
+        <div className="mb-4">
+          <h2>Danh sách phòng</h2>
+          <div className="flex justify-start border-2 border-black w-[30%] rounded-full p-2">
+            <input
               type="text"
               className="search-text pl-4 rounded-lg w-[90%]"
               value={keySearch}
@@ -115,29 +118,38 @@ export default function PostManage() {
               name="keySearch"
               placeholder="Tìm kiếm"
             />
-          <SearchIcon
-            onClick={handleSearch}
-            className="cursor-pointer p-2 bg-primary text-white rounded-full"
-            style={{ width: "30px", height: "30px" }}
-          ></SearchIcon>
+            <SearchIcon
+              onClick={handleSearch}
+              className="cursor-pointer p-2 bg-primary text-white rounded-full"
+              style={{ width: "30px", height: "30px" }}
+            ></SearchIcon>
+          </div>
         </div>
-       
-      </div>
 
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th style={{textAlign: 'center'}} scope="col">Property Info</th>
-            <th style={{textAlign: 'center'}} scope="col">Owner</th>
-            <th style={{textAlign: 'center'}} scope="col">Address</th>
-            <th style={{textAlign: 'center'}} scope="col">Price</th>
-            <th style={{textAlign: 'center'}} scope="col">Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((index) => (
-            <tr key={index.propertyId}>
-              <td scope="row" className="p-4 justify-center">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th style={{ textAlign: "center" }} scope="col">
+                Property Info
+              </th>
+              <th style={{ textAlign: "center" }} scope="col">
+                Owner
+              </th>
+              <th style={{ textAlign: "center" }} scope="col">
+                Address
+              </th>
+              <th style={{ textAlign: "center" }} scope="col">
+                Price
+              </th>
+              <th style={{ textAlign: "center" }} scope="col">
+                Thao tác
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((index) => (
+              <tr key={index.propertyId}>
+                <td scope="row" className="p-4 justify-center">
                   <div className="flex flex-col items-center">
                     <div className="rounded-2xl overflow-hidden">
                       <img
@@ -146,51 +158,47 @@ export default function PostManage() {
                         style={{ width: "100px", height: "100px" }}
                       />
                     </div>
-                      <p className="text-3xl font-semibold m-0">{index.propertyName}</p>
+                    <p className="text-3xl font-semibold m-0">
+                      {index.propertyName}
+                    </p>
                   </div>
-              </td>
-              <td scope="row" className="align-middle">
-              <div className="flex justify-center items-center">
-                  <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden">
-                    <img
-                      src={index.owner.avatar}
-                      alt=""
-                    />
+                </td>
+                <td scope="row" className="align-middle">
+                  <div className="flex justify-center items-center">
+                    <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden">
+                      <img src={index.owner.avatar} alt="" />
+                    </div>
+                    <div className="ml-6">
+                      <p className="text-3xl font-semibold m-0">{`${index.owner.firstName} ${index.owner.lastName}`}</p>
+                    </div>
                   </div>
-                  <div className="ml-6">
-                    <p className="text-3xl font-semibold m-0">{`${index.owner.firstName} ${index.owner.lastName}`}</p>
+                </td>
+                <td className="align-middle">
+                  <div className="flex w-full h-full justify-center items-center">
+                    <p className="text-3xl m-0">{index.address}</p>
                   </div>
-                </div>
-              </td>
-              <td className="align-middle">
-                <div className="flex w-full h-full justify-center items-center">
-                  <p className="text-3xl m-0">{index.address}</p>
-                </div>
-              </td>
-              <td className="align-middle">
-                <div className="flex w-full h-full justify-center items-center">
-                  <p className="text-3xl m-0">{index.price}</p>
-                </div>
-              </td>
-              <td className="align-middle">
-                <div className="flex w-full h-full justify-center items-center">
-                  {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                  <button
-                    onClick={() => handleDelete(index.propertyId)}
-                    className="bg-danger text-white p-2 rounded text-3xl "
-                  >
-                    Xóa
-                  </button>
-                </div>
-              </td>
-            </tr>
+                </td>
+                <td className="align-middle">
+                  <div className="flex w-full h-full justify-center items-center">
+                    <p className="text-3xl m-0">{index.price}</p>
+                  </div>
+                </td>
+                <td className="align-middle">
+                  <div className="flex w-full h-full justify-center items-center">
+                    {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
+                    <button
+                      onClick={() => handleDelete(index.propertyId)}
+                      className="bg-danger text-white p-2 rounded text-3xl "
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </td>
+              </tr>
             ))}
-        </tbody>
-      </table>
-    </div>
-    <Col xs={4}>
-      <Calendar propertyId={active}></Calendar>
-    </Col>
-    </>
+          </tbody>
+        </table>
+      </Col>
+    </Row>
   );
 }
