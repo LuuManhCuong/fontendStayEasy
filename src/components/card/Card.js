@@ -174,7 +174,7 @@ function Card(props) {
             </div>
           )}
         </div>
-        <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
+        <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl bg-transparent 
               ${isActive ? "active" : ""}`} onClick={(e) => handleLike(e, props.item.propertyId)}>
           <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
         </div>

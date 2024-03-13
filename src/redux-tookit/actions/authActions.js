@@ -9,7 +9,7 @@ export const login = (data) => (dispatch) => {
   // create data
   const raw = JSON.stringify({
     email: data.username,
-    password: data.password,
+    password: data.loginPassword,
   });
 
   // create request option
@@ -55,7 +55,7 @@ export const login = (data) => (dispatch) => {
 // Method sign-up
 export const signup = (data) => async (dispatch) => {
   try {
-      if (!data.username || !data.password || !data.confirmPassword) {
+      if (!data.username || !data.registerPassword || !data.confirmPassword) {
         return data.setErrorMessage("Vui lòng nhập thông tin!");
       }
 
@@ -63,7 +63,7 @@ export const signup = (data) => async (dispatch) => {
         return data.setErrorMessage("Email không hợp lệ!");
       }
 
-      if (data.password !== data.confirmPassword) {
+      if (data.registerPassword !== data.confirmPassword) {
         return data.setErrorMessage("Mật khẩu không khớp!");
       }
 
@@ -72,7 +72,7 @@ export const signup = (data) => async (dispatch) => {
 
       const raw = JSON.stringify({
           email: data.username,
-          password: data.password,
+          password: data.registerPassword,
           firstName: data.firstName,
           lastName: data.lastName,
           role: "USER",
@@ -100,6 +100,8 @@ export const signup = (data) => async (dispatch) => {
   }
 };
 
+
+// Method Logout
 export const logout = (navigate) => async (dispatch) => {
   if (localStorage.getItem("access_token") != null) {
     const myHeaders = new Headers();
@@ -134,6 +136,63 @@ export const logout = (navigate) => async (dispatch) => {
       });
   } else {
     alert("Bạn chưa đăng nhập!");
+  }
+};
+
+// Method changePass
+export const changePassword = (data) => (dispatch) => {
+  if(data.newpassword===data.confirmpassword){
+    try {
+      const token = localStorage.getItem("access_token");
+      console.log("token: "+token);
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", `Bearer ${token}`);
+  
+      const raw = JSON.stringify({
+        oldPassword : data.oldpassword,
+        newPassword : data.newpassword
+      });
+  
+      console.log(raw);
+  
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+  
+      fetch("http://localhost:8080/api/v1/auth/change-password", requestOptions)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw Error(response.status);
+        })
+        .then((result) => {
+          console.log("da xoa");
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+  
+          console.log("here");
+          // save token to localStorage
+          localStorage.setItem('access_token', result.access_token);
+          localStorage.setItem('refresh_token', result.refresh_token);
+  
+          dispatch(counterSlice.actions.increase());
+          data.setPasswordErrorMessage();
+          data.setEditting(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          data.setPasswordErrorMessage(error.message||"co loi xay ra");
+        });
+      }catch(error){
+        console.error(error);
+      }
+  }else{
+    data.setPasswordErrorMessage("Mật khẩu không khớp");
   }
 };
 
