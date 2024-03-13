@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import axios from "axios";
 
 function Calendar({ propertyId }) {
+  console.log("id: ", propertyId);
   const [data, setData] = useState([]);
   const [state, setState] = useState([
     {

@@ -11,8 +11,7 @@ export default function PostManage() {
   const [data, setData] = useState([]);
   const [keySearch, setKeySearch] = useState("");
   const [active, setActive] = useState();
-  const [dataCalendar, setDataCalendar] = useState([]);
-  // console.log("active: ", active);
+  console.log("active: ", active);
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -28,22 +27,6 @@ export default function PostManage() {
       console.error("da xay ra loi: ", error);
     }
   };
-
-  // useEffect(() => {
-  //   if (active) {
-  //     axios
-  //       .get(
-  //         `http://localhost:8080/api/v1/stayeasy/admin/booking?propertyId=${active}`
-  //       )
-  //       .then(function (response) {
-  //         // console.log("data: ", response.data);
-  //         setDataCalendar(response.data);
-  //       })
-  //       .catch(function (error) {
-  //         console.log(error);
-  //       });
-  //   }
-  // }, [active]);
 
   // get data
   useEffect(() => {
@@ -148,7 +131,11 @@ export default function PostManage() {
           </thead>
           <tbody>
             {data.map((index) => (
-              <tr key={index.propertyId}>
+              <tr
+                key={index.propertyId}
+                className={active === index.propertyId ? "activePr" : ""}
+                onClick={() => setActive(index.propertyId)}
+              >
                 <td scope="row" className="p-4 justify-center">
                   <div className="flex flex-col items-center">
                     <div className="rounded-2xl overflow-hidden">
