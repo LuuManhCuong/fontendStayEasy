@@ -3,7 +3,7 @@ import React from "react";
 import Table from "react-bootstrap/Table";
 
 function RevenueManage({ data }) {
-  console.log("daa: ", data);
+  // console.log("daa: ", data);
   return (
     <div className="shadow-lg m-8 rounded-lg">
       <h1>Bảng thống kê hằng tháng</h1>

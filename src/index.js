@@ -8,14 +8,15 @@ import { Provider } from "react-redux";
 import store from "./redux-tookit/store";
 import GlobalStyle from "./components/GlobalStyle/GlobalStyle";
 import "./App.css";
+import { UserContextProvider } from "./components/UserContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Provider store={store}>
-      <GlobalStyle>
+      <UserContextProvider>
         <App />
-      </GlobalStyle>
+      </UserContextProvider>
     </Provider>
   </BrowserRouter>
 );

@@ -7,9 +7,13 @@ import {
   Link,
   json,
   useNavigate,
+  Navigate,
 } from "react-router-dom";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import { UserContext } from "../components/UserContext";
+
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
 import React from "react";
@@ -25,17 +29,19 @@ import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
-
 import { differenceInCalendarDays, format } from "date-fns";
+import Rules from "../components/rules/Rules";
 
 function Detail() {
+  const user = useContext(UserContext).user;
+
+  const isAuthenticated = useContext(UserContext).isAuthenticated;
+  const location = useLocation();
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
-
   const [show, setShow] = useState(false);
-
-  const location = useLocation();
   const navigate = useNavigate();
   var currentURL = window.location.href;
   var url = new URL(currentURL);
@@ -231,21 +237,34 @@ function Detail() {
     return <div>Loading...</div>;
   }
   function handleSubmit() {
+    console.log("isAuthenticated: " + isAuthenticated);
     const checkIn = format(new Date(checkin), "yyyy-MM-dd");
     const checkOut = format(new Date(checkout), "yyyy-MM-dd");
-    // Chuyển hướng tới trang Booking và truyền các tham số trong URL
-    // window.location.href = `/booking/${id}?checkin=${checkin}&checkout=${checkout}&numGuest=${numGuest}`;
-    navigate(
-      `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`
-    );
+
+    if (isAuthenticated) {
+      // Sử dụng backticks cho template literals
+      navigate(
+        `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`
+      );
+    } else {
+      // Chưa xác thực, chuyển hướng đến trang đăng nhập và lưu trạng thái hiện tại
+      navigate("/login", {
+        replace: true,
+        state: {
+          from: {
+            pathname: `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`,
+            search: ``,
+          },
+        },
+      });
+    }
   }
 
   function sendMessageHost() {
-    const idUser = JSON.parse(localStorage.getItem("user"))?.id;
-    if (message && idUser) {
+    if (message && user) {
       const idHost = dataDetail.owner.id;
       const data = {
-        userId: idUser,
+        userId: user.id,
         hostId: idHost,
         content: message,
       };
@@ -253,6 +272,7 @@ function Detail() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `BEARER ${localStorage.getItem("access_token")}`,
         },
         body: JSON.stringify(data),
       })
@@ -365,63 +385,8 @@ function Detail() {
               </div>
             </div>
 
-            {/* info-service */}
-            <div className="w-full pt-6 pb-6 flex flex-col border-b-2 border-black/30 justify-between box-border">
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Hủy miễn phí trước</p>
-                  <p className="m-0">
-                    Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.
-                  </p>
-                </div>
-              </div>
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Không gian riêng để làm việc</p>
-                  <p className="m-0">
-                    Một căn phòng có Wi-fi, rất phù hợp để làm việc.
-                  </p>
-                </div>
-              </div>
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Tự nhận phòng</p>
-                  <p className="m-0">
-                    Tự nhận phòng bằng cách nhập mã số vào cửa.
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* info-rules */}
+            <Rules rulesList={dataDetail.rulesList}></Rules>
 
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
@@ -641,7 +606,10 @@ function Detail() {
             </div>
           </div>
         )}
-        <CommentForm propertyId={id} ownerId={dataDetail.owner?.id}></CommentForm>
+        <CommentForm
+          propertyId={id}
+          ownerId={dataDetail.owner?.id}
+        ></CommentForm>
       </div>
     </>
   );

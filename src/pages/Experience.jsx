@@ -143,7 +143,7 @@ function Experience() {
       <Header></Header>
       <div className="mt-[10.6rem] pb-10">
         <div className="flex justify-between items-center px-32">
-          <h1 className="text-[3.2rem] font-bold">New this week</h1>
+          <h1 className="text-[3.2rem] font-bold">Trải nghiệm mới trong tuần này</h1>
           {/* Nút điều hướng */}
           <div className="flex items-center justify-center gap-2 mr-5 mt-2">
             <button

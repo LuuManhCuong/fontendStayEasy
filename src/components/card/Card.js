@@ -1,19 +1,20 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./cart.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { counterSelector, grouptSelector } from "../../redux-tookit/selector";
 import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import axios from "axios";
-import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 import Slider from "react-slick";
+import { UserContext } from "../UserContext";
 function Card(props) {
   // console.log("property: ", props.item);
 
   const dispatch = useDispatch();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const user = useContext(UserContext).user;
+
   const counter = useSelector(counterSelector);
   const { reloadLike } = useSelector(grouptSelector);
   const checkin = new Date();
@@ -24,9 +25,8 @@ function Card(props) {
     (like) => like?.idUser === user?.id
   );
 
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, [counter]);
+  console.log("isActive: ", isActive);
+  console.log(props.item.likeList);
 
   // Kiểm tra xem người dùng đã like property này hay chưa => true/false
 
@@ -145,7 +145,7 @@ function Card(props) {
   return (
     <div
       onClick={() => handleDetail()}
-      className="w-[32.5rem] h-[44rem] cursor-pointer flex-initial"
+      className="w-[32.5rem] h-[44rem] cursor-pointer flex-initial p-2"
       key={props.index}
     >
       <div className="w-full h-full relative">
@@ -153,7 +153,7 @@ function Card(props) {
           {props.item.imagesList?.length > 0 ? (
             <Slider {...settings} className="w-full h-full">
               {props.item.imagesList?.map((item, index) => (
-                <div key={index} className="h-[31rem]">
+                <div key={index} className="h-[32.5rem]">
                   <img
                     loading="lazy"
                     className="w-full h-full object-cover rounded-[1.6rem]"
@@ -165,7 +165,7 @@ function Card(props) {
               ))}
             </Slider>
           ) : (
-            <div className="h-[31rem]">
+            <div className="h-[32.5rem]">
               <img
                 loading="lazy"
                 className="w-full h-full object-cover rounded-[1.6rem]"
@@ -175,22 +175,11 @@ function Card(props) {
             </div>
           )}
         </div>
-
         <div
           className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
-              ${isActive ? "activeHeart" : ""}`}
+              ${isActive ? "active" : ""}`}
           onClick={(e) => handleLike(e, props.item.propertyId)}
         >
-          <div className="absolute -top-4 -right-[36px]">
-            <p className="text-4xl justify-center w-[30px]">
-              <span
-                className="inline-block font-bold max-w-[80%]"
-                style={{ color: "blue", WebkitTextStroke: "0.2px white" }}
-              >
-                {props.item.likeList?.length}
-              </span>
-            </p>
-          </div>
           <FontAwesomeIcon
             style={{ stroke: "white" }}
             className="text-4xl z-10 text-customColor transition-all ease-in duration-200"

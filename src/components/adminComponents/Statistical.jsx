@@ -6,10 +6,11 @@ import AutoGraphIcon from "@mui/icons-material/AutoGraph";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import LineChart from "../chart/LineChart";
 import axios from "axios";
+import { MdOutlineSsidChart } from "react-icons/md";
 import RevenuePieChart from "../chart/RevenuePieChart";
 import RevenueManage from "./RevenueManage";
-import Box from '@mui/material/Box';
-import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
+import Box from "@mui/material/Box";
+import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 function Statistical() {
   const [revenueThisMonth, setRevenueThisMonth] = useState([]);
   const [revenueLastMonth, setRevenueLastMonth] = useState([]);
@@ -50,7 +51,7 @@ function Statistical() {
         console.log(error);
       });
   }, []);
-
+  // console.log("thissmont: ", thisMonth);
   let compareRevenue =
     ((thisMonth?.revenue - lastMonth?.revenue) / lastMonth?.revenue) * 100;
   let compareTotalAccount =
@@ -109,7 +110,7 @@ function Statistical() {
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/admin/booking/daily`)
       .then(function (response) {
-        console.log("data booking daily: ", response.data);
+        // console.log("data booking daily: ", response.data);
         const currentDate = new Date();
         const day = currentDate.getDate();
         // Tạo mảng mới để lưu trữ số booking của mỗi ngày trong tháng
@@ -141,7 +142,7 @@ function Statistical() {
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/admin/statistics/monthly`)
       .then(function (response) {
-        console.log("data monthly: ", response.data);
+        // console.log("data monthly: ", response.data);
         setStatisticsMonthly(response.data);
       })
       .catch(function (error) {
@@ -152,19 +153,46 @@ function Statistical() {
   return (
     <>
       <Row>
-        <h1> Thống kê được tính từ đầu tháng cho đến ngày hôm nay {thisMonth.date}</h1>
-        <div className='flex gap-4 mt-4'>
+        <h1>
+          {" "}
+          Thống kê được tính từ đầu tháng cho đến ngày hôm nay {thisMonth.date}
+        </h1>
+        <div className="flex gap-4 mt-4">
           {/* box Doanh thu */}
-          <Card title="Doanh thu" condition={compareRevenue} compare={compareRevenue.toFixed(2)} thisMonth={thisMonth?.revenue} lastMonth={lastMonth.revenue} />
-          
+          <Card
+            title="Doanh thu"
+            condition={compareRevenue}
+            compare={compareRevenue.toFixed(2)}
+            thisMonth={thisMonth?.revenue}
+            lastMonth={lastMonth.revenue}
+          />
+
           {/* box Lượt đăng ký tài khoản */}
-          <Card title="Lượt đăng ký tài khoản" condition={compareTotalAccount} compare={compareTotalAccount.toFixed(2)} thisMonth={thisMonth.totalAccount} lastMonth={lastMonth.totalAccount} />
-          
+          <Card
+            title="Lượt đăng ký tài khoản"
+            condition={compareTotalAccount}
+            compare={compareTotalAccount.toFixed(2)}
+            thisMonth={thisMonth.totalAccount}
+            lastMonth={lastMonth.totalAccount}
+          />
+
           {/* box Bài đăng mới */}
-          <Card title="Bài đăng mới" condition={compareTotalAccount} compare={compareTotalPost.toFixed(2)} thisMonth={thisMonth.totalPost} lastMonth={lastMonth.totalPost} />
-          
+          <Card
+            title="Bài đăng mới"
+            condition={compareTotalPost}
+            compare={compareTotalPost.toFixed(2)}
+            thisMonth={thisMonth.totalPost}
+            lastMonth={lastMonth.totalPost}
+          />
+
           {/* box Lượt đặt phòng */}
-          <Card title="Lượt đặt phòng" condition={compareTotalBookings} compare={compareTotalBookings.toFixed(2)} thisMonth={thisMonth.totalBookings} lastMonth={lastMonth.totalBookings} />
+          <Card
+            title="Lượt đặt phòng"
+            condition={compareTotalBookings}
+            compare={compareTotalBookings.toFixed(2)}
+            thisMonth={thisMonth.totalBookings}
+            lastMonth={lastMonth.totalBookings}
+          />
         </div>
       </Row>
       <Row>
@@ -188,29 +216,66 @@ function Statistical() {
           <RevenueManage data={statisticsMonthly}></RevenueManage>
         </Col>
       </Row>
-  </>
+    </>
   );
 }
 
 export default Statistical;
 
-const Card = ({ title, condition, compare, thisMonth, lastMonth }) => {
-  return(
-    <Box className="flex flex-col w-[24.5rem] h-[20rem] rounded-xl shadow-xl bg-white " sx={{ flexGrow: 4 }}>
-        <h2 className='m-4'>{title}</h2>
-        {thisMonth}
-        {condition > 0 ? (
-          <>
-            <AutoGraphIcon style={{ color: "#0de10d", fontSize: "3rem", marginLeft: "1rem"}}></AutoGraphIcon>
-            <p className="text-2xl font-medium mx-4"> Tăng {compare}% so với tháng trước ({lastMonth})</p>
-          </>
-        ) : (
-          <>
-            <TrendingDownIcon style={{ fontSize: "3rem", color: "black", marginLeft: "1rem"}}></TrendingDownIcon>
-            <p className="text-2xl font-medium mx-4"> Giảm {compare}% so với tháng trước ({lastMonth})</p>
-          </>
-        )}
-        <SparkLineChart data={[1, 2, 4, 8, 6]} showHighlight={true} showTooltip={true} width={250} height={100}/>
+export const Card = ({ title, condition, compare, thisMonth, lastMonth }) => {
+  return (
+    <Box
+      className="flex flex-col w-[24.5rem] h-[20rem] rounded-xl shadow-xl bg-white "
+      // sx={{ flexGrow: 4 }}
+    >
+      <h2 className="m-4">{title}</h2>
+      {thisMonth}
+      {condition > 0 ? (
+        <>
+          <AutoGraphIcon
+            style={{ color: "#0de10d", fontSize: "4rem", marginLeft: "1rem" }}
+          ></AutoGraphIcon>
+          <p className="text-2xl font-medium mx-4">
+            {" "}
+            Tăng{" "}
+            {compare === "Infinity" ? ` ${thisMonth} lần` : ` ${compare} %`} so
+            với tháng trước ({lastMonth})
+          </p>
+
+          {/* <SparkLineChart
+            style={{ color: "red" }}
+            data={[1, 3, 4, 8, 10]}
+            showHighlight={true}
+            showTooltip={true}
+            width={250}
+            height={50}
+          /> */}
+        </>
+      ) : condition === 0 ? (
+        <>
+          <MdOutlineSsidChart
+            style={{ fontSize: "4rem", color: "yellow", marginLeft: "1rem" }}
+          />
+          <p className="text-2xl font-medium mx-4"></p>
+        </>
+      ) : (
+        <>
+          <TrendingDownIcon
+            style={{ fontSize: "4rem", color: "red", marginLeft: "1rem" }}
+          ></TrendingDownIcon>
+          <p className="text-2xl font-medium mx-4">
+            {" "}
+            Giảm {Math.abs(compare) || 0}% so với tháng trước ({lastMonth})
+          </p>
+          {/* <SparkLineChart
+            data={[10, 8, 4, 3, 1]}
+            showHighlight={true}
+            showTooltip={true}
+            width={250}
+            height={50}
+          /> */}
+        </>
+      )}
     </Box>
   );
 };

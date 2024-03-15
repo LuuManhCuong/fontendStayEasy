@@ -21,6 +21,8 @@
     }
   }
 }
-.active {
-  background-color: pink;
+.activePr {
+  td {
+    background-color: pink !important;
+  }
 }
