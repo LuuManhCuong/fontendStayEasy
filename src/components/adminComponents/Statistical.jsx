@@ -6,6 +6,7 @@ import AutoGraphIcon from "@mui/icons-material/AutoGraph";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import LineChart from "../chart/LineChart";
 import axios from "axios";
+import { MdOutlineSsidChart } from "react-icons/md";
 import RevenuePieChart from "../chart/RevenuePieChart";
 import RevenueManage from "./RevenueManage";
 import Box from "@mui/material/Box";
@@ -50,7 +51,7 @@ function Statistical() {
         console.log(error);
       });
   }, []);
-  console.log("thissmont: ", thisMonth);
+  // console.log("thissmont: ", thisMonth);
   let compareRevenue =
     ((thisMonth?.revenue - lastMonth?.revenue) / lastMonth?.revenue) * 100;
   let compareTotalAccount =
@@ -178,7 +179,7 @@ function Statistical() {
           {/* box Bài đăng mới */}
           <Card
             title="Bài đăng mới"
-            condition={compareTotalAccount}
+            condition={compareTotalPost}
             compare={compareTotalPost.toFixed(2)}
             thisMonth={thisMonth.totalPost}
             lastMonth={lastMonth.totalPost}
@@ -221,49 +222,56 @@ function Statistical() {
 
 export default Statistical;
 
-const Card = ({ title, condition, compare, thisMonth, lastMonth }) => {
+export const Card = ({ title, condition, compare, thisMonth, lastMonth }) => {
   return (
     <Box
       className="flex flex-col w-[24.5rem] h-[20rem] rounded-xl shadow-xl bg-white "
-      sx={{ flexGrow: 4 }}
+      // sx={{ flexGrow: 4 }}
     >
       <h2 className="m-4">{title}</h2>
       {thisMonth}
       {condition > 0 ? (
         <>
           <AutoGraphIcon
-            style={{ color: "#0de10d", fontSize: "3rem", marginLeft: "1rem" }}
+            style={{ color: "#0de10d", fontSize: "4rem", marginLeft: "1rem" }}
           ></AutoGraphIcon>
           <p className="text-2xl font-medium mx-4">
             {" "}
-            Tăng {compare}% so với tháng trước ({lastMonth})
+            Tăng {compare || 0}% so với tháng trước ({lastMonth})
           </p>
 
-          <SparkLineChart
+          {/* <SparkLineChart
             style={{ color: "red" }}
             data={[1, 3, 4, 8, 10]}
             showHighlight={true}
             showTooltip={true}
             width={250}
             height={50}
+          /> */}
+        </>
+      ) : condition === 0 ? (
+        <>
+          <MdOutlineSsidChart
+            style={{ fontSize: "4rem", color: "yellow", marginLeft: "1rem" }}
           />
+          <p className="text-2xl font-medium mx-4"></p>
         </>
       ) : (
         <>
           <TrendingDownIcon
-            style={{ fontSize: "3rem", color: "red", marginLeft: "1rem" }}
+            style={{ fontSize: "4rem", color: "red", marginLeft: "1rem" }}
           ></TrendingDownIcon>
           <p className="text-2xl font-medium mx-4">
             {" "}
-            Giảm {compare}% so với tháng trước ({lastMonth})
+            Giảm {Math.abs(compare) || 0}% so với tháng trước ({lastMonth})
           </p>
-          <SparkLineChart
+          {/* <SparkLineChart
             data={[10, 8, 4, 3, 1]}
             showHighlight={true}
             showTooltip={true}
             width={250}
             height={50}
-          />
+          /> */}
         </>
       )}
     </Box>

@@ -14,7 +14,7 @@ function Card(props) {
 
   const dispatch = useDispatch();
   const user = useContext(UserContext).user;
-  
+
   const counter = useSelector(counterSelector);
   const { reloadLike } = useSelector(grouptSelector);
   const checkin = new Date();
@@ -71,7 +71,6 @@ function Card(props) {
     }
   };
 
-  
   const handleDetail = () => {
     const checkinString = checkin.toISOString().split("T")[0];
     const checkoutString = checkout.toISOString().split("T")[0];

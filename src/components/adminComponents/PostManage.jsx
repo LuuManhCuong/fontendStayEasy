@@ -11,7 +11,7 @@ export default function PostManage() {
   const [data, setData] = useState([]);
   const [keySearch, setKeySearch] = useState("");
   const [active, setActive] = useState();
-  console.log("active: ", active);
+  // console.log("active: ", active);
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -67,7 +67,7 @@ export default function PostManage() {
   };
 
   const handleSearch = () => {
-    console.log("keySearch: ", keySearch);
+    // console.log("keySearch: ", keySearch);
     axios
       .get(
         `http://localhost:8080/api/v1/stayeasy/admin/property/search?keySearch=${keySearch}`
@@ -75,6 +75,7 @@ export default function PostManage() {
       .then(function (response) {
         console.log("response: ", response.data);
         setData(response.data);
+        setActive(response.data[0].propertyId);
       })
       .catch(function (error) {
         console.log("error: ", error);
@@ -87,8 +88,7 @@ export default function PostManage() {
         <Calendar propertyId={active}></Calendar>
       </Col>
       <Col xs={6}>
-        <div className="mb-4">
-          <h2>Danh sách phòng</h2>
+        <div className="mb-4 m-4 ">
           <div className="flex justify-start border-2 border-black w-[30%] rounded-full p-2">
             <input
               type="text"
@@ -108,8 +108,8 @@ export default function PostManage() {
             ></SearchIcon>
           </div>
         </div>
-
-        <table class="table table-hover">
+        <h2>Danh sách phòng</h2>
+        <table class="table table-hover m-8">
           <thead>
             <tr>
               <th style={{ textAlign: "center" }} scope="col">
