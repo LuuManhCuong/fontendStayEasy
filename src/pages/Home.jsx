@@ -4,7 +4,7 @@ import ListView from "../components/listView/ListView";
 import Filter from "../components/filter/Filter";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   dataHomeSelector,
@@ -13,27 +13,47 @@ import {
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
 import { counterSlice } from "../redux-tookit/reducer/counterSlice";
+// import { s } from "vite/dist/node/types.d-jgA8ss1A";
+// import { set } from "date-fns";
 
 function Home() {
   const dispatch = useDispatch();
   const { dataHome, isLoading } = useSelector(dataHomeSelector);
+  const [total, setTotal] = useState(0);
+  const [size, setSize] = useState(8);
 
   const { reloadLike } = useSelector(grouptSelector);
   useEffect(() => {
     // console.log("reload: ", reloadLike);
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
-      .get(`http://localhost:8080/api/v1/stayeasy/property`)
+      .get(`http://localhost:8080/api/v1/stayeasy/property?page=0&size=${size}`)
       .then(function (response) {
-        dispatch(counterSlice.actions.totalRecord(response.data.length));
-        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
+        console.log("response: ", response.data.properties);
+        dispatch(counterSlice.actions.totalRecord(response.data.properties.length));
+        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data.properties));
+        setTotal(response.data.totalCount);
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());
 
         console.log(error);
       });
-  }, [reloadLike]);
+  }, [reloadLike,size]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+
+    if (scrollTop + clientHeight >= scrollHeight && total > dataHome.length) {
+      // setPage((prev) => prev + 1);
+      setSize((prev) => prev + 8);
+    }
+  };
 
   return (
     <>

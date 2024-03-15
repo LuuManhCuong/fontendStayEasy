@@ -171,6 +171,9 @@ function Detail() {
     setOpenPopup(true);
   };
 
+  const hasPetRule = dataDetail.rulesList?.some(item => item.rulesType === 'pet');
+  console.log(hasPetRule);
+
   const styleImg = {
     width: "100%",
     height: "600px",
@@ -315,14 +318,14 @@ function Detail() {
               <div className="text-3xl font-medium mt-2">
                 <p>{dataDetail.address}</p>
               </div>
-              <div className="flex mt-2 text-[17px] font-normal justify-between ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
+              <div className="flex mt-2 text-[17px] font-normal justify-start ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
-                <span>-</span>
+                <span className="pl-2 pr-2">-</span>
                 {dataDetail.propertyUtilitis?.map((item, index) => (
                   <p key={index}>
                     {item.quantity} {item.utilitiesName}
                     {index !== dataDetail.propertyUtilitis.length - 1 ? (
-                      <span> - </span>
+                      <span className="pl-2 pr-2"> - </span>
                     ) : (
                       ""
                     )}
@@ -486,13 +489,15 @@ function Detail() {
                         setTotalGuest={setInfants}
                       />
                     </div>
-                    <div className="flex justify-between p-2">
-                      <NumGuest
-                        type="pet"
-                        totalGuest={pet}
-                        setTotalGuest={setPet}
-                      />
-                    </div>
+                    {!hasPetRule && (
+                      <div className="flex justify-between p-2">
+                        <NumGuest
+                          type="pet"
+                          totalGuest={pet}
+                          setTotalGuest={setPet}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col justify-between">
