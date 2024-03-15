@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./inboxListMessage.module.css";
 import Room from "./Room/Room";
 import { useSelector } from "react-redux";
 import { counterSelector } from "../../redux-tookit/selector";
+import {UserContext} from '../../components/UserContext'
 export default function InboxListMessage() {
   const [listRoom, setListRoom] = useState([]);
   const counter = useSelector(counterSelector);
-
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const user = useContext(UserContext).user
+  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   // const idUser = JSON.parse(localStorage.getItem("user"))?.id;
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, [counter]);
+  // useEffect(() => {
+  //   setUser(JSON.parse(localStorage.getItem("user")));
+  // }, [counter]);
   
   useEffect(() => {
     fetch(
-      `http://localhost:8080/api/v1/stayeasy/chatroom/get/all/room/user/${user?.id}`
+      `http://localhost:8080/api/v1/stayeasy/chatroom/get/all/room/user/${user?.id}`,
+      {
+
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `BEARER ${localStorage.getItem("access_token")}`
+        },
+      }
     )
       .then((data) => data.json())
       .then((data) => {
@@ -42,9 +50,11 @@ export default function InboxListMessage() {
 
       <div className={style.inbox_box_content}>
         <ul>
-          {listRoom.map((e) => (
+          {
+            listRoom.length > 0 ?
+          listRoom.map((e) => (
             <Room key={e.roomChatId} data={e}></Room>
-          ))}
+          )): <></>}
         </ul>
       </div>
     </div>

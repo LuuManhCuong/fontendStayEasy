@@ -10,7 +10,6 @@ import ListView from "../components/listView/ListView";
 
 // import ListView from "../components/listview/ListView";
 
-
 import {
   dataExploreSelector,
   grouptSelector,

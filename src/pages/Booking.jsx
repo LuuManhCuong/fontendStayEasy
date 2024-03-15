@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai";
 import Footer from "../components/footer/Footer";
-import { Navigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import { GoStarFill } from "react-icons/go";
 import { TiHeartFullOutline } from "react-icons/ti";
 import axios from "axios";
 import { differenceInCalendarDays, format } from "date-fns";
 import BookingModal from './booking/BookingModal';
-
+import { calculatePricing } from './booking/calculatePricing';
 const Booking = () => {
     const [place, setPlace] = useState([]);
     const { id } = useParams();
@@ -28,8 +27,6 @@ const Booking = () => {
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isDialogOpen1, setIsDialogOpen1] = useState(false);
-
-
     const currency = 'USD';
     const method = 'SALE';
     const intent = 'PAYPAL';
@@ -78,16 +75,15 @@ const Booking = () => {
                 console.error('Error fetching data:', error);
             });
     }, [id]);
-    const discount = place ? (place.price * numberNight * (place.discount / 100)) : 0;
-  const total = place ? (place.price * numberNight - discount) : 0;
-  const price = place ? (place.price * numberNight) : 0;
 
+    const pricing = place ? calculatePricing(checkIn, checkOut, place, numberNight) : {};
+      
     async function bookThisPlace() {
         try {
             const response = await axios.post('http://localhost:8080/api/v1/stayeasy/booking/create', {
                 checkIn,
                 checkOut,
-                numGuest,
+                numOfGuest: numGuest,
                 numberNight,
                 currency,
                 method,
@@ -95,8 +91,8 @@ const Booking = () => {
                 description,
                 propertyId: id,
                 userId: user.id,
-                price: total,
-                total: price,
+                price: pricing.total,
+                total: pricing.total,
             });
 
             // Lấy dữ liệu từ response
@@ -365,7 +361,7 @@ const Booking = () => {
                             <button onClick={() => bookThisPlace()} type="submit"
                                 className="bg-[#da0964] hover:bg-[#FF002C] transition duration-1000 text-white text-3xl font-bold py-4 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"> Xác nhận đặt
                                 {numberNight > 0 && (
-                                    <span>  ${total}</span>
+                                    <span>  ${pricing.total}</span>
                                 )}
                             </button>
                         </div>
@@ -547,8 +543,8 @@ const Booking = () => {
                         <div className='mt-5'>
                             <h2 className='text-4xl'>Chi tiết giá</h2>
                             <div className='flex justify-between items-center'>
-                                <p>${place.price} x {numberNight} đêm</p>
-                                <p>${place.price * numberNight}</p>
+                                <p>${place.price} x {numberNight + 1} ngày</p>
+                                <p>${pricing.price ? `${pricing.price}` : ''}</p>
                             </div>
                             {/* Khuyen mai */}
                             <div className='flex justify-between items-center'>
@@ -562,7 +558,7 @@ const Booking = () => {
 
                                         </div>
                                     </div>)}
-                                <p>${discount}</p>
+                                <p>${pricing.discount ? `${pricing.discount}` : ''}</p>
                             </div>
                             <div className='flex justify-between items-center'>
                                 <a className='underline underline-offset-4 text-black ' onClick={handleOpenDialog1}>Phí dịch vụ Airbnb</a>
@@ -575,7 +571,7 @@ const Booking = () => {
                                             <p className="text-xl" > Số tiền này đã bao gồm thuế GTGT.</p>
                                         </div>
                                     </div>)}
-                                <p>${discount}</p>
+                                <p>${pricing.serviceFeePercentage ? `${pricing.serviceFeePercentage}` : ''}</p>
                             </div>
                         </div>
                         <hr />
@@ -583,7 +579,7 @@ const Booking = () => {
                         <div className='mt-5'>
                             <div className='flex justify-between items-center font-bold'>
                                 <p>Tổng <span className='underline'>(USD)</span></p>
-                                <p>${total}</p>
+                                <p>${pricing.total}</p>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import CommonHeader from '../../components/header/CommonHeader'
 import Footer from '../../components/footer/Footer'
 import { Link } from 'react-router-dom';
@@ -17,8 +17,12 @@ import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
-
+import {UserContext} from '../../components/UserContext'
+import Room from './Room';
 export default function Host() {
+
+    const user = useContext(UserContext).user
+    const [listRoom, setListRoom] = useState([]);
     const [state, setState] = useState([
         {
           startDate: new Date(),
@@ -26,7 +30,26 @@ export default function Host() {
           key: 'selection'
         }
     ]);
+    useEffect(() => {
+        if (user){
 
+            fetch(
+              `http://localhost:8080/api/v1/stayeasy/chatroom/get/all/room/user/${user?.id}`,
+              {
+        
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `BEARER ${localStorage.getItem("access_token")}`
+                },
+              }
+            )
+              .then((data) => data.json())
+              .then((data) => {
+                console.log(data);
+                setListRoom(data);
+              });
+        }
+      }, [user]);
     const sideBar = [
         {title: "Trang chủ", icon: <PresentationChartBarIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />, link: "/host"},
         {title: "Quản lý tài sản", icon: <ShoppingBagIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />, link: "/host/property-manager"},
@@ -175,26 +198,14 @@ export default function Host() {
                         <h2 className='m-4'>Tin nhắn</h2>
                         {/* list inbox */}
                         <div className='w-[100%] h-[79rem] overflow-scroll'>
-                            {inbox.map((e, i) => {
-                                return(
-                                    <>
-                                    {/* sửa lại thành thẻ Link để xem chi tiết tin nhắn */}
-                                    <button className='flex items-center gap-3 py-2 px-4 w-full'>
-                                        {/* <img src={e.avatar} /> */}
-                                        <div class="relative inline-flex items-center justify-center w-[5rem] h-[3.7rem] overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
-                                            <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
-                                                U
-                                            </span>
-                                        </div>
-                                        <div className='text-start'>
-                                            <h4>{e.title}</h4>
-                                            <p className='text-xl'><span className='font-medium'>{e.name}</span> {e.content}</p>
-                                        </div>
-                                    </button>
-                                    <Divider variant="inset" />
-                                    </>
-                                );
-                            })}
+                            {
+                                listRoom.length > 0?
+                                listRoom.map((e) => (
+                                    <Room key={e.roomChatId} data={e}></Room>
+                                  ))
+                                :
+                                <></>
+                            }
                         </div>
                     </Box>
                 </div>
@@ -204,3 +215,23 @@ export default function Host() {
     </>
   )
 }
+// {listRoom.map((e, i) => {
+//     return(
+//         <>
+//         {/* sửa lại thành thẻ Link để xem chi tiết tin nhắn */}
+//         <button className='flex items-center gap-3 py-2 px-4 w-full'>
+//             {/* <img src={e.avatar} /> */}
+//             <div class="relative inline-flex items-center justify-center w-[5rem] h-[3.7rem] overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
+//                 <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
+//                     U
+//                 </span>
+//             </div>
+//             <div className='text-start'>
+//                 <h4>{e.title}</h4>
+//                 <p className='text-xl'><span className='font-medium'>{e.name}</span> {e.content}</p>
+//             </div>
+//         </button>
+//         <Divider variant="inset" />
+//         </>
+//     );
+// })}

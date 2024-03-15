@@ -10,6 +10,7 @@ import {
   Navigate
 } from "react-router-dom";
 
+
 import { UserContext } from "../components/UserContext";
 import { useEffect, useState , useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,12 +28,15 @@ import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
-
 import { differenceInCalendarDays, format } from "date-fns";
+import Rules from "../components/rules/Rules";
 
 function Detail() {
   const isAuthenticated = useContext(UserContext).isAuthenticated;
   const location = useLocation();
+
+
+  const user = useContext(UserContext).user
 
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -255,11 +259,10 @@ function Detail() {
 }
 
   function sendMessageHost() {
-    const idUser = JSON.parse(localStorage.getItem("user"))?.id;
-    if (message && idUser) {
+    if (message && user) {
       const idHost = dataDetail.owner.id;
       const data = {
-        userId: idUser,
+        userId: user.id,
         hostId: idHost,
         content: message,
       };
@@ -267,6 +270,7 @@ function Detail() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `BEARER ${localStorage.getItem("access_token")}`
         },
         body: JSON.stringify(data),
       })
@@ -301,6 +305,7 @@ function Detail() {
           key={id}
         >
           <Slider {...settings} className="w-[80%]">
+        
             {dataDetail.imagesList?.map((item, index) => (
               <div key={index} className=" h-[450px]">
                 <img
@@ -308,9 +313,11 @@ function Detail() {
                   src={item.url}
                   testindex={index}
                   alt=""
-                  onClick={() => onClickImage(item)}
+                  onClick={() => onClickImage(item)
+                  }
                 />
               </div>
+               
             ))}
           </Slider>
         </div>
@@ -375,63 +382,8 @@ function Detail() {
               </div>
             </div>
 
-            {/* info-service */}
-            <div className="w-full pt-6 pb-6 flex flex-col border-b-2 border-black/30 justify-between box-border">
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Hủy miễn phí trước</p>
-                  <p className="m-0">
-                    Được hoàn tiền đầy đủ nếu bạn thay đổi kế hoạch.
-                  </p>
-                </div>
-              </div>
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Không gian riêng để làm việc</p>
-                  <p className="m-0">
-                    Một căn phòng có Wi-fi, rất phù hợp để làm việc.
-                  </p>
-                </div>
-              </div>
-              <div className="flex p-2 pb-4">
-                <FontAwesomeIcon
-                  className="stroke-slate-950 p-[0.8rem]"
-                  color="white"
-                  size="2x"
-                  icon={icon({
-                    name: "puzzle-piece",
-                    family: "classic",
-                    style: "solid",
-                  })}
-                />
-                <div className="ml-3">
-                  <p className="m-0">Tự nhận phòng</p>
-                  <p className="m-0">
-                    Tự nhận phòng bằng cách nhập mã số vào cửa.
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* info-rules */}
+            <Rules rulesList={dataDetail.rulesList}></Rules>
 
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
