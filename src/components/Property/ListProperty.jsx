@@ -11,87 +11,66 @@ import {
 } from "@heroicons/react/24/solid";
 import { Listbox, Transition } from "@headlessui/react";
 import ToastMessage from "./ToastMessage";
+import { useNavigate } from "react-router-dom";
 
 export default function ListProperty() {
   const [data, setData] = useState([]);
   const [resStatus, setResStatus] = useState();
 
+  const navigate = useNavigate();
+
+  // get data
+
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/stayeasy/property`
+      );
+
+      if (response.status === 200) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error("da xay ra loi: ", error);
+    }
+  };
+
   // get data
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/stayeasy/property`
-        );
-
-        if (response.status === 200) {
-          setData(response.data);
-        }
-      } catch (error) {
-        console.log("ERROR!");
-      }
-    };
-
     fetchData();
-  },[]);
+  }, []);
 
   // handle delete property
-  const handleDelete = (propertyId) => {
-    // Show a confirmation dialog
-    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa không?");
-
-    // If the user confirms, proceed with the deletion
-    if (isConfirmed) {
-      fetch(
-        `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((res) => {
-          if (res.ok) {
-            setResStatus(res.status);
-          }
-
-          // Update the state with the new property list
-          setData((prevData) =>
-            prevData.filter((item) => item.id !== propertyId)
-          );
-        })
-        .catch((e) => console.error("Lỗi khi xóa: ", e));
-    } else {
-      // If the user cancels, show a message
-      alert(`Đã hủy xóa: ${propertyId}`);
+  const handleDelete = async (propertyId) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`
+      );
+      if (res.status === 200) {
+        setResStatus(res.status);
+        fetchData();
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const [status, setStatus] = useState(false);
 
-  // console.log(data);
-
-  // if (resStatus === 200) {
-  //   return (
-  //     <div className="flex justify-center">
-  //       <ToastMessage />
-  //     </div>
-  //   );
-  // }
 
   return (
     <>
-      <div className="mx-4 my-4 w-[80vw]">
+      <div className="mx-4 my-4">
         <div className="flex mb-4 justify-content-between">
           <h2>Danh sách tài sản</h2>
-
           <div className="flex">
             <div className="me-4">
               <Status status={status} setStatus={setStatus} />
             </div>
 
-            <Link to="/property/add">
+            <Link to="/host/property/add">
               <button
                 type="button"
                 className="bg-[#ff385c] h-16 flex items-center text-white py-2 px-3 rounded-lg"
@@ -110,7 +89,7 @@ export default function ListProperty() {
             <thead className="bg-gray-200">
               <tr>
                 <th scope="col" className="px-2 py-3">
-                  Mã tài sản
+                  Hình ảnh
                 </th>
                 <th scope="col" className="py-3">
                   Tên
@@ -130,41 +109,49 @@ export default function ListProperty() {
               </tr>
             </thead>
             <tbody>
-              {data.map((index) => (
-                <tr
-                  key={index.propertyId}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <td className="pr-6 pl-2 py-4">{index.propertyId}</td>
-                  <td className="py-4">{index.propertyName}</td>
-                  <td className="px-6 py-4">{index.address}</td>
-                  <td className="py-4">$ {index.price}</td>
-                  <td className="px-6 py-4">
-                    {index.null === false ? "trống" : "đã thuê"}
-                  </td>
-                  <td className="">
-                    {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                    <button
-                      onClick={() => handleDelete(index.propertyId)}
-                      className="p-2"
-                    >
-                      <TrashIcon className="w-7" color="#ff385c" />
-                    </button>
-                    {/* </Link> */}
-                    <Link to={`/property/update/${index.propertyId}`}>
-                      <button className="mx-2 p-2">
-                        <PencilSquareIcon color="#eab308" className="w-7" />
+              {data
+                .filter((item) => item.owner.id === user.id)
+                .map((index) => (
+                  <tr
+                    key={index.propertyId}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <td className="pr-6 pl-2 py-4">
+                      <img
+                        className="w-40 h-20 object-cover rounded-lg"
+                        src={index.thumbnail}
+                        alt=""
+                      />
+                    </td>
+                    <td className="py-4">{index.propertyName}</td>
+                    <td className="px-6 py-4">{index.address}</td>
+                    <td className="py-4">$ {index.price}</td>
+                    <td className="px-6 py-4">
+                      {index.null === false ? "trống" : "đã thuê"}
+                    </td>
+                    <td className="">
+                      {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
+                      <button
+                        onClick={() => handleDelete(index.propertyId)}
+                        className="p-2"
+                      >
+                        <TrashIcon className="w-7" color="#ff385c" />
                       </button>
-                    </Link>
+                      {/* </Link> */}
+                      <Link to={`/host/property/update/${index.propertyId}`}>
+                        <button className="mx-2 p-2">
+                          <PencilSquareIcon color="#eab308" className="w-7" />
+                        </button>
+                      </Link>
 
-                    <Link to={`/explore/detail/${index.propertyId}`}>
-                      <button className="p-2">
-                        <EyeIcon className="w-7" color="gray" />
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                      <Link to={`/explore/detail/${index.propertyId}`}>
+                        <button className="p-2">
+                          <EyeIcon className="w-7" color="gray" />
+                        </button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         ) : (
@@ -209,7 +196,7 @@ const Status = ({ status, setStatus }) => {
       {({ open }) => (
         <>
           <div className="relative w-56">
-            <Listbox.Button className="relative h-16 border w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+            <Listbox.Button className="relative h-16 border w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:leading-6">
               <span className="flex items-center">
                 <span className="flex items-center block">{selected.name}</span>
               </span>
@@ -228,7 +215,7 @@ const Status = ({ status, setStatus }) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {people.map((person) => (
                   <Listbox.Option
                     key={person.id}

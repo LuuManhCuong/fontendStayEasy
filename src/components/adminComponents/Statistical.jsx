@@ -8,14 +8,9 @@ import LineChart from "../chart/LineChart";
 import axios from "axios";
 import RevenuePieChart from "../chart/RevenuePieChart";
 import RevenueManage from "./RevenueManage";
+import Box from '@mui/material/Box';
+import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
 function Statistical() {
-  // Dữ liệu doanh thu của tháng này và tháng trước ({lastMonth.revenue})
-  // const revenueThisMonth = [
-  //   1000, 1500, 2000, 2500, 1800, 1200, 1900, 2300, 2600, 2700, 2800, 300,
-  // ];
-  // const revenueLastMonth = [
-  //   9, 1, 0, 2200, 1700, 2000, 1700, 2100, 2400, 2500, 2600, 2800,
-  // ];
   const [revenueThisMonth, setRevenueThisMonth] = useState([]);
   const [revenueLastMonth, setRevenueLastMonth] = useState([]);
   const [statisticsMonthly, setStatisticsMonthly] = useState([]);
@@ -57,7 +52,7 @@ function Statistical() {
   }, []);
 
   let compareRevenue =
-    ((thisMonth.revenue - lastMonth.revenue) / lastMonth.revenue) * 100;
+    ((thisMonth?.revenue - lastMonth?.revenue) / lastMonth?.revenue) * 100;
   let compareTotalAccount =
     ((thisMonth.totalAccount - lastMonth.totalAccount) /
       lastMonth.totalAccount) *
@@ -155,156 +150,67 @@ function Statistical() {
   }, []);
   // console.log("cancel booking: ", dataCancelBooking);
   return (
-    <div className="statistical">
-      <Row className="statistical-broad">
-        <h1>
-          Thống kê được tính từ đầu tháng cho đến ngày hôm nay {thisMonth.date}
-        </h1>
-        <Col xs={3}>
-          <div className="broad">
-            <h2>Doanh thu</h2>
-            <h1>
-              {thisMonth.revenue}$
-              {compareRevenue > 0 ? (
-                <>
-                  <AutoGraphIcon
-                    style={{ color: "#0de10d", fontSize: "3rem" }}
-                  ></AutoGraphIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Tăng {compareRevenue.toFixed(2)}% so với tháng trước (
-                    {lastMonth.revenue})
-                  </p>
-                </>
-              ) : (
-                <>
-                  <TrendingDownIcon
-                    style={{ fontSize: "3rem", color: "black" }}
-                  ></TrendingDownIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Giảm {Math.abs(compareRevenue.toFixed(2))}% so với tháng
-                    trước ({lastMonth.revenue})
-                  </p>
-                </>
-              )}
-            </h1>
-          </div>
+    <>
+      <Row>
+        <h1> Thống kê được tính từ đầu tháng cho đến ngày hôm nay {thisMonth.date}</h1>
+        <div className='flex gap-4 mt-4'>
+          {/* box Doanh thu */}
+          <Card title="Doanh thu" condition={compareRevenue} compare={compareRevenue.toFixed(2)} thisMonth={thisMonth?.revenue} lastMonth={lastMonth.revenue} />
+          
+          {/* box Lượt đăng ký tài khoản */}
+          <Card title="Lượt đăng ký tài khoản" condition={compareTotalAccount} compare={compareTotalAccount.toFixed(2)} thisMonth={thisMonth.totalAccount} lastMonth={lastMonth.totalAccount} />
+          
+          {/* box Bài đăng mới */}
+          <Card title="Bài đăng mới" condition={compareTotalAccount} compare={compareTotalPost.toFixed(2)} thisMonth={thisMonth.totalPost} lastMonth={lastMonth.totalPost} />
+          
+          {/* box Lượt đặt phòng */}
+          <Card title="Lượt đặt phòng" condition={compareTotalBookings} compare={compareTotalBookings.toFixed(2)} thisMonth={thisMonth.totalBookings} lastMonth={lastMonth.totalBookings} />
+        </div>
+      </Row>
+      <Row>
+        <Col xs={6}>
+          <LineChart
+            title={"Biểu đồ doanh thu tháng này"}
+            dataThisMonth={revenueThisMonth}
+            dataLastMonth={revenueLastMonth}
+          ></LineChart>
         </Col>
-        <Col xs={3}>
-          <div className="broad">
-            <h2>Lượt đăng ký tài khoản</h2>
-            <h1>
-              {thisMonth.totalAccount}
-              {compareTotalAccount > 0 ? (
-                <>
-                  <AutoGraphIcon
-                    style={{ color: "#0de10d", fontSize: "3rem" }}
-                  ></AutoGraphIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Tăng {compareTotalAccount.toFixed(2)}% so với tháng trước (
-                    {lastMonth.totalAccount})
-                  </p>
-                </>
-              ) : (
-                <>
-                  <TrendingDownIcon
-                    style={{ fontSize: "3rem", color: "black" }}
-                  ></TrendingDownIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Giảm {Math.abs(compareTotalAccount.toFixed(2))}% so với
-                    tháng trước ({lastMonth.totalAccount})
-                  </p>
-                </>
-              )}
-            </h1>
-          </div>
-        </Col>
-
-        <Col xs={3}>
-          <div className="broad">
-            <h2>Bài đăng mới</h2>
-            <h1>
-              {thisMonth.totalPost}{" "}
-              {compareTotalPost > 0 ? (
-                <>
-                  <AutoGraphIcon
-                    style={{ color: "#0de10d", fontSize: "3rem" }}
-                  ></AutoGraphIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Tăng {compareTotalPost.toFixed(2)}% so với tháng trước (
-                    {lastMonth.totalPost})
-                  </p>
-                </>
-              ) : (
-                <>
-                  <TrendingDownIcon
-                    style={{ fontSize: "3rem", color: "black" }}
-                  ></TrendingDownIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Giảm {Math.abs(compareTotalPost.toFixed(2))}% so với tháng
-                    trước ({lastMonth.totalPost})
-                  </p>
-                </>
-              )}
-            </h1>
-          </div>
-        </Col>
-        <Col xs={3}>
-          <div className="broad">
-            <h2>Lượt đặt phòng</h2>
-            <h1>
-              {thisMonth.totalBookings}{" "}
-              {compareTotalBookings > 0 ? (
-                <>
-                  <AutoGraphIcon
-                    style={{ color: "#0de10d", fontSize: "3rem" }}
-                  ></AutoGraphIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Tăng {compareTotalBookings.toFixed(2)}% so với tháng trước (
-                    {lastMonth.totalBookings})
-                  </p>
-                </>
-              ) : (
-                <>
-                  <TrendingDownIcon
-                    style={{ fontSize: "3rem", color: "black" }}
-                  ></TrendingDownIcon>
-                  <p style={{ fontSize: "1.4rem" }}>
-                    Giảm {Math.abs(compareTotalBookings.toFixed(2))}% so với
-                    tháng trước ({lastMonth.totalBookings})
-                  </p>
-                </>
-              )}
-            </h1>
-          </div>
+        <Col xs={6}>
+          <BarChart
+            title={"Biểu đồ số lượt đặt phòng tháng này"}
+            dataLabelOne={countBooking}
+            dataLabelTwo={countCancelBooking}
+          ></BarChart>
         </Col>
       </Row>
-
-      <div className="chart-body">
-        <Row>
-          <Col xs={6}>
-            <LineChart
-              title={"Biểu đồ doanh thu tháng này"}
-              dataThisMonth={revenueThisMonth}
-              dataLastMonth={revenueLastMonth}
-            ></LineChart>
-          </Col>
-
-          <Col xs={6}>
-            <BarChart
-              title={"Biểu đồ số lượt đặt phòng tháng này"}
-              dataLabelOne={countBooking}
-              dataLabelTwo={countCancelBooking}
-            ></BarChart>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <RevenueManage data={statisticsMonthly}></RevenueManage>
-          </Col>
-        </Row>
-      </div>
-    </div>
+      <Row>
+        <Col xs={12}>
+          <RevenueManage data={statisticsMonthly}></RevenueManage>
+        </Col>
+      </Row>
+  </>
   );
 }
 
 export default Statistical;
+
+const Card = ({ title, condition, compare, thisMonth, lastMonth }) => {
+  return(
+    <Box className="flex flex-col w-[24.5rem] h-[20rem] rounded-xl shadow-xl bg-white " sx={{ flexGrow: 4 }}>
+        <h2 className='m-4'>{title}</h2>
+        {thisMonth}
+        {condition > 0 ? (
+          <>
+            <AutoGraphIcon style={{ color: "#0de10d", fontSize: "3rem", marginLeft: "1rem"}}></AutoGraphIcon>
+            <p className="text-2xl font-medium mx-4"> Tăng {compare}% so với tháng trước ({lastMonth})</p>
+          </>
+        ) : (
+          <>
+            <TrendingDownIcon style={{ fontSize: "3rem", color: "black", marginLeft: "1rem"}}></TrendingDownIcon>
+            <p className="text-2xl font-medium mx-4"> Giảm {compare}% so với tháng trước ({lastMonth})</p>
+          </>
+        )}
+        <SparkLineChart data={[1, 2, 4, 8, 6]} showHighlight={true} showTooltip={true} width={250} height={100}/>
+    </Box>
+  );
+};

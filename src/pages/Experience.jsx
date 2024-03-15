@@ -150,7 +150,7 @@ function Experience() {
               onClick={() => {
                 goToPrevious(0);
               }}
-              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-black rounded-full text-black cursor-pointer ${
+              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-gray-500 rounded-full text-black cursor-pointer ${
                 isAtStart ? "opacity-30 cursor-not-allowed" : ""
               }`}
               disabled={isAtStart}
@@ -168,7 +168,7 @@ function Experience() {
               onClick={() => {
                 goToNext(0);
               }}
-              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-black rounded-full text-black cursor-pointer ${
+              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-gray-500 rounded-full text-black cursor-pointer ${
                 isAtEnd ? "opacity-30 cursor-not-allowed" : ""
               }`}
               disabled={isAtEnd}
@@ -232,13 +232,13 @@ function Experience() {
               className="flex gap-2 pr-6 border-r-2"
               style={{ maxWidth: "fit-content", whiteSpace: "nowrap" }}
             >
-              <button className="text-2xl py-2 px-3 border border-black rounded-full">
+              <button className="text-2xl py-2 px-3 border border-gray-500 rounded-full">
                 Dates
               </button>
-              <button className="text-2xl py-2 px-3 border border-black rounded-full">
+              <button className="text-2xl py-2 px-3 border border-gray-500 rounded-full">
                 Group size
               </button>
-              <button className="text-2xl py-2 px-3 border border-black rounded-full">
+              <button className="text-2xl py-2 px-3 border border-gray-500 rounded-full">
                 More filters
               </button>
             </div>
@@ -247,7 +247,7 @@ function Experience() {
                 onClick={() => {
                   goToPrevious(1);
                 }}
-                className={`flex items-center justify-center px-3 border border-black rounded-full text-black cursor-pointer ${
+                className={`flex items-center justify-center px-3 border border-gray-500 rounded-full text-black cursor-pointer ${
                   isAtStartNav ? "hidden" : ""
                 }`}
               >
@@ -283,7 +283,7 @@ function Experience() {
                 onClick={() => {
                   goToNext(1);
                 }}
-                className={`flex items-center justify-center px-3 border border-black rounded-full text-black cursor-pointer ${
+                className={`flex items-center justify-center px-3 border border-gray-500 rounded-full text-black cursor-pointer ${
                   isAtEndNav ? " hidden" : ""
                 }`}
               >
@@ -442,7 +442,7 @@ const ContentArea = ({
             </Link>
             <button
               onClick={togglePrevious}
-              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-black rounded-full text-black cursor-pointer ${
+              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-gray-500 rounded-full text-black cursor-pointer ${
                 isStart ? "opacity-30 cursor-not-allowed" : ""
               }`}
               disabled={isStart}
@@ -458,7 +458,7 @@ const ContentArea = ({
             </button>
             <button
               onClick={toggleNext}
-              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-black rounded-full text-black cursor-pointer ${
+              className={`flex items-center justify-center w-[3.1rem] h-[3.1rem] border border-gray-500 rounded-full text-black cursor-pointer ${
                 isEnd ? "opacity-30 cursor-not-allowed" : ""
               }`}
               disabled={isEnd}

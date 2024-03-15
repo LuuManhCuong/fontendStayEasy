@@ -30,7 +30,7 @@ const Booking = () => {
     const [isDialogOpen1, setIsDialogOpen1] = useState(false);
 
 
-    const currency = 'USD';
+    const currency = 'EUR';
     const method = 'SALE';
     const intent = 'PAYPAL';
     const description = `${user.userName} Payment for booking ${place.propertyName}`

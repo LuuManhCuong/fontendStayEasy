@@ -4,51 +4,47 @@ import axios from "axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
-export default function Utilies({ Utils, value }) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
+export default function Rule({ Rules, value }) {
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    setCount(value.length)
-  }, [value])
+    setCount(value.length);
+  }, [value]);
 
-  const handleFree = (index) => {
-    Utils((prev) => {
-      const isU = prev.includes(index.utilitiId);
 
-      if (isU) {
-        return prev.filter((utilId) => utilId !== index.utilitiId);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleRules = (index) => {
+    Rules((prev) => {
+      const isR = prev.includes(index.rulesId);
+      if (isR) {
+        return prev.filter((rulesId) => rulesId !== index.rulesId);
       } else {
-        return [...prev, index.utilitiId];
+        return [...prev, index.rulesId];
       }
     });
   };
 
   const loadData = async () => {
     const result = await axios.get(
-      `http://localhost:8080/api/v1/stayeasy/util`
+      `http://localhost:8080/api/v1/stayeasy/rules`
     );
     setData(result.data);
   };
-
   useEffect(() => {
     loadData();
   }, []);
-
   return (
     <div className="col-span-1">
-      <div className="font-medium leading-6 text-gray-900">Tiện ích</div>
+      <div className="font-medium leading-6 text-gray-900">Quy tắc</div>
       <div
         className="hover:cursor-pointer flex mt-3 items-center justify-center h-16 rounded-md p-2 px-4 ring-1 ring-gray-300 bg-white"
         onClick={handleOpen}
       >
-        {value.length > 0 ? (
-          `Đã chọn ${count}`
-        ) : ("--- Chọn ---")}
+        {value.length > 0 ? (`Đã chọn ${count}`) : ("--- Chọn ---")}
       </div>
       <Modal
         open={open}
@@ -58,40 +54,37 @@ export default function Utilies({ Utils, value }) {
         className="flex justify-center items-center"
       >
         <Box className="rounded-lg bg-white absolute w-[40%] p-4">
-          <div className="mb-3 flex justify-between">
-            <span className="font-medium">Miễn phí</span>
-            <button
-              onClick={handleClose}
-              className="border-2 border border-red-800 rounded-lg"
-            >
-              <XMarkIcon className="w-8" color="#FF385C" />
-            </button>
+          <div className="flex itemsl-center justify-between">
+            <div className="font-medium">Nội quy thuê tài sản</div>
+
+            <div className="mb-3 flex justify-end" onClick={handleClose}>
+              <button className="border-2 border border-red-800 rounded-lg">
+                <XMarkIcon className="w-8" color="#FF385C" />
+              </button>
+            </div>
           </div>
 
           <div
-            className="border-t py-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4"
+            className="border-y py-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4"
             variant="h5"
           >
             {data.map((index) => (
               <div
-                onClick={() => {
-                  handleFree(index);
-                }}
+                key={index.rulesId}
+                onClick={() => handleRules(index)}
                 className={`${
-                  value.includes(index.utilitiId)
-                    ? "bg-[#FF385C] text-white"
-                    : ""
+                  value.includes(index.rulesId) ? "bg-danger text-white" : ""
                 } hover:cursor-pointer border flex items-center gap-3 p-3 rounded-lg`}
               >
                 <span>
                   <XMarkIcon className="w-8" />
                 </span>
-                <span>{index.utilitiesName}</span>
+                <span>{index.rulesName}</span>
               </div>
             ))}
           </div>
 
-          <div className="mt-3 flex justify-end border-t pt-4">
+          <div className="mt-3 flex justify-end">
             <button
               onClick={handleClose}
               className="bg-indigo-600 text-white py-2 px-3 font-medium rounded-lg"

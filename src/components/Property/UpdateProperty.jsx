@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   PhotoIcon,
   XMarkIcon,
-  ChevronLeftIcon,
+  ChevronUpDownIcon,
 } from "@heroicons/react/24/solid";
 import Utilies from "../utilies/Utilies";
 import Category from "../category/Category";
@@ -17,10 +17,10 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import ToastMessage from "./ToastMessage";
+import Rule from "./Rule";
 
 export default function UpdateProperty() {
   const navigate = useNavigate();
-
   const { propertyId } = useParams();
 
   const [property, setProperty] = useState({
@@ -28,11 +28,29 @@ export default function UpdateProperty() {
     propertyName: "",
     description: "",
     numGuests: "",
+    numBathRoom: "",
+    numBedRoom: "",
+    serviceFee: "",
     price: "",
     discount: "",
     imagesList: [
       {
         url: "",
+      },
+    ],
+    categories: [
+      {
+        categoryId: "",
+      },
+    ],
+    rulesList: [
+      {
+        rulesId: "",
+      },
+    ],
+    utilitis: [
+      {
+        utilitiesId: "",
       },
     ],
   });
@@ -45,6 +63,12 @@ export default function UpdateProperty() {
     price,
     discount,
     imagesList,
+    numBathRoom,
+    numBedRoom,
+    serviceFee,
+    categories,
+    rulesList,
+    utilitis,
   } = property;
 
   const [ownerName, setOwnerName] = useState("");
@@ -91,6 +115,35 @@ export default function UpdateProperty() {
     }
   };
 
+  // category
+  const [selectedCategory, setselectedCategory] = useState([]);
+
+  const handleCategories = (newCategory) => {
+    setselectedCategory(newCategory);
+  };
+
+  useEffect(() => {
+    setselectedCategory([...categories.map((item) => item.categoryId)])
+  }, [categories])
+
+  // Utilities - get all util id
+  const [selectUtils, setSelectUtils] = useState([]);
+
+  useEffect(() => {
+    setSelectUtils([...utilitis.map((item) => item.utilitiesId)]);
+  }, [utilitis]);
+
+  const handleUtilsChange = (newUtils) => {
+    setSelectUtils(newUtils);
+  };
+
+  // rules
+  const [selectRules, setSelectRules] = useState([]);
+
+  useEffect(() => {
+    setSelectRules([...rulesList.map((item) => item.rulesId)]);
+  }, [rulesList]);
+
   // input handle change
   const change = (e) => {
     const { name, value } = e.target;
@@ -123,13 +176,29 @@ export default function UpdateProperty() {
   const [status, setStatus] = useState();
 
   // save property
-  const saveProperty = async (urls, userId, selectedOptions) => {
+  const saveProperty = async (
+    urls,
+    userId,
+    selectedCategory,
+    selectRules,
+    selectUtils
+  ) => {
     const dataThum = {
       ...property,
       ownerId: userId,
       thumbnail: urls[0],
       imagesList: [...urls.map((url) => ({ url }))],
-      categoryIds: [...selectedOptions.map((id) => id)],
+      categoryIds: [...selectedCategory.map((id) => id)],
+      rulesList: [
+        ...selectRules.map((id) => ({
+          rulesId: id,
+        })),
+      ],
+      utilitis: [
+        ...selectUtils.map((id) => ({
+          utilitiesId: id,
+        })),
+      ],
     };
     try {
       const response = await axios.put(
@@ -147,8 +216,7 @@ export default function UpdateProperty() {
   };
   // end save property
 
-  // category
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  
 
   const [isLoading, setIsLoading] = useState(false);
   // submit
@@ -158,8 +226,14 @@ export default function UpdateProperty() {
     setIsLoading(true);
 
     try {
-      const listImage = await uploadMultipleFiles(images);
-      await saveProperty(urls, userId, selectedOptions);
+      await uploadMultipleFiles(images);
+      await saveProperty(
+        urls,
+        userId,
+        selectedCategory,
+        selectRules,
+        selectUtils
+      );
     } catch (error) {
       alert("Đã xãy ra lỗi.");
     } finally {
@@ -179,10 +253,12 @@ export default function UpdateProperty() {
     loadData();
   }, []);
 
+  // /////
+
   useEffect(() => {
     if (status === 200) {
       const timeoutId = setTimeout(() => {
-        navigate("/property/list");
+        navigate("/host/property/list");
       }, 1000);
 
       // Cleanup effect để tránh lỗi memory leak
@@ -210,55 +286,32 @@ export default function UpdateProperty() {
   }
 
   return (
-    <div className="mx-4 mt-4 mb-4 w-[80vw]">
+    <div className="mx-4 mt-3 mb-4">
       <form>
-        <div className="mb-56">
+        <div>
           <div className="font-medium mt-8 flex items-center text-gray-900 text-[2rem]">
-            <span className="w-7 me-2 ">
-              <Link to="/property/list">
-                <ChevronLeftIcon />
-              </Link>
-            </span>
             <span>Cập nhật tài sản</span>
           </div>
-
           <hr />
 
           {/* row 1 */}
-          <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            {/* owner */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="username"
-                className="block font-medium leading-6 text-gray-900"
-              >
-                Chủ sở hữu
-              </label>
-              <input
-                disabled
-                value={ownerName}
-                type="text"
-                name="username"
-                id="username"
-                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
-              />
-            </div>
-
+          <div className="mt-8 mb-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             {/* property name */}
             <div className="sm:col-span-3">
               <label
                 htmlFor="username"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block font-medium leading-6 text-gray-900"
               >
                 Tên tài sản
               </label>
               <input
                 value={propertyName}
                 onChange={change}
+                required
                 type="text"
                 name="propertyName"
                 id="propertyName"
-                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
               />
             </div>
 
@@ -266,18 +319,19 @@ export default function UpdateProperty() {
             <div className="col-span-full">
               <label
                 htmlFor="about"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block font-medium leading-6 text-gray-900"
               >
                 Mô tả
               </label>
               <div className="mt-2">
                 <textarea
                   value={description}
+                  required
                   onChange={change}
                   id="description"
                   name="description"
                   rows={3}
-                  className="block pl-5 w-full rounded-md border-0 py-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                  className="block pl-5 w-full rounded-md border-0 py-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black  sm:leading-6"
                   defaultValue={""}
                 />
               </div>
@@ -286,37 +340,89 @@ export default function UpdateProperty() {
             {/* detail */}
             {/* CATEGORIES */}
             <Category
-              valueOptions={(newOption) => setSelectedOptions(newOption)}
+              value={selectedCategory}
+              valueOptions={handleCategories}
+              onChange={change}
             />
 
             {/* UILITIS */}
+            <Utilies
+              value={selectUtils}
+              Utils={handleUtilsChange}
+              onChange={change}
+            />
 
-            <Utilies />
+            {/* rule */}
+            <Rule
+              onChange={change}
+              value={selectRules}
+              Rules={(newRule) => setSelectRules(newRule)}
+            />
 
             {/* NUMGUEST */}
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-1">
               <label
                 htmlFor="numguest"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block font-medium leading-6 text-gray-900"
               >
                 Số người
               </label>
               <input
                 value={numGuests}
+                min={0}
+                required
                 onChange={change}
                 type="number"
                 name="numGuests"
                 id="numGuests"
-                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
               />
             </div>
 
-            <div className="col-span-3 gap-y-8 grid h-60">
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="numguest"
+                className="block font-medium leading-6 text-gray-900"
+              >
+                Phòng ngủ
+              </label>
+              <input
+                value={numBedRoom}
+                min={0}
+                required
+                onChange={change}
+                type="number"
+                name="numBedRoom"
+                id="numBedRoom"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
+              />
+            </div>
+
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="numguest"
+                className="block font-medium leading-6 text-gray-900"
+              >
+                phòng tắm
+              </label>
+              <input
+                value={numBathRoom}
+                min={0}
+                required
+                onChange={change}
+                type="number"
+                name="numBathRoom"
+                id="numBathRoom"
+                className="block h-16 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
+              />
+            </div>
+
+            <div className="col-span-4 gap-y-8 grid h-160">
               {/* PRICE */}
-              <div className="sm:col-span-2">
+              <div>
                 <label
                   htmlFor="price"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block font-medium leading-6 text-gray-900"
                 >
                   Giá
                 </label>
@@ -326,44 +432,75 @@ export default function UpdateProperty() {
                   </div>
                   <input
                     value={price}
+                    min={0}
+                    required
                     onChange={change}
                     type="number"
                     name="price"
                     id="price"
-                    className="block rounded-s-none focus:ring-1 focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                    className="block rounded-s-none focus:ring-1 focus:ring-black focus:ring-1 mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:leading-6"
                   />
                 </div>
               </div>
 
-              {/* DISCOUNT */}
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="discount"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Khuyến mãi
-                </label>
-                <div className="flex">
-                  <div className="bg-gray-300 ring-1 ring-inset ring-gray-300 w-14 flex items-center justify-center h-[4rem] mt-3 rounded-s-md">
-                    %
+              <div className="flex gap-4">
+                {/* phí vệ sinh */}
+                <div className="w-[50%]">
+                  <label
+                    htmlFor="discount"
+                    className="block font-medium leading-6 text-gray-900"
+                  >
+                    Phí vệ sinh
+                  </label>
+                  <div className="flex">
+                    <div className="bg-gray-300 ring-1 ring-inset ring-gray-300 w-14 flex items-center justify-center h-[4rem] mt-3 rounded-s-md">
+                      %
+                    </div>
+                    <input
+                      required
+                      onChange={change}
+                      min={0}
+                      value={serviceFee}
+                      type="number"
+                      name="serviceFee"
+                      id="serviceFee"
+                      className="block bg-white rounded-l-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
+                    />
                   </div>
-                  <input
-                    value={discount}
-                    onChange={change}
-                    type="number"
-                    name="discount"
-                    id="discount"
-                    className="block rounded-s-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
-                  />
+                </div>
+
+                {/* DISCOUNT */}
+                <div className="w-[50%]">
+                  <label
+                    htmlFor="discount"
+                    className="block font-medium leading-6 text-gray-900"
+                  >
+                    Khuyến mãi
+                  </label>
+                  <div className="flex">
+                    <div className="bg-gray-300 ring-1 ring-inset ring-gray-300 w-14 flex items-center justify-center h-[4rem] mt-3 rounded-s-md">
+                      %
+                    </div>
+                    <input
+                      value={discount}
+                      min={0}
+                      required
+                      onChange={change}
+                      type="number"
+                      name="discount"
+                      id="discount"
+                      className="block rounded-s-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* property image */}
-            <div className="col-span-3 h-60">
+            <div className="col-span-2 h-60">
               <label
                 htmlFor="cover-photo"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block font-medium leading-6 text-gray-900"
               >
                 Hình ảnh
               </label>
@@ -380,6 +517,7 @@ export default function UpdateProperty() {
                     >
                       <span className="px-4">Chọn ảnh</span>
                       <input
+                        required
                         id="file-upload"
                         name="file-upload"
                         type="file"
@@ -398,27 +536,21 @@ export default function UpdateProperty() {
 
             {/* image preview  */}
             {urls.map((url, index) => (
-              <div key={url} className="relative sm:col-span-2">
+              <div key={index} className="relative sm:col-span-2">
                 <button
                   onClick={() => handleRemoveImage(index)}
                   className="bg-pink-600 absolute right-0"
                 >
                   <XMarkIcon className="w-7 text-white" />
                 </button>
-                <img className="h-96 w-full" src={url} alt="" />
+                <img className="h-96 border w-full" src={url} alt="preview" />
               </div>
             ))}
           </div>
+          <hr />
         </div>
 
-        <div
-          style={{
-            bottom: "5rem",
-            marginTop: "5rem",
-            justifyContent: "flex-end",
-          }}
-          className="bg-white w-[80vw] fixed flex items-center gap-x-4"
-        >
+        <div className="flex items-center justify-end gap-x-4">
           <Link to="/property/list">
             <button
               type="submit"

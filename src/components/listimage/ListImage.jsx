@@ -36,17 +36,17 @@ function ListImage({ setIndex, currentImageInit, imagesList }) {
 
   return (
     <div className="w-full h-full bg-black flex justify-center align-middle relative">
-        <div className="absolute -left-7 top-[45%] preImage w-[40px] h-[40px] rounded-[50%] bg-white" onClick={handlePrev}>
-            <button className="text-5xl text-black p-2">
-                <FontAwesomeIcon style={{marginLeft:"3px"}} icon={icon({name: 'chevron-left', family: 'classic', style: 'solid'})} />
+        <div className="absolute -left-7 top-[45%] preImage w-[40px] h-[40px] rounded-[50%] bg-white flex justify-center items-center justify-items-center" onClick={handlePrev}>
+            <button className="text-5xl text-black flex justify-center items-center justify-items-center p-2">
+                <FontAwesomeIcon icon={icon({name: 'chevron-left', family: 'classic', style: 'solid'})} />
             </button>
         </div>
         <div className="w-[90%] h-full">
             <img className="object-contain w-full h-full" src={imagesList[activeIndex].url} alt="" />
         </div>
-        <div className="absolute -right-5 top-[45%] nextImage w-[40px] h-[40px] rounded-full bg-white" onClick={handleNext}>
-            <button className="text-5xl text-black p-2">
-                <FontAwesomeIcon style={{marginLeft:"3px"}} icon={icon({name: 'chevron-right', family: 'classic', style: 'solid'})} />
+        <div className="absolute -right-5 top-[45%] nextImage w-[40px] h-[40px] rounded-full bg-white flex justify-center items-center justify-items-center" onClick={handleNext}>
+            <button className="text-5xl text-black flex justify-center items-center justify-items-center">
+                <FontAwesomeIcon icon={icon({name: 'chevron-right', family: 'classic', style: 'solid'})} />
             </button>
         </div>
     </div>

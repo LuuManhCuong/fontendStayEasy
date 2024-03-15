@@ -180,6 +180,15 @@ function Header({ page }) {
           >
             Admin
           </NavLink>
+
+          <NavLink
+            to="/host/property/statistic"
+            className={(navData) =>
+              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
+            }
+          >
+            Host
+          </NavLink>
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
