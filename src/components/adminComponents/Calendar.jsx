@@ -8,7 +8,7 @@ import axios from "axios";
 import { Card } from "./Statistical";
 
 function Calendar({ propertyId }) {
-  // console.log("id: ", propertyId);
+  console.log("id: ", propertyId);
   const [data, setData] = useState([
     {
       startDate: new Date(),
@@ -34,7 +34,7 @@ function Calendar({ propertyId }) {
           `http://localhost:8080/api/v1/stayeasy/admin/booking?propertyId=${propertyId}`
         )
         .then(function (response) {
-          // console.log("data: ", response.data);
+          console.log("data: ", response.data);
 
           const newState = response.data.map((booking, index) => ({
             startDate: new Date(booking.checkIn),
@@ -79,15 +79,15 @@ function Calendar({ propertyId }) {
     ((thisMonth?.totalCancelBookings - lastMonth?.totalCancelBookings) /
       lastMonth?.totalCancelBookings) *
     100;
-  console.log("c: ", compareTotalCancelBookings);
+  console.log("cp: ", compareRevenue || thisMonth?.revenue);
   // Chỉ render DateRangePicker khi state đã được khởi tạo
   return (
     <div className="calendar shadow-lg m-8 rounded-lg">
-      <h2>Thống kê</h2>
+      <h2>Thống kê từ đầu tháng</h2>
       <div className="board m-8">
         <Card
           className="m-4 shadow-lg"
-          title="Doanh thu"
+          title="Doanh thu ($)"
           condition={compareRevenue || 0}
           compare={compareRevenue.toFixed(2)}
           thisMonth={thisMonth?.revenue}
@@ -120,7 +120,7 @@ function Calendar({ propertyId }) {
         />
       </div>
 
-      <h2>Lịch đặt phòng</h2>
+      <h2>Lịch đặt phòng sắp tới</h2>
       <DateRangePicker
         onChange={(item) => setState([{ ...state, ...item }])}
         showSelectionPreview={true}
@@ -128,6 +128,7 @@ function Calendar({ propertyId }) {
         onRangeFocusChange={(item) => item}
         months={2}
         ranges={data}
+        minDate={new Date()} // Vô hiệu hóa ngày quá khứ
         direction="horizontal"
       />
     </div>

@@ -237,7 +237,9 @@ export const Card = ({ title, condition, compare, thisMonth, lastMonth }) => {
           ></AutoGraphIcon>
           <p className="text-2xl font-medium mx-4">
             {" "}
-            Tăng {compare || 0}% so với tháng trước ({lastMonth})
+            Tăng{" "}
+            {compare === "Infinity" ? ` ${thisMonth} lần` : ` ${compare} %`} so
+            với tháng trước ({lastMonth})
           </p>
 
           {/* <SparkLineChart
