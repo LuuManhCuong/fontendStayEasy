@@ -61,10 +61,7 @@
     "slick-carousel": "^1.8.1",
     "sockjs": "^0.3.24",
     "sockjs-client": "^1.6.1",
-<<<<<<< HEAD
-=======
     "sweetalert2": "^11.10.6",
->>>>>>> origin/namhh-refresh-token
     "use-react-countries": "^2.0.0",
     "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"

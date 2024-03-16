@@ -11,20 +11,6 @@ const LineChart = ({ title, dataThisMonth, dataLastMonth }) => {
   // Sử dụng mảng các ngày như là nhãn
   const labels = daysInMonth.map((i) => `day ${i}`);
   const data = {
-    // labels: [
-    //   "Jan",
-    //   "Feb",
-    //   "Mar",
-    //   "Apr",
-    //   "May",
-    //   "Jun",
-    //   "Jul",
-    //   "Aug",
-    //   "Sep",
-    //   "Oct",
-    //   "Nov",
-    //   "Dec",
-    // ],
     labels: labels,
     datasets: [
       {
@@ -43,7 +29,7 @@ const LineChart = ({ title, dataThisMonth, dataLastMonth }) => {
   };
 
   return (
-    <div className="shadow-lg m-8 rounded-lg">
+    <div className="shadow-md p-8 rounded-lg bg-white">
       <h3>{title}</h3>
       <Line data={data} />
     </div>

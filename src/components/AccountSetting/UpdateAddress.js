@@ -5,6 +5,7 @@ import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 
 import * as ProvinceService from "../../Services/ProvinceService";
 import AddressSelection from "./AddressSelection";
+import { updateInformation } from "../../redux-tookit/actions/userActions";
 
 export const AddressUpdateForm = ({ title, description, isnull, setIsDisabled, isDisable }) => {
   const dispatch = useDispatch();
@@ -47,49 +48,29 @@ export const AddressUpdateForm = ({ title, description, isnull, setIsDisabled, i
   }, [user]);
   
 
-  const accessToken = localStorage.getItem("access_token");
-
-  const updateAddress = () => {
-    if(!street||street===""){
-        return setStreetErrorMessage("Không được bỏ trống");
-    }
-    if(!country||country===""){
-      return setCountryErrorMessage("Không được bỏ trống");
-    }
-      
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-    const raw = JSON.stringify({
+  const raw = JSON.stringify({
     "id": user?.id,
     "address": {
         "street": street,
         "ward": ward,
         "district": district,
         "city": city,
-        "country": country
+        "country": "Việt Nam"
       }
-    });
+  });
 
-    console.log(raw);
-
-    const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-      };
-
-    fetch(`http://localhost:8080/api/v1/stayeasy/user/update`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-          dispatch(counterSlice.actions.increase());
-          setIsDisabled(0)
-          setIsEditing(!isEditing);
-      })
-      .catch((error) => console.error(error));
+  const handleUpdateAddress = () => {
+    console.log("street"+street);
+    console.log("ward"+ward);
+    console.log("district"+district);
+    console.log("city"+city);
+    if(!street||street===""){
+      return setStreetErrorMessage("Không được bỏ trống");
+    }else{
+      dispatch(updateInformation('địa chỉ', raw, setIsDisabled, setIsEditing, isEditing));
+    }
   };
+
 
   const setDefault = ()=>{
     setStreetErrorMessage();
@@ -171,8 +152,6 @@ export const AddressUpdateForm = ({ title, description, isnull, setIsDisabled, i
                   <p className="text-gray-500 text-[1.5rem] p-0 m-0">{description}</p>
 
                   {/* address */}
-                  <InputForm lable="Quốc gia" value={country} setValue={setCountry} errorMessage={countryErrorMessage} setErrorMessage={setCountryErrorMessage} />
-            
                   {/* province / city */}
                   <AddressSelection
                     label="Tỉnh / Thành phố"
@@ -207,7 +186,7 @@ export const AddressUpdateForm = ({ title, description, isnull, setIsDisabled, i
                     errorMessage={streetErrorMessage} 
                     setErrorMessage={setStreetErrorMessage} 
                   />
-                  <button onClick={()=>{updateAddress()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">Lưu</button>
+                  <button onClick={()=>{handleUpdateAddress()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">Lưu</button>
                 </>
             ) : (
               <div className="flex justify-between">

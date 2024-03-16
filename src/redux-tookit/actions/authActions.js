@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import { counterSlice } from "../reducer/counterSlice";
+import { Alert } from "../../components/Alert/Alert";
 
 
 // Method login
@@ -40,6 +41,7 @@ export const login = (data) => (dispatch) => {
       data.setMessage("", "", "");
       
       if(data.toggleClosePopup){
+        //Đóng Popup
         data.toggleClosePopup();
       }
       if(data.location){
@@ -47,13 +49,8 @@ export const login = (data) => (dispatch) => {
         // Kiểm tra nếu có thông tin trang trước đó, chuyển hướng lại đó sau khi đăng nhập thành công
         const from = data.location.state?.from?.pathname || '/'; data.navigate(from, { replace: true });
       }
-      Swal.fire({
-        timer: 1500,
-        title: 'OK!',
-        text: 'Đăng nhập thành công',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      })
+      //Show thông báo
+      Alert(1500, 'Đăng nhập', 'Đăng nhập thành công','success', 'OK');
     })
     .catch((error) => {
       data.setErrorLoginMessage("Tên tài khoản hoặc mật khẩu sai!");
@@ -98,14 +95,18 @@ export const signup = (data) => async (dispatch) => {
       const responseData = await response.json();
 
       if (response.ok) {
-          data.setMessage("","","Đăng kí thành công thành công. Mời bạn đăng nhập!");
+          data.setMessage("","","");
           data.setIsSecondForm(false);
           data.setisLogin(true);
+          //Show thông báo
+          Alert(1500, 'Đăng ký', 'Đăng kí thành công thành công. Mời bạn đăng nhập!','success', 'OK');
       } else {
-          data.setErrorMessage(responseData.message || "Có lỗi xảy ra!");
+        //Show thông báo
+        Alert(1500, 'Đăng ký', responseData.message || 'Có lỗi xảy ra!' ,'error', 'OK');
       }
   } catch (error) {
-      data.setErrorMessage(error.message || "Có lỗi xảy ra khi đăng ký!");
+    //Show thông báo
+    Alert(1500, 'Đăng ký', error.message || 'Có lỗi xảy ra khi đăng ký!' ,'error', 'OK');
   }
 };
 
@@ -137,68 +138,59 @@ export const logout = (navigate) => async (dispatch) => {
         localStorage.removeItem("refresh_token");
         dispatch(counterSlice.actions.increase());
         navigate("/");
-        Swal.fire({
-          timer: 1500,
-          title: 'OK!',
-          text: 'Đăng Xuất thành công',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        })
+        Alert(1500, 'Đăng xuất', 'Đăng xuất thành công' ,'success', 'OK');
       })
       .catch((error) => {
         console.error(error);
-        alert("Đăng xuất thất bại!");
+        Alert(1500, 'Đăng xuất', 'Đăng xuất thất bại' ,'error', 'OK');
       });
   } else {
-    alert("Bạn chưa đăng nhập!");
+    Alert(2000, 'Đăng xuất', 'Bạn chưa đăng nhập!' ,'warning', 'OK');
   }
 };
 
 // Method changePass
 export const changePassword = (data) => async (dispatch) => {
-  if(data.newpassword===data.confirmpassword){
-    try {
-      const token = localStorage.getItem("access_token");
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", `Bearer ${token}`);
-  
-      const raw = JSON.stringify({
-        oldPassword : data.oldpassword,
-        newPassword : data.newpassword
-      });
-  
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
-      };
-  
-      const response = await fetch("http://localhost:8080/api/v1/auth/change-password", requestOptions);
-      const responseData = await response.json();
+  try {
+    const token = localStorage.getItem("access_token");
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
-      if (response.ok) {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
+    const raw = JSON.stringify({
+      oldPassword : data.oldpassword,
+      newPassword : data.newpassword
+    });
 
-        // save token to localStorage
-        localStorage.setItem('access_token', responseData.access_token);
-        localStorage.setItem('refresh_token', responseData.refresh_token);
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
 
-        dispatch(counterSlice.actions.increase());
-        data.setPasswordErrorMessage();
-        data.setPasswordSuccessMessage(responseData.message || "Thành công");
-        data.setEditting(false);
-        data.setInputDefault();
-      } else {
-          data.setPasswordErrorMessage(responseData.message || "Có lỗi xảy ra!");
-      }
-      }catch(error){
-        console.error(error);
-      }
-  }else{
-    data.setPasswordErrorMessage("Mật khẩu không khớp");
+    const response = await fetch("http://localhost:8080/api/v1/auth/change-password", requestOptions);
+    const responseData = await response.json();
+
+    if (response.ok) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+
+      // save token to localStorage
+      localStorage.setItem('access_token', responseData.access_token);
+      localStorage.setItem('refresh_token', responseData.refresh_token);
+
+      dispatch(counterSlice.actions.increase());
+      data.setPasswordErrorMessage();
+      data.setPasswordSuccessMessage(responseData.message || "Thành công");
+      data.setEditting(false);
+      data.setInputDefault();
+      Alert(1500, 'Đổi mật khẩu', responseData.message || "Thành công" ,'success', 'OK');
+    } else {
+        data.setPasswordErrorMessage(responseData.message || "Có lỗi xảy ra!");
+    }
+    }catch(error){
+      Alert(2000, 'Đổi mật khẩu', error.message || "Thất bại" ,'error', 'OK');
   }
 };
 

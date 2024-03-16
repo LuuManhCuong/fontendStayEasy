@@ -4,7 +4,6 @@ import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import Statistical from "../../components/adminComponents/Statistical";
 import PostManage from "../../components/adminComponents/PostManage";
-import BookingManage from "../../components/adminComponents/BookingManage";
 import AccountManage from "../../components/adminComponents/AccountManage";
 import Seting from "../../components/adminComponents/Seting";
 import { Link } from "react-router-dom";
@@ -14,7 +13,6 @@ import {
   PresentationChartBarIcon,
   UserCircleIcon,
   Cog6ToothIcon,
-  ClipboardDocumentListIcon,
   ArchiveBoxIcon,
 } from "@heroicons/react/24/solid";
 
@@ -22,31 +20,23 @@ function AdminDarhBoard() {
   const sidebar = [
     {
       cate: "Thống kê",
-      icon: (
-        <PresentationChartBarIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />
-      ),
+      icon: (<PresentationChartBarIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />),
       component: <Statistical></Statistical>,
     },
     {
       cate: "Bài đăng",
-      icon: (
-        <ArchiveBoxIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />
-      ),
+      icon: (<ArchiveBoxIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />),
       component: <PostManage></PostManage>,
     },
     // { cate: "Đặt phòng", icon:<ClipboardDocumentListIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />, component: <BookingManage></BookingManage> },
     {
       cate: "Tài khoản",
-      icon: (
-        <UserCircleIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />
-      ),
+      icon: (<UserCircleIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />),
       component: <AccountManage></AccountManage>,
     },
     {
       cate: "Cài đặt",
-      icon: (
-        <Cog6ToothIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />
-      ),
+      icon: (<Cog6ToothIcon className="h-7 w-7 max-[1200px]:h-12 max-[1200px]:w-12" />),
       component: <Seting></Seting>,
     },
   ];
@@ -55,9 +45,9 @@ function AdminDarhBoard() {
   return (
     <>
       <Header></Header>
-      <div className="flex h-full">
-        {/* right menu */}
-        <Card className="h-[calc(100vh-0)] w-full max-w-[24rem] py-4 px-2 shadow-xl shadow-blue-gray-900/5">
+      <div className="flex h-full w-full">
+        {/* left menu */}
+        <Card className="h-[calc(100vh-0)] w-[20rem] max-w-[24rem] py-4 px-2 shadow-xl shadow-blue-gray-900/5">
           <List>
             {sidebar.map((e, i) => {
               return (
@@ -71,7 +61,7 @@ function AdminDarhBoard() {
             })}
           </List>
         </Card>
-        <div className="w-full p-4 bg-gray-100">{isActive.component}</div>
+        <div className="w-full p-10 bg-gray-100">{isActive.component}</div>
       </div>
       <Footer></Footer>
     </>

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import CommonHeader from '../../components/header/CommonHeader'
 import Footer from '../../components/footer/Footer'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { DateRangePicker } from 'react-date-range';
 import { addDays } from 'date-fns';
@@ -10,17 +10,23 @@ import { Card, List, ListItem, ListItemPrefix } from "@material-tailwind/react";
 import { PresentationChartBarIcon, ShoppingBagIcon, UserCircleIcon, Cog6ToothIcon, InboxIcon, PowerIcon } from "@heroicons/react/24/solid";
 
 import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
 
 import Box from '@mui/material/Box';
 import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
 import {UserContext} from '../../components/UserContext'
 import Room from './Room';
-export default function Host() {
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux-tookit/actions/authActions';
 
+
+export default function Host() {
+    const navigate = useNavigate();
+    // method logout
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+    dispatch(logout(navigate));
+    };
     const user = useContext(UserContext).user
     const [listRoom, setListRoom] = useState([]);
     const [state, setState] = useState([
@@ -111,7 +117,7 @@ export default function Host() {
                                 </Link>
                             );
                         })}
-                        <button onClick="">
+                        <button onClick={()=>{handleLogout()}}>
                             <ListItem>
                                 <ListItemPrefix>
                                     <PowerIcon color='#000' className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />

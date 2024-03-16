@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { useDispatch } from "react-redux";
-import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
+import { updateInformation } from "../../redux-tookit/actions/userActions";
+import { Alert } from "../Alert/Alert";
 
 
 export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isDisable }) => {
@@ -18,8 +19,6 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
 
   const [isValidate, setIsValidate] = useState(false);
 
-  const accessToken = localStorage.getItem("access_token");
-
   useEffect(()=>{
     if(!user){
       return;
@@ -27,35 +26,16 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
     setPhone(user.phone);
   }, [user]);
 
-  const updatePhone = () => {
+  const raw = JSON.stringify({
+    "id": user?.id,
+    "phone": phone
+  });
+
+  const handleUpdatePhone = () => {
     if(!phone||phone===""){
-      setPhoneErrorMessage("Không được bỏ trống");
+      Alert(1500, 'Thay đổi số điện thoại', 'Nhập thông tin đi ba!😒', 'error', 'OK');
     }else{
-      const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-    const raw = JSON.stringify({
-      "id": user?.id,
-      "phone": phone
-    });
-
-    const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
-
-    fetch(`http://localhost:8080/api/v1/stayeasy/user/update`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-          console.log(result);
-          dispatch(counterSlice.actions.increase());
-          setIsDisabled(0)
-          setIsEditing(!isEditing);
-      })
-      .catch((error) => console.error(error));
+      dispatch(updateInformation('số điện thoại', raw, setIsDisabled, setIsEditing, isEditing));
     }
   };
 
@@ -76,7 +56,7 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
                 <div className="relative py-4 w-full">
                   <label htmlFor="phoneInput" className={`absolute top-8 left-6 text-xl ${phoneErrorMessage?"text-[#C13515] font-bold":"text-gray-500"}`}>Số điện thoại</label>
                   <PhoneInput
-                    country={"eg"}
+                    country={"vn"}
                     enableSearch={true}
                     value={phone}
                     inputStyle={{width:"100%", paddingLeft:"5.5rem", paddingRight:"5.5rem", paddingTop:"1.5rem", paddingBottom:"1.5rem", borderRadius:"1rem"}}
@@ -100,7 +80,7 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
                           <p className="text-xl text-[#C13515]">{phoneErrorMessage}</p>
                       </div>
                   }
-                  <button onClick={()=>{updatePhone()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">Lưu</button>
+                  <button onClick={()=>{handleUpdatePhone()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">Lưu</button>
               </>
           ) : (
             <div className="flex justify-between">

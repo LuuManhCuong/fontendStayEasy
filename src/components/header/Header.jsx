@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { counterSelector, keySearchSelector } from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
-import AuthModal from "../auth/Authenticate";
+import Authenticate from "../auth/Authenticate";
 import Authenticated from "../auth/Authenticated";
 import "./header.scss";
 import { dataHomeSlice } from "../../redux-tookit/reducer/dataHomeSlice";
@@ -218,7 +218,7 @@ function Header({ page }) {
               {isAuthenticated ? (
                 <Authenticated />
               ) : (
-                <AuthModal />
+                <Authenticate />
               )}
             </Dropdown>
           </div>

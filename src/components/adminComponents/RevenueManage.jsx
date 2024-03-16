@@ -5,7 +5,7 @@ import Table from "react-bootstrap/Table";
 function RevenueManage({ data }) {
   // console.log("daa: ", data);
   return (
-    <div className="shadow-lg m-8 rounded-lg">
+    <div className="shadow-md p-8 rounded-lg bg-white">
       <h1>Bảng thống kê hằng tháng</h1>
       <Table striped bordered hover>
         <thead>

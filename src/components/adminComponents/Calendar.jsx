@@ -5,6 +5,11 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
 import { addDays } from "date-fns";
 import axios from "axios";
+
+import Box from "@mui/material/Box";
+import AutoGraphIcon from "@mui/icons-material/AutoGraph";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import { MdOutlineSsidChart } from "react-icons/md";
 import { Card } from "./Statistical";
 
 function Calendar({ propertyId }) {
@@ -82,11 +87,10 @@ function Calendar({ propertyId }) {
   console.log("cp: ", compareRevenue || thisMonth?.revenue);
   // Chỉ render DateRangePicker khi state đã được khởi tạo
   return (
-    <div className="calendar shadow-lg m-8 rounded-lg">
-      <h2>Thống kê từ đầu tháng</h2>
-      <div className="board m-8">
+    <div className="rounded-lg w-full">
+      <h1>Thống kê từ đầu tháng</h1>
+      <div className="flex justify-between py-10">
         <Card
-          className="m-4 shadow-lg"
           title="Doanh thu ($)"
           condition={compareRevenue || 0}
           compare={compareRevenue.toFixed(2)}
@@ -95,7 +99,6 @@ function Calendar({ propertyId }) {
         />
 
         <Card
-          className="m-4 shadow-lg"
           title="Lượt đặt phòng"
           condition={compareTotalBookings || 0}
           compare={compareTotalBookings.toFixed(2)}
@@ -103,7 +106,6 @@ function Calendar({ propertyId }) {
           lastMonth={lastMonth.totalBookings}
         />
         <Card
-          className="m-4 shadow-lg"
           title="Lượt hủy phòng"
           condition={compareTotalCancelBookings || 0}
           compare={compareTotalCancelBookings.toFixed(2)}
@@ -111,7 +113,6 @@ function Calendar({ propertyId }) {
           lastMonth={lastMonth.totalCancelBooking}
         />
         <Card
-          className="m-4 shadow-lg"
           title="Lượt yêu thích"
           condition={comparetoTalLike || 0}
           compare={comparetoTalLike.toFixed(2)}
@@ -120,19 +121,23 @@ function Calendar({ propertyId }) {
         />
       </div>
 
-      <h2>Lịch đặt phòng sắp tới</h2>
-      <DateRangePicker
-        onChange={(item) => setState([{ ...state, ...item }])}
-        showSelectionPreview={true}
-        moveRangeOnFirstSelection={false}
-        onRangeFocusChange={(item) => item}
-        months={2}
-        ranges={data}
-        minDate={new Date()} // Vô hiệu hóa ngày quá khứ
-        direction="horizontal"
-      />
+      <div className="w-full py-10">
+      <h1>Lịch đặt phòng sắp tới</h1>
+        <DateRangePicker
+          onChange={(item) => setState([{ ...state, ...item }])}
+          showSelectionPreview={true}
+          moveRangeOnFirstSelection={false}
+          onRangeFocusChange={(item) => item}
+          months={2}
+          ranges={data}
+          minDate={new Date()} // Vô hiệu hóa ngày quá khứ
+          direction="horizontal"
+        />
+      </div>
     </div>
   );
 }
 
 export default Calendar;
+
+

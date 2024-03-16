@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 import { UserContext } from "../UserContext";
+import { updateInformation } from "../../redux-tookit/actions/userActions";
+import { Alert } from "../Alert/Alert";
 
 export const NameUpdateForm = ({ title, description, isnull, setIsDisabled, isDisable }) => {
   const user = useContext(UserContext).user;
@@ -22,39 +23,19 @@ export const NameUpdateForm = ({ title, description, isnull, setIsDisabled, isDi
   
   const [isEditing, setIsEditing] = useState(false);
 
-  const accessToken = localStorage.getItem("access_token");
+  const raw = JSON.stringify({
+    "id": user?.id,
+    "firstName": firstName,
+    "lastName": lastName
+  });
 
   const dispatch = useDispatch();
 
-  const updateName = () => {
+  const handleUpdateName = () => {
     if(firstName===""||lastName===""){
-      alert("Nhập thông tin đi ba!😒");
+      Alert(2000, 'Thay đổi họ và tên', 'Nhập thông tin đi ba!😒', 'error', 'OK');
     }else{
-      const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-    const raw = JSON.stringify({
-      "id": user?.id,
-      "firstName": firstName,
-      "lastName": lastName
-    });
-
-    const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
-
-    fetch(`http://localhost:8080/api/v1/stayeasy/user/update`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        dispatch(counterSlice.actions.increase());
-        setIsDisabled(0);
-        setIsEditing(!isEditing);
-      })
-      .catch((error) => console.error(error));
+      dispatch(updateInformation('họ và tên', raw, setIsDisabled, setIsEditing, isEditing));
     }
   };
 
@@ -112,7 +93,7 @@ export const NameUpdateForm = ({ title, description, isnull, setIsDisabled, isDi
                   }
                 </div>
               </div>
-              <button onClick={()=>{updateName()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">
+              <button onClick={()=>{handleUpdateName()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">
                 Lưu
               </button>
             </>

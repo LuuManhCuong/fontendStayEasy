@@ -13,7 +13,6 @@ import {
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
 import { counterSlice } from "../redux-tookit/reducer/counterSlice";
-import { Alert } from "../components/auth/Alert";
 
 function Home() {
   const dispatch = useDispatch();
@@ -52,7 +51,6 @@ function Home() {
 
       {!isLoading && dataHome.length === 0 && <h3>Không tìm thấy dữ liệu</h3>}
       <div className="fixed w-full bottom-0 z-50 bg-white">
-        <Alert />
         <Footer></Footer>
       </div>
     </>

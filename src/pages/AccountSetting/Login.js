@@ -24,7 +24,6 @@ export default function Login() {
   const [lastName, setLastName] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [errorLoginMessage, setErrorLoginMessage] = useState("");
 
   const [isLoginPasswordVisible, setIsLoginPasswordVisible] = useState(false);
@@ -38,10 +37,9 @@ export default function Login() {
   }
 
   //Set message
-  const setMessage = (loginError, signUpError, signUpSuccess) => {
+  const setMessage = (loginError, signUpError) => {
     setErrorLoginMessage(loginError);
     setErrorMessage(signUpError);
-    setSuccessMessage(signUpSuccess);
   };
 
   //Set message
@@ -63,7 +61,6 @@ export default function Login() {
     lastName : lastName,
     toggleClosePopup : null,
     setErrorMessage : setErrorMessage,
-    setSuccessMessage : setSuccessMessage,
     setErrorLoginMessage : setErrorLoginMessage,
     setMessage : setMessage,
     setisLogin : setisLogin,
@@ -130,17 +127,7 @@ export default function Login() {
               ""
             )}
 
-            {/* success message */}
-            {!successMessage == "" ? (
-              <div
-                class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mb-3 rounded relative"
-                role="alert"
-              >
-                <span class="block sm:inline">{successMessage}</span>
-              </div>
-            ) : (
-              ""
-            )}
+            
             <h1 className="text-4xl py-[1.7rem]">Chào mừng đến Stayeasy</h1>
 
             {/* form start */}
