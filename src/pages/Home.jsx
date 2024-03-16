@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
 import { counterSlice } from "../redux-tookit/reducer/counterSlice";
+import { Alert } from "../components/auth/Alert";
 
 function Home() {
   const dispatch = useDispatch();
@@ -20,7 +21,6 @@ function Home() {
 
   const { reloadLike } = useSelector(grouptSelector);
   useEffect(() => {
-    // console.log("reload: ", reloadLike);
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/property`)
@@ -30,8 +30,6 @@ function Home() {
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());
-
-        console.log(error);
       });
   }, [reloadLike]);
 
@@ -54,6 +52,7 @@ function Home() {
 
       {!isLoading && dataHome.length === 0 && <h3>Không tìm thấy dữ liệu</h3>}
       <div className="fixed w-full bottom-0 z-50 bg-white">
+        <Alert />
         <Footer></Footer>
       </div>
     </>

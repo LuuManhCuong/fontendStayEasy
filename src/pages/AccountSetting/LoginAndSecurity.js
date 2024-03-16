@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Footer from "../../components/footer/Footer";
 import CommonHeader from "../../components/header/CommonHeader";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { UpdatePassword } from "../../components/AccountSetting/UpdatePassword";
+import { UserContext } from "../../components/UserContext";
+import moment from "moment";
 
 export default function LoginAndSecurity({ title }) {
   var [currentActive, setCurrentActive] = useState(0);
@@ -58,6 +60,26 @@ export default function LoginAndSecurity({ title }) {
 }
 
 const Login = () => {
+  const userFetch = useContext(UserContext).user;
+  const [lastestUpdateDate, setLastestUpdateDate] = useState();
+
+  useEffect(()=>{
+      if(!userFetch){
+          return;
+      }else{
+          const startDate = moment(userFetch?.updateAt, 'YYYY-MM-DD');
+          const now = moment();
+  
+          const daysDiff = now.diff(startDate, 'days');
+          const hoursDiff = now.diff(startDate, 'hours');
+
+          if(hoursDiff>24){
+            setLastestUpdateDate(daysDiff + ' ngày');
+          }else{
+            setLastestUpdateDate(hoursDiff + ' giờ');
+          }
+      }
+  },[userFetch]);
 
   return (
     <>
@@ -65,7 +87,7 @@ const Login = () => {
         <div className="lg:w-[55%]">
           <h1 className="font-bold text-gray-600 mt-12 mb-12">Login</h1>
           {/* password */}
-          <UpdatePassword title="Mật khẩu" value="Cập nhật lần cuối 7 ngày trước" button="Thay đổi"/>
+          <UpdatePassword title="Mật khẩu" value={`Cập nhật lần cuối ${lastestUpdateDate} trước`} button="Thay đổi"/>
           <hr />
 
           <h1 className="font-bold text-gray-600 mt-12 mb-12">
