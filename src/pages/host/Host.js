@@ -97,7 +97,7 @@ export default function Host() {
         <div className='mt-[8.1rem] max-[769px]:mt-0 max-h-[calc(100vh-0)]'>
             <div className='flex'>
                 {/* right menu */}
-                <Card className="h-[calc(100vh-0)] w-full max-w-[24rem] py-4 px-2 shadow-xl shadow-blue-gray-900/5">
+                <Card className="h-[calc(100vh-0)] w-full max-w-[24rem] py-4 px-2">
                     <List>
                         {sideBar.map((e, i) => {
                             return(
@@ -171,18 +171,24 @@ export default function Host() {
                                 {request.map((e, i) => {
                                     return(
                                         <>
-                                        <button className='flex gap-3 py-2 px-4 w-full'>
+                                        <div className='flex justify-between items-center py-2 px-4 w-full'>
                                             {/* <img src={e.avatar} /> */}
-                                            <div class="relative inline-flex items-center justify-center w-16 h-16  overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
-                                                <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
-                                                    U
-                                                </span>
+                                            <div className='flex gap-3 py-2 w-full'>
+                                                <div class="relative inline-flex items-center justify-center w-16 h-16  overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
+                                                    <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
+                                                        U
+                                                    </span>
+                                                </div>
+                                                <div className='text-start'>
+                                                    <h4>{e.title}</h4>
+                                                    <p className='text-xl'><span className='font-medium'>{e.name}</span> {e.content}</p>
+                                                </div>
                                             </div>
-                                            <div className='text-start'>
-                                                <h4>{e.title}</h4>
-                                                <p className='text-xl'><span className='font-medium'>{e.name}</span> {e.content}</p>
+                                            <div className='flex gap-2'>
+                                                <button onClick="" className='hover:border hover:border-[#E31C5F] text-2xl rounded-lg p-2 w-[8rem]'>Xác nhận</button>
+                                                <button onClick="" className='border border-[#E31C5F] text-2xl rounded-lg p-2 w-[8rem]'>Từ chối</button>
                                             </div>
-                                        </button>
+                                        </div>
                                         <Divider variant="inset" />
                                         </>
                                     );

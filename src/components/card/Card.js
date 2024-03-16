@@ -175,6 +175,7 @@ function Card(props) {
             </div>
           )}
         </div>
+<<<<<<< HEAD
         <div
           className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
               ${isActive ? "active" : ""}`}
@@ -185,6 +186,11 @@ function Card(props) {
             className="text-4xl z-10 text-customColor transition-all ease-in duration-200"
             icon={icon({ name: "heart", family: "classic", style: "solid" })}
           />
+=======
+        <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl bg-transparent 
+              ${isActive ? "active" : ""}`} onClick={(e) => handleLike(e, props.item.propertyId)}>
+          <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
+>>>>>>> origin/namhh-refresh-token
         </div>
         <div className="p-2">
           <div className="flex justify-between items-center text-3xl mt-2 h-10">

@@ -79,20 +79,16 @@ function Header({ page }) {
   // suggest explore
   React.useEffect(() => {
     if (page === "explore") {
-      console.log(page);
       axios
         .get(
           `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
         )
         .then(function (response) {
           setSuggest(response.data);
-          // console.log("Data suggest: ", response.data);
         })
         .catch(function (error) {
-          console.log(error);
         });
     } else if (page === "home") {
-      console.log(page);
       axios
         .get(
           `http://localhost:8080/api/v1/stayeasy/property/search/suggest?address=${address}`
