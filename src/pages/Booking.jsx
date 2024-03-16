@@ -97,7 +97,7 @@ const Booking = () => {
         {
           checkIn,
           checkOut,
-          numGuest,
+          numOfGuest: numGuest,
           numberNight,
           currency,
           method,
@@ -105,7 +105,7 @@ const Booking = () => {
           description,
           propertyId: id,
           userId: user.id,
-          price: pricing.price,
+          price: pricing.total,
           total: pricing.total,
         }
       );

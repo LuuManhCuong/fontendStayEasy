@@ -35,6 +35,7 @@ import UpdateProperty from "./components/Property/UpdateProperty";
 import Layout from "./components/Property/Layout/Layout";
 import Host from "./pages/host/Host";
 import { ProtectedRoute } from "./redux-tookit/actions/ProtectedRoute";
+import Trip from "./pages/booking/Trip";
 
 function App() {
   // Sử dụng useSelector để truy cập các trạng thái từ Redux store
@@ -111,6 +112,9 @@ function App() {
             path="/host"
             element={<Host />}
           />
+
+          {/* Trip */}
+          <Route path="/trips" element={<Trip />} />
         </Route>
 
         {/* login */}

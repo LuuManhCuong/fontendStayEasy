@@ -13,7 +13,6 @@ import {
 import { useContext, useEffect, useState } from "react";
 
 import { UserContext } from "../components/UserContext";
-
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
 import React from "react";
@@ -34,10 +33,8 @@ import Rules from "../components/rules/Rules";
 
 function Detail() {
   const user = useContext(UserContext).user;
-
   const isAuthenticated = useContext(UserContext).isAuthenticated;
   const location = useLocation();
-
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
