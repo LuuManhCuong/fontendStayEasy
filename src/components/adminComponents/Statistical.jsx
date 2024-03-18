@@ -25,14 +25,6 @@ function Statistical() {
     label: "Cancel Bookings",
     data: dataCancelBooking,
   };
-  const amountPostThisMonth = {
-    label: "Posts This Month",
-    data: [6, 5, 0, 1, 5, 12, 4],
-  };
-  const amountPostLastMonth = {
-    label: "Posts Last Month",
-    data: [3, 6, 1, 10, 2, 6, 4],
-  };
 
   const [thisMonth, setThisMonth] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
