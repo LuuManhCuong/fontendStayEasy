@@ -169,7 +169,7 @@ function Header({ page }) {
           </NavLink>
 
           <NavLink
-            to="/host"
+            to="/host/property/statistic"
             className={(navData) =>
               navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
             }

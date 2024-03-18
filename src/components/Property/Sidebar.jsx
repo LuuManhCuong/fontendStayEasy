@@ -13,7 +13,7 @@ export default function Sidebar() {
     //   icon: <ChartBarIcon />,
     // },
     {
-      id: 2,
+      id: 1,
       name: "Xem tài sản",
       link: "/property/list",
       icon: <ClipboardIcon />,
@@ -21,7 +21,7 @@ export default function Sidebar() {
   ];
   return (
     <div>
-      <ul className="border">
+      <ul className="border-b-2">
         {title.map((index) => (
           <Link to={index.link}>
             <li
