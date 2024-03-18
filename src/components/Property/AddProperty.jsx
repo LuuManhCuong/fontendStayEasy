@@ -131,7 +131,7 @@ export default function AddProperty() {
         rulesId: "",
       },
     ],
-    utilitis: [
+    propertyUtilitis: [
       {
         utilitiesId: "",
       },
@@ -238,7 +238,7 @@ export default function AddProperty() {
           rulesId: id,
         })),
       ],
-      utilitis: [
+      propertyUtilitis: [
         ...selectUtils.map((id) => ({
           utilitiesId: id,
         })),

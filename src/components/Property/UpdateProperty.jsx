@@ -1,3 +1,4 @@
+
 /* eslint-disable array-callback-return */
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -48,7 +49,7 @@ export default function UpdateProperty() {
         rulesId: "",
       },
     ],
-    utilitis: [
+    propertyUtilitis: [
       {
         utilitiesId: "",
       },
@@ -68,7 +69,7 @@ export default function UpdateProperty() {
     serviceFee,
     categories,
     rulesList,
-    utilitis,
+    propertyUtilitis,
   } = property;
 
   const [ownerName, setOwnerName] = useState("");
@@ -130,8 +131,8 @@ export default function UpdateProperty() {
   const [selectUtils, setSelectUtils] = useState([]);
 
   useEffect(() => {
-    setSelectUtils([...utilitis.map((item) => item.utilitiesId)]);
-  }, [utilitis]);
+    setSelectUtils([...propertyUtilitis.map((item) => item.utilitiesId)]);
+  }, [propertyUtilitis]);
 
   const handleUtilsChange = (newUtils) => {
     setSelectUtils(newUtils);
@@ -188,13 +189,15 @@ export default function UpdateProperty() {
       ownerId: userId,
       thumbnail: urls[0],
       imagesList: [...urls.map((url) => ({ url }))],
-      categoryIds: [...selectedCategory.map((id) => id)],
+      categories: [...selectedCategory.map((id) => ({
+        categoryId: id
+      }))],
       rulesList: [
         ...selectRules.map((id) => ({
           rulesId: id,
         })),
       ],
-      utilitis: [
+      propertyUtilitis: [
         ...selectUtils.map((id) => ({
           utilitiesId: id,
         })),
@@ -571,3 +574,4 @@ export default function UpdateProperty() {
     </div>
   );
 }
+

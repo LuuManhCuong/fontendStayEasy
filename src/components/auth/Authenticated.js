@@ -4,11 +4,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
-<<<<<<< HEAD
 import { BookmarkIcon } from "@heroicons/react/24/solid";
-=======
 import { logout } from "../../redux-tookit/actions/authActions";
->>>>>>> e71123c5a4c989cd31d87e0bd2cef9c7f6bc91d7
 
 // Component show menu when authenticated
 export default function Authenticated() {
@@ -35,7 +32,6 @@ export default function Authenticated() {
           </Link>
         </Dropdown.Item>
         <Dropdown.Item>
-<<<<<<< HEAD
           <div className="flex items-center">
             <BookmarkIcon height={20} width={17.5}/>
             <Link to="/property/list">
@@ -57,7 +53,6 @@ export default function Authenticated() {
               <button className="text-2xl py-2 px-4">Tài khoản</button>
             </Link>
           </div>
-=======
           <Link className="w-full">
             <p className="text-2xl font-medium px-2 mt-2">Danh sách yêu thích</p>
           </Link>
@@ -66,7 +61,6 @@ export default function Authenticated() {
           <Link className="w-full">
             <p className="text-2xl font-medium px-2 mt-2">Thông báo</p>
           </Link>
->>>>>>> e71123c5a4c989cd31d87e0bd2cef9c7f6bc91d7
         </Dropdown.Item>
         <hr />
         <Dropdown.Item>

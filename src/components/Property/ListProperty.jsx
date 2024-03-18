@@ -30,7 +30,7 @@ export default function ListProperty() {
       );
 
       if (response.status === 200) {
-        setData(response.data);
+        setData(response.data.properties);
       }
     } catch (error) {
       console.error("da xay ra loi: ", error);
