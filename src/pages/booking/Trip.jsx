@@ -7,6 +7,7 @@ import axios from "axios";
 import { UserContext } from "../../components/UserContext";
 import TicketMenu from "./TicketMenu"
 import { now } from 'moment/moment';
+import { Alert } from "../../components/Alert/Alert";
 export default function Trip() {
     const [detailTrip, setDetailTrip] = useState(0);
     const [listBoking, setListBooking] = useState([]);
@@ -173,12 +174,16 @@ const TripDetail = ({ data, toggleClose }) => {
             .then(response => {
                 // Xử lý kết quả trả về nếu cần
                 console.log('Response:', response.data);
+                Alert(2000, 'Trả phòng trong ngày', 'Trả phòng thành công', 'succsess', 'OK');
 
             })
             .catch(error => {
                 // Xử lý lỗi nếu có
                 console.error('Error:', error);
-            });
+                Alert(2000, 'Trả phòng trong ngày', 'Chúng tôi đã ghi nhận thông tin của bạn và đang chờ xử lí', 'warning', 'OK');
+            }
+            );
+            window.location.reload();
     };
     const handleCancel = (data, status) => {
         setShowCancellationCard(status);
@@ -227,18 +232,15 @@ const TripDetail = ({ data, toggleClose }) => {
             if (response.data.message === 'Hủy booking thành công và đã hoàn tiển.') {
                 setShowCancellationCard(false);
                 setmessageReponse(response.data.message)
-                setTimeout(() => {
-                 setIsOpen(true);
-            console.log('show'); 
-                }, 5000);
-            
+                Alert(2000, 'Hủy đặt phòng', 'Hủy booking thành công và đã hoàn tiển', 'succsess', 'OK');
             }
             return response.data;
-            
         } catch (error) {
             // Xử lý lỗi
             console.error('Có lỗi xảy ra trong quá trình gửi dữ liệu:', error);
+            Alert(2000, 'Hủy đặt phòng', 'Có lỗi xảy ra trong quá trình gửi dữ liệu ', 'error', 'OK');
         }
+        window.location.reload();
     }
     
     const handleCheckboxChange = (event) => {
@@ -440,7 +442,9 @@ const TripDetail = ({ data, toggleClose }) => {
                                         </div>
 
                                         ) : data.comfirm === 'REJECTED' ? (
+                                            <a href={`/explore/detail/${data.idBooking}`}>
                                             <p className='bg-red-600 shadow-xl py-3 px-5 rounded-xl text-3xl font-medium'>ĐẶT LẠI</p>
+                                            </a>
                                         ) : data.comfirm === 'COMPLETED' ? (
                                             <p className='bg-green-600 shadow-xl py-3 px-5 rounded-xl text-3xl font-medium'>ĐÃ HOÀN THÀNH CHUYẾN ĐI</p>
                                         ) :

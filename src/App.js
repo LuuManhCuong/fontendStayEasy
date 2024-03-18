@@ -64,8 +64,6 @@ function App() {
           <Route path="/booking/:id" element={<Booking />} />
           {/* booking */}
           <Route path="/booking" element={<Booking />} />
-          <Route path="/account/bookings" element={<BookingPage />} />
-          <Route path="/account/bookings/:id" element={<BookingDetail />} />
           <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
           <Route path="/payment/paypal/cancel" element={<CancelPayment />} />
 
