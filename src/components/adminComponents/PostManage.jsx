@@ -6,6 +6,7 @@ import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import Calendar from "./Calendar";
+import PropertyStatistical from "./PropertyStatistical";
 
 export default function PostManage() {
   const [data, setData] = useState([]);
@@ -84,15 +85,17 @@ export default function PostManage() {
 
   return (
     <Row>
+      <PropertyStatistical propertyId={active}></PropertyStatistical>
       <Col xs={6}>
         <Calendar propertyId={active}></Calendar>
       </Col>
       <Col xs={6}>
-        <div className="mb-4 m-4 ">
-          <div className="flex justify-start border-2 border-black w-[30%] rounded-full p-2">
+        <h1>Danh sách phòng</h1>
+        <div className="py-10">
+          <div className="flex justify-start border-2 border-black w-full rounded-full p-2 bg-white">
             <input
               type="text"
-              className="search-text pl-4 rounded-lg w-[90%]"
+              className="search-text pl-4 rounded-lg w-full"
               value={keySearch}
               onChange={(e) => {
                 setKeySearch(e.target.value);
@@ -108,21 +111,20 @@ export default function PostManage() {
             ></SearchIcon>
           </div>
         </div>
-        <h2>Danh sách phòng</h2>
-        <table class="table table-hover m-8">
+        <table class="table table-hover p-10">
           <thead>
             <tr>
-              <th style={{ textAlign: "center" }} scope="col">
-                Property Info
+              <th style={{ paddingLeft: "4rem" }} scope="col">
+                Thông tin tài sản
               </th>
               <th style={{ textAlign: "center" }} scope="col">
-                Owner
+                Chủ sở hữu
               </th>
               <th style={{ textAlign: "center" }} scope="col">
-                Address
+                Địa chỉ
               </th>
               <th style={{ textAlign: "center" }} scope="col">
-                Price
+                Giá
               </th>
               <th style={{ textAlign: "center" }} scope="col">
                 Thao tác
@@ -136,8 +138,8 @@ export default function PostManage() {
                 className={active === index.propertyId ? "activePr" : ""}
                 onClick={() => setActive(index.propertyId)}
               >
-                <td scope="row" className="p-4 justify-center">
-                  <div className="flex flex-col items-center">
+                <td scope="row" className="p-4">
+                  <div className="flex flex-col pl-10 w-fit">
                     <div className="rounded-2xl overflow-hidden">
                       <img
                         src={index.thumbnail}
@@ -145,19 +147,25 @@ export default function PostManage() {
                         style={{ width: "100px", height: "100px" }}
                       />
                     </div>
-                    <p className="text-3xl font-semibold m-0">
+                    <p className="text-3xl font-semibold">
                       {index.propertyName}
                     </p>
                   </div>
                 </td>
                 <td scope="row" className="align-middle">
-                  <div className="flex justify-center items-center">
-                    <div className="w-[5rem] h-[5rem] rounded-full overflow-hidden">
-                      <img src={index.owner.avatar} alt="" />
+                  <div className="flex justify-center items-center w-full">
+                    <div className="w-[5rem] h-[5rem] rounded-full">
+                      {index.owner.avatar ? (
+                        <img src={index.owner.avatar} alt="" />
+                      ) : (
+                        <div class="relative inline-flex items-center justify-center w-[4rem] h-[4rem] overflow-hidden bg-black rounded-full dark:bg-gray-600">
+                          <span class="font-medium text-3xl text-white dark:text-gray-300">
+                            {index.owner.lastName.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                    <div className="ml-6">
-                      <p className="text-3xl font-semibold m-0">{`${index.owner.firstName} ${index.owner.lastName}`}</p>
-                    </div>
+                    <p className="text-3xl font-semibold mb-4">{`${index.owner.firstName} ${index.owner.lastName}`}</p>
                   </div>
                 </td>
                 <td className="align-middle">
@@ -175,7 +183,7 @@ export default function PostManage() {
                     {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
                     <button
                       onClick={() => handleDelete(index.propertyId)}
-                      className="bg-danger text-white p-2 rounded text-3xl "
+                      className="bg-danger text-white py-2 px-5 rounded text-3xl"
                     >
                       Xóa
                     </button>

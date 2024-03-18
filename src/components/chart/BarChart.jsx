@@ -36,7 +36,7 @@ const BarChart = ({ title, dataLabelOne, dataLabelTwo }) => {
   };
 
   return (
-    <div className="shadow-lg m-8 rounded-lg">
+    <div className="shadow-md p-8 rounded-lg bg-white">
       <h3>{title}</h3>
       <Bar data={data} />
     </div>

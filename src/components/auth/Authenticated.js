@@ -27,7 +27,7 @@ export default function Authenticated() {
           </Link>
         </Dropdown.Item>
         <Dropdown.Item>
-          <Link className="w-full">
+          <Link to="/trips" className="w-full">
             <p className="text-2xl font-medium px-2 mt-2">Chuyến đi</p>
           </Link>
         </Dropdown.Item>

@@ -42,8 +42,7 @@ export default function PersonalInfo({ title }) {
             {/* email */}
             <EmailUpdateForm
               title="Địa chỉ Email"
-              description="Sử dụng địa chỉ mà bạn luôn có quyền truy cập."
-              data={obscureEmail(user?.email)}
+              isDisable={isDisable}
             />
             <hr />
 
@@ -75,7 +74,7 @@ export default function PersonalInfo({ title }) {
             {/* address */}
             <AddressUpdateForm
               title="Địa chỉ"
-              data={user?.address ? user?.address : "Chưa được cung cấp"}
+              data={user?.address ? user : "Chưa được cung cấp"}
               isnull={user?.address ? false : true}
               setIsDisabled={setIsDisable}
               isDisable={isDisable}
