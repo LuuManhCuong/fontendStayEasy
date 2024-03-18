@@ -167,6 +167,19 @@ const TripDetail = ({ data, toggleClose }) => {
     const [refundAmount, setRefundAmount] = useState();
     const [messageReponse, setmessageReponse] = useState('');
     const [isOpen , setIsOpen] = useState(false);
+    const handCheckout = (id) => {
+        // Gọi phương thức POST của Axios
+        axios.post(`http://localhost:8080/api/v1/stayeasy/payment/performPayout/${id}`)
+            .then(response => {
+                // Xử lý kết quả trả về nếu cần
+                console.log('Response:', response.data);
+
+            })
+            .catch(error => {
+                // Xử lý lỗi nếu có
+                console.error('Error:', error);
+            });
+    };
     const handleCancel = (data, status) => {
         setShowCancellationCard(status);
         const checkDateCancel = differenceInCalendarDays(new Date(data.checkInDate), new Date());
@@ -432,7 +445,10 @@ const TripDetail = ({ data, toggleClose }) => {
                                             <p className='bg-green-600 shadow-xl py-3 px-5 rounded-xl text-3xl font-medium'>ĐÃ HOÀN THÀNH CHUYẾN ĐI</p>
                                         ) :
                                           data.comfirm === 'IN_PROGRESS'? (
+                                            <div className='flex flex-col gap-2 mb-4'>
                                                 <p className='bg-lime-400  shadow-xl py-3 px-5 rounded-xl text-3xl font-medium'>ĐANG DIỄN RA</p>
+                                                <button className='bg-zinc-950 text-white  shadow-xl py-3 px-5 rounded-xl text-3xl font-medium' onClick={() => handCheckout(data.idBooking)}>Trả Phòng</button>
+                                            </div>                  
                                             ): null} 
                                 </div>
                             </div>
