@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { counterSelector, keySearchSelector } from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
-import AuthModal from "../auth/Authenticate";
+import Authenticate from "../auth/Authenticate";
 import Authenticated from "../auth/Authenticated";
 import "./header.scss";
 import { dataHomeSlice } from "../../redux-tookit/reducer/dataHomeSlice";
@@ -79,20 +79,16 @@ function Header({ page }) {
   // suggest explore
   React.useEffect(() => {
     if (page === "explore") {
-      console.log(page);
       axios
         .get(
           `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
         )
         .then(function (response) {
           setSuggest(response.data);
-          // console.log("Data suggest: ", response.data);
         })
         .catch(function (error) {
-          console.log(error);
         });
     } else if (page === "home") {
-      console.log(page);
       axios
         .get(
           `http://localhost:8080/api/v1/stayeasy/property/search/suggest?address=${address}`
@@ -222,7 +218,7 @@ function Header({ page }) {
               {isAuthenticated ? (
                 <Authenticated />
               ) : (
-                <AuthModal />
+                <Authenticate />
               )}
             </Dropdown>
           </div>

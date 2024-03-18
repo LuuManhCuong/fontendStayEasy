@@ -30,6 +30,11 @@
 
 .calendar {
   zoom: 0.7;
+  .board {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 .listProperty {
   zoom: 0.8;
@@ -38,4 +43,8 @@
   td {
     background-color: #ccc !important;
   }
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+  zoom: 0.7;
 }

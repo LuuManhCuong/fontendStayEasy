@@ -7,12 +7,12 @@ import {
   Link,
   json,
   useNavigate,
-  Navigate
+  Navigate,
 } from "react-router-dom";
 
+import { useContext, useEffect, useState } from "react";
 
 import { UserContext } from "../components/UserContext";
-import { useEffect, useState , useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
 import React from "react";
@@ -32,12 +32,9 @@ import { differenceInCalendarDays, format } from "date-fns";
 import Rules from "../components/rules/Rules";
 
 function Detail() {
+  const user = useContext(UserContext).user;
   const isAuthenticated = useContext(UserContext).isAuthenticated;
   const location = useLocation();
-
-
-  const user = useContext(UserContext).user
-
   const { id } = useParams();
   const dispatch = useDispatch();
   const { dataDetail } = useSelector(dataDetailSelector);
@@ -237,26 +234,28 @@ function Detail() {
     return <div>Loading...</div>;
   }
   function handleSubmit() {
-    console.log("isAuthenticated: "+isAuthenticated);
+    console.log("isAuthenticated: " + isAuthenticated);
     const checkIn = format(new Date(checkin), "yyyy-MM-dd");
     const checkOut = format(new Date(checkout), "yyyy-MM-dd");
 
     if (isAuthenticated) {
       // Sử dụng backticks cho template literals
-      navigate(`/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`);
-  } else {
-    // Chưa xác thực, chuyển hướng đến trang đăng nhập và lưu trạng thái hiện tại
-    navigate("/login", { 
-        replace: true, 
-        state: { 
-            from: {
-                pathname: `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`,
-                search: ``
-            } 
-        } 
-    });
+      navigate(
+        `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`
+      );
+    } else {
+      // Chưa xác thực, chuyển hướng đến trang đăng nhập và lưu trạng thái hiện tại
+      navigate("/login", {
+        replace: true,
+        state: {
+          from: {
+            pathname: `/booking/${id}?checkin=${checkIn}&checkout=${checkOut}&numGuest=${totalGuests}`,
+            search: ``,
+          },
+        },
+      });
+    }
   }
-}
 
   function sendMessageHost() {
     if (message && user) {
@@ -270,7 +269,7 @@ function Detail() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `BEARER ${localStorage.getItem("access_token")}`
+          Authorization: `BEARER ${localStorage.getItem("access_token")}`,
         },
         body: JSON.stringify(data),
       })
@@ -305,7 +304,6 @@ function Detail() {
           key={id}
         >
           <Slider {...settings} className="w-[80%]">
-        
             {dataDetail.imagesList?.map((item, index) => (
               <div key={index} className=" h-[450px]">
                 <img
@@ -313,11 +311,9 @@ function Detail() {
                   src={item.url}
                   testindex={index}
                   alt=""
-                  onClick={() => onClickImage(item)
-                  }
+                  onClick={() => onClickImage(item)}
                 />
               </div>
-               
             ))}
           </Slider>
         </div>
@@ -603,7 +599,10 @@ function Detail() {
             </div>
           </div>
         )}
-        <CommentForm propertyId={id} ownerId={dataDetail.owner?.id}></CommentForm>
+        <CommentForm
+          propertyId={id}
+          ownerId={dataDetail.owner?.id}
+        ></CommentForm>
       </div>
     </>
   );
