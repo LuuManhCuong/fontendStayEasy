@@ -24,7 +24,6 @@ function Home() {
 
   const { reloadLike } = useSelector(grouptSelector);
   useEffect(() => {
-    // console.log("reload: ", reloadLike);
     dispatch(dataHomeSlice.actions.getDataHomeRequest());
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/property?page=0&size=${size}`)
@@ -36,8 +35,6 @@ function Home() {
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());
-
-        console.log(error);
       });
   }, [reloadLike,size]);
 

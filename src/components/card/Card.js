@@ -14,6 +14,7 @@ function Card(props) {
 
   const dispatch = useDispatch();
   const user = useContext(UserContext).user;
+
   const counter = useSelector(counterSelector);
   const { reloadLike } = useSelector(grouptSelector);
   const checkin = new Date();
@@ -70,7 +71,6 @@ function Card(props) {
     }
   };
 
-  
   const handleDetail = () => {
     const checkinString = checkin.toISOString().split("T")[0];
     const checkoutString = checkout.toISOString().split("T")[0];
@@ -175,16 +175,10 @@ function Card(props) {
             </div>
           )}
         </div>
-        <div
-          className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl 
-              ${isActive ? "active" : ""}`}
-          onClick={(e) => handleLike(e, props.item.propertyId)}
-        >
-          <FontAwesomeIcon
-            style={{ stroke: "white" }}
-            className="text-4xl z-10 text-customColor transition-all ease-in duration-200"
-            icon={icon({ name: "heart", family: "classic", style: "solid" })}
-          />
+        <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl bg-transparent 
+              ${isActive ? "active" : ""}`} onClick={(e) => handleLike(e, props.item.propertyId)}>
+          <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
+
         </div>
         <div className="p-2">
           <div className="flex justify-between items-center text-3xl mt-2 h-10">

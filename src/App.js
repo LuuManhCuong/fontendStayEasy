@@ -35,6 +35,7 @@ import UpdateProperty from "./components/Property/UpdateProperty";
 import Layout from "./components/Property/Layout/Layout";
 import Host from "./pages/host/Host";
 import { ProtectedRoute } from "./redux-tookit/actions/ProtectedRoute";
+import Trip from "./pages/booking/Trip";
 
 function App() {
   // Sử dụng useSelector để truy cập các trạng thái từ Redux store
@@ -57,16 +58,17 @@ function App() {
             <Route path="update/:propertyId" element={<UpdateProperty />} />
           </Route>
 
+
+        {/* account setting */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/booking/:id" element={<Booking />} />
           {/* booking */}
           <Route path="/booking" element={<Booking />} />
-          <Route path="/booking/:id" element={<Booking />} />
           <Route path="/account/bookings" element={<BookingPage />} />
           <Route path="/account/bookings/:id" element={<BookingDetail />} />
           <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
           <Route path="/payment/paypal/cancel" element={<CancelPayment />} />
 
-        {/* account setting */}
-        <Route element={<ProtectedRoute />}>
           <Route
             path="/admin-dashboard"
             element={<AdminDarhBoard></AdminDarhBoard>}
@@ -110,6 +112,9 @@ function App() {
             path="/host"
             element={<Host />}
           />
+
+          {/* Trip */}
+          <Route path="/trips" element={<Trip />} />
         </Route>
 
         {/* login */}

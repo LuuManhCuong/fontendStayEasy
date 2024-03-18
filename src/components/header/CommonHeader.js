@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 
 
-import AuthModal from "../auth/Authenticate";
+import Authenticate from "../auth/Authenticate";
 import Authenticated from "../auth/Authenticated";
 
 
@@ -79,7 +79,7 @@ export default function CommonHeader({ padding }) {
               {isAuthenticated ? (
                 <Authenticated/>
               ) : (
-                <AuthModal/>
+                <Authenticate/>
               )}
             </Dropdown>
           </div>
