@@ -19,7 +19,7 @@ export default function PostManage() {
       );
 
       if (response.status === 200) {
-        setData(response.data);
+        setData(response.data.properties);
         // console.log(response.data);
         setActive(response.data[0].propertyId);
       }

@@ -20,7 +20,7 @@ function Home() {
   const dispatch = useDispatch();
   const { dataHome, isLoading } = useSelector(dataHomeSelector);
   const [total, setTotal] = useState(0);
-  const [size, setSize] = useState(8);
+  const [size, setSize] = useState(1);
 
   const { reloadLike } = useSelector(grouptSelector);
   useEffect(() => {
@@ -29,9 +29,9 @@ function Home() {
       .get(`http://localhost:8080/api/v1/stayeasy/property?page=0&size=${size}`)
       .then(function (response) {
         console.log("response: ", response.data.properties);
-        dispatch(counterSlice.actions.totalRecord(response.data.properties.length));
-        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data.properties));
         setTotal(response.data.totalCount);
+        dispatch(counterSlice.actions.totalRecord(response.data.totalCount));
+        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data.properties));
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());
@@ -41,14 +41,15 @@ function Home() {
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [total, dataHome.length]);
 
   const handleScroll = () => {
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-
-    if (scrollTop + clientHeight >= scrollHeight && total > dataHome.length) {
-      // setPage((prev) => prev + 1);
-      setSize((prev) => prev + 8);
+    if (scrollTop + clientHeight >= scrollHeight / 2) {
+      if (dataHome.length < total) {
+        console.log("data.length: ", dataHome.length);
+        setSize((prev) => prev + 8);
+      }
     }
   };
 
