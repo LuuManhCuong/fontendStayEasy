@@ -187,7 +187,7 @@ const TripDetail = ({ data, toggleClose }) => {
         }
 
         const finalRefundAmount = data.total * refundPercentage;
-        setRefundAmount(finalRefundAmount); // Cập nhật số tiền hoàn trả
+        setRefundAmount(finalRefundAmount.toFixed(2)); // Cập nhật số tiền hoàn trả
     };
     const submitCancel = (data) => {
         const refundDTO = {
@@ -211,7 +211,7 @@ const TripDetail = ({ data, toggleClose }) => {
             const response = await axios.post(url, data);
             // Xử lý kết quả trả về
             console.log(response.data);
-            if (response.data.message === 'Hủy booking thành công') {
+            if (response.data.message === 'Hủy booking thành công và đã hoàn tiển.') {
                 setShowCancellationCard(false);
                 setmessageReponse(response.data.message)
                 setTimeout(() => {
