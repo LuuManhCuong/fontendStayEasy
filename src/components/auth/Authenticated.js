@@ -4,9 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
-
 import { BookmarkIcon } from "@heroicons/react/24/solid";
-
 import { logout } from "../../redux-tookit/actions/authActions";
 
 // Component show menu when authenticated
@@ -55,7 +53,6 @@ export default function Authenticated() {
               <button className="text-2xl py-2 px-4">Tài khoản</button>
             </Link>
           </div>
-
           <Link className="w-full">
             <p className="text-2xl font-medium px-2 mt-2">
               Danh sách yêu thích

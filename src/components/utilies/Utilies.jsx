@@ -13,8 +13,8 @@ export default function Utilies({ Utils, value }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    setCount(value.length)
-  }, [value])
+    setCount(value.length);
+  }, [value]);
 
   const handleFree = (index) => {
     Utils((prev) => {
@@ -46,9 +46,7 @@ export default function Utilies({ Utils, value }) {
         className="hover:cursor-pointer flex mt-3 items-center justify-center h-16 rounded-md p-2 px-4 ring-1 ring-gray-300 bg-white"
         onClick={handleOpen}
       >
-        {value.length > 0 ? (
-          `Đã chọn ${count}`
-        ) : ("--- Chọn ---")}
+        {value.length > 0 ? `Đã chọn ${count}` : "--- Chọn ---"}
       </div>
       <Modal
         open={open}

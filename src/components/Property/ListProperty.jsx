@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState, Fragment, useContext } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import {
   EyeIcon,
@@ -12,7 +12,6 @@ import {
 import { Listbox, Transition } from "@headlessui/react";
 import ToastMessage from "./ToastMessage";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
 
 export default function ListProperty() {
   const [data, setData] = useState([]);
@@ -22,8 +21,7 @@ export default function ListProperty() {
 
   // get data
 
-  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  const user = useContext(UserContext).user;
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   const fetchData = async () => {
     try {
@@ -32,7 +30,7 @@ export default function ListProperty() {
       );
 
       if (response.status === 200) {
-        setData(response.data);
+        setData(response.data.properties);
       }
     } catch (error) {
       console.error("da xay ra loi: ", error);
@@ -85,7 +83,7 @@ export default function ListProperty() {
           </div>
         </div>
 
-        {data.length > 0 ? (
+        {data?.length > 0 ? (
           <table class="w-full text-left text-gray-700 table-hover">
             <thead className="bg-gray-200">
               <tr>

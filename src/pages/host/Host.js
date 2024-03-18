@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import CommonHeader from "../../components/header/CommonHeader";
 import Footer from "../../components/footer/Footer";
-
-import { Link, useNavigate, Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 import { DateRangePicker } from "react-date-range";
 import { addDays } from "date-fns";
@@ -18,24 +17,15 @@ import {
 } from "@heroicons/react/24/solid";
 
 import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
 
 import Box from "@mui/material/Box";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
-import { UserContext } from "../../components/UserContext";
-import Room from "./Room";
-import { useDispatch } from "react-redux";
-import { logout } from "../../redux-tookit/actions/authActions";
 
 export default function Host() {
-  const navigate = useNavigate();
-  // method logout
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    dispatch(logout(navigate));
-  };
-  const user = useContext(UserContext).user;
-  const [listRoom, setListRoom] = useState([]);
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -43,24 +33,7 @@ export default function Host() {
       key: "selection",
     },
   ]);
-  useEffect(() => {
-    if (user) {
-      fetch(
-        `http://localhost:8080/api/v1/stayeasy/chatroom/get/all/room/user/${user?.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `BEARER ${localStorage.getItem("access_token")}`,
-          },
-        }
-      )
-        .then((data) => data.json())
-        .then((data) => {
-          console.log(data);
-          setListRoom(data);
-        });
-    }
-  }, [user]);
+
   const sideBar = [
     {
       title: "Trang chủ",
@@ -273,9 +246,6 @@ export default function Host() {
       <div className="mt-[8.1rem] max-[769px]:mt-0 bg-white max-h-[calc(100vh-0)] flex">
         {/* <div className='flex w-[100vw]'> */}
         {/* right menu */}
-
-        {/* <Card className="h-[calc(100vh-0)] w-full max-w-[24rem] py-4 px-2"> */}
-
         <Card className="h-[81vh] shadow-none fixed rounded-none max-w-[15vw] w-full py-4 px-2">
           <List>
             {sideBar.map((e, i) => {
@@ -288,11 +258,7 @@ export default function Host() {
                 </Link>
               );
             })}
-            <button
-              onClick={() => {
-                handleLogout();
-              }}
-            >
+            <button onClick="">
               <ListItem>
                 <ListItemPrefix>
                   <PowerIcon
@@ -316,11 +282,29 @@ export default function Host() {
             <h2 className="m-4">Tin nhắn</h2>
             {/* list inbox */}
             <div className="w-[100%] h-[79rem] overflow-scroll">
-              {listRoom.length > 0 ? (
-                listRoom.map((e) => <Room key={e.roomChatId} data={e}></Room>)
-              ) : (
-                <></>
-              )}
+              {inbox.map((e, i) => {
+                return (
+                  <>
+                    {/* sửa lại thành thẻ Link để xem chi tiết tin nhắn */}
+                    <button className="flex items-center gap-3 py-2 px-4 w-full">
+                      {/* <img src={e.avatar} /> */}
+                      <div class="relative inline-flex items-center justify-center w-[5rem] h-[3.7rem] overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
+                        <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
+                          U
+                        </span>
+                      </div>
+                      <div className="text-start">
+                        <h4>{e.title}</h4>
+                        <p className="text-xl">
+                          <span className="font-medium">{e.name}</span>{" "}
+                          {e.content}
+                        </p>
+                      </div>
+                    </button>
+                    <Divider variant="inset" />
+                  </>
+                );
+              })}
             </div>
           </Box>
         </div>
@@ -330,23 +314,3 @@ export default function Host() {
     </>
   );
 }
-// {listRoom.map((e, i) => {
-//     return(
-//         <>
-//         {/* sửa lại thành thẻ Link để xem chi tiết tin nhắn */}
-//         <button className='flex items-center gap-3 py-2 px-4 w-full'>
-//             {/* <img src={e.avatar} /> */}
-//             <div class="relative inline-flex items-center justify-center w-[5rem] h-[3.7rem] overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
-//                 <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
-//                     U
-//                 </span>
-//             </div>
-//             <div className='text-start'>
-//                 <h4>{e.title}</h4>
-//                 <p className='text-xl'><span className='font-medium'>{e.name}</span> {e.content}</p>
-//             </div>
-//         </button>
-//         <Divider variant="inset" />
-//         </>
-//     );
-// })}
