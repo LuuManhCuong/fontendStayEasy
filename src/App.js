@@ -1,8 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import React, { useContext } from "react";
 import Home from "./pages/Home";
@@ -42,22 +38,21 @@ function App() {
 
   return (
     <>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/experience" element={<Experience />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/search/result" element={<SearchResult />} />
-          <Route path="/explore/detail/:id" element={<Detail />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/experience" element={<Experience />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/search/result" element={<SearchResult />} />
+        <Route path="/explore/detail/:id" element={<Detail />} />
 
-          {/* property manager */}
-          <Route path="/host/property" element={<Host />}>
-            <Route path="statistic" element={<Statistic />} />
-            <Route path="list" element={<ListProperty />} />
-            <Route path="add" element={<AddProperty />} />
-            <Route path="update/:propertyId" element={<UpdateProperty />} />
-          </Route>
-          {/* <Route path="/property/list" com/> */}
-
+        {/* property manager */}
+        <Route path="/host/property" element={<Host />}>
+          <Route path="statistic" element={<Statistic />} />
+          <Route path="list" element={<ListProperty />} />
+          <Route path="add" element={<AddProperty />} />
+          <Route path="update/:propertyId" element={<UpdateProperty />} />
+        </Route>
+        {/* <Route path="/property/list" com/> */}
 
         {/* account setting */}
         <Route element={<ProtectedRoute />}>
@@ -108,10 +103,7 @@ function App() {
           />
 
           {/* host */}
-          <Route
-            path="/host"
-            element={<Host />}
-          />
+          <Route path="/host" element={<Host />} />
 
           {/* Trip */}
           <Route path="/trips" element={<Trip />} />
