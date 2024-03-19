@@ -29,7 +29,7 @@ const LineChart = ({ title, dataThisMonth, dataLastMonth }) => {
   };
 
   return (
-    <div className="shadow-md p-8 rounded-lg bg-white">
+    <div className="shadow-md p-8  bg-white">
       <h3>{title}</h3>
       <Line data={data} />
     </div>

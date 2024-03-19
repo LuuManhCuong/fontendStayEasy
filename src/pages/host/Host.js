@@ -282,23 +282,3 @@ export default function Host() {
         </>
     )
 }
-// {listRoom.map((e, i) => {
-//     return(
-//         <>
-//         {/* sửa lại thành thẻ Link để xem chi tiết tin nhắn */}
-//         <button className='flex items-center gap-3 py-2 px-4 w-full'>
-//             {/* <img src={e.avatar} /> */}
-//             <div class="relative inline-flex items-center justify-center w-[5rem] h-[3.7rem] overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
-//                 <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
-//                     U
-//                 </span>
-//             </div>
-//             <div className='text-start'>
-//                 <h4>{e.title}</h4>
-//                 <p className='text-xl'><span className='font-medium'>{e.name}</span> {e.content}</p>
-//             </div>
-//         </button>
-//         <Divider variant="inset" />
-//         </>
-//     );
-// })}

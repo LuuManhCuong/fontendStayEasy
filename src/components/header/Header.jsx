@@ -9,7 +9,10 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { counterSelector, keySearchSelector } from "../../redux-tookit/selector";
+import {
+  counterSelector,
+  keySearchSelector,
+} from "../../redux-tookit/selector";
 import { keySearchSlice } from "../../redux-tookit/reducer/keySearchSlice";
 import Authenticate from "../auth/Authenticate";
 import Authenticated from "../auth/Authenticated";
@@ -61,7 +64,6 @@ function Header({ page }) {
   const isAuthenticated = useContext(UserContext).isAuthenticated;
   const user = useContext(UserContext).user;
 
-
   React.useEffect(() => {
     setCheckout(new Date(checkin.getTime() + 86400000));
   }, [checkin]);
@@ -88,8 +90,7 @@ function Header({ page }) {
         .then(function (response) {
           setSuggest(response.data);
         })
-        .catch(function (error) {
-        });
+        .catch(function (error) {});
     } else if (page === "home") {
       axios
         .get(
@@ -211,7 +212,7 @@ function Header({ page }) {
           </NavLink>
 
           <NavLink
-            to="/host"
+            to="/host/property/statistic"
             className={(navData) =>
               navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
             }
@@ -228,10 +229,21 @@ function Header({ page }) {
                 ? "active hover:bg-gray-100 p-3 rounded-2xl text-[1.5rem]"
                 : "hover:bg-gray-100 p-3 rounded-full text-[1.5rem]"
             }
-          >Cho thuê chỗ ở qua Stayeasy
+          >
+            Cho thuê chỗ ở qua Stayeasy
           </NavLink>
-          <button className="hover:bg-gray-100 p-3 mt-1 rounded-[100%]" onClick={() => { }}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true" role="presentation" focusable="false" className="block h-7 w-7" >
+          <button
+            className="hover:bg-gray-100 p-3 mt-1 rounded-[100%]"
+            onClick={() => {}}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              aria-hidden="true"
+              role="presentation"
+              focusable="false"
+              className="block h-7 w-7"
+            >
               <path d="M8 .25a7.77 7.77 0 0 1 7.75 7.78 7.75 7.75 0 0 1-7.52 7.72h-.25A7.75 7.75 0 0 1 .25 8.24v-.25A7.75 7.75 0 0 1 8 .25zm1.95 8.5h-3.9c.15 2.9 1.17 5.34 1.88 5.5H8c.68 0 1.72-2.37 1.93-5.23zm4.26 0h-2.76c-.09 1.96-.53 3.78-1.18 5.08A6.26 6.26 0 0 0 14.17 9zm-9.67 0H1.8a6.26 6.26 0 0 0 3.94 5.08 12.59 12.59 0 0 1-1.16-4.7l-.03-.38zm1.2-6.58-.12.05a6.26 6.26 0 0 0-3.83 5.03h2.75c.09-1.83.48-3.54 1.06-4.81zm2.25-.42c-.7 0-1.78 2.51-1.94 5.5h3.9c-.15-2.9-1.18-5.34-1.89-5.5h-.07zm2.28.43.03.05a12.95 12.95 0 0 1 1.15 5.02h2.75a6.28 6.28 0 0 0-3.93-5.07z"></path>
             </svg>
           </button>
@@ -258,7 +270,11 @@ function Header({ page }) {
           {/* Menu */}
           <div className="flex mr-4">
             <Dropdown>
-              <DropdownToggle bsPrefix="false" className="bg-transparent border-white p-0" id="dropdown-basic" >
+              <DropdownToggle
+                bsPrefix="false"
+                className="bg-transparent border-white p-0"
+                id="dropdown-basic"
+              >
                 <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
                   <svg className="ml-3 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#000000" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
                   {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
@@ -271,17 +287,23 @@ function Header({ page }) {
                       </span>
                     </div>
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" className="block, h-[3.3rem] w-[3.3rem]">
-                      <path fill="gray" d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"></path>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 32 32"
+                      aria-hidden="true"
+                      role="presentation"
+                      focusable="false"
+                      className="block, h-[3.3rem] w-[3.3rem]"
+                    >
+                      <path
+                        fill="gray"
+                        d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z"
+                      ></path>
                     </svg>
                   )}
                 </div>
               </DropdownToggle>
-              {isAuthenticated ? (
-                <Authenticated />
-              ) : (
-                <Authenticate />
-              )}
+              {isAuthenticated ? <Authenticated /> : <Authenticate />}
             </Dropdown>
           </div>
         </div>
