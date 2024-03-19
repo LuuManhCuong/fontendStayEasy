@@ -235,7 +235,7 @@ export default function UpdateProperty() {
   // Alert
   useEffect(() => {
     if (status === 200) {
-      Alert(2000, "Tạo tài sản mới", "Tạo thành công", "success", "OK");
+      Alert(2000, "Cập nhật tài sản", "cập nhật thành công", "success", "OK");
 
       const timeoutId = setTimeout(() => {
         navigate("/host/property/list");
@@ -477,7 +477,7 @@ export default function UpdateProperty() {
               >
                 Hình ảnh
               </label>
-              <div className="mt-3 h-[12.5rem] flex flex-col items-center justify-center rounded-lg ring-inset ring-1 ring-gray-300 px-6 py-10">
+              <div className="mt-4 flex flex-col items-center justify-center rounded-lg ring-inset ring-1 ring-gray-300 px-6 py-14">
                 <div className="text-center">
                   <PhotoIcon
                     className="mx-auto h-12 w-12 text-gray-300"
@@ -490,7 +490,6 @@ export default function UpdateProperty() {
                     >
                       <span className="px-4">Chọn ảnh</span>
                       <input
-                        required
                         id="file-upload"
                         name="file-upload"
                         type="file"

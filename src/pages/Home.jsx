@@ -6,10 +6,7 @@ import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  dataHomeSelector,
-  grouptSelector,
-} from "../redux-tookit/selector";
+import { dataHomeSelector, grouptSelector } from "../redux-tookit/selector";
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
 import { counterSlice } from "../redux-tookit/reducer/counterSlice";

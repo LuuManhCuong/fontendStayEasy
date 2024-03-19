@@ -154,6 +154,7 @@ export default function AddProperty() {
   //  get full data
   useEffect(() => {
     const fullAddress = `${detailAddress}, ${wardName}, ${districtName}, ${provinceName}`;
+    console.log(fullAddress);
     setData((prevData) => ({
       ...prevData,
       owner: {
@@ -561,7 +562,7 @@ export default function AddProperty() {
                     type="number"
                     name="serviceFee"
                     id="serviceFee"
-                    className="block bg-white rounded-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
+                    className="block bg-white rounded-s-none mt-3 w-full rounded-md border-0 py-1.5 pl-5 pr-2.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-black sm:leading-6"
                   />
                 </div>
               </div>
@@ -575,7 +576,7 @@ export default function AddProperty() {
               >
                 Hình ảnh
               </label>
-              <div className="mt-4 flex flex-col items-center justify-center rounded-lg ring-inset ring-1 ring-gray-300 px-6 py-14">
+              <div className="mt-4 flex flex-col items-center justify-center rounded-lg ring-inset ring-1 ring-gray-300 px-6 py-10">
                 <div className="text-center">
                   <PhotoIcon
                     className="mx-auto h-12 w-12 text-gray-300"
