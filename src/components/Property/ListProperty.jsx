@@ -12,6 +12,7 @@ import {
 import { Listbox, Transition } from "@headlessui/react";
 import ToastMessage from "./ToastMessage";
 import { useNavigate } from "react-router-dom";
+import { DeleteAlert } from "../Alert/Alert";
 
 export default function ListProperty() {
   const [data, setData] = useState([]);
@@ -45,20 +46,21 @@ export default function ListProperty() {
   // handle delete property
   const handleDelete = async (propertyId) => {
     try {
-      const res = await axios.delete(
-        `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`
-      );
-      if (res.status === 200) {
-        setResStatus(res.status);
-        fetchData();
-      }
+      await DeleteAlert(async () => {
+        const res = await axios.delete(
+          `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`
+        );
+        if (res.status === 200) {
+          setResStatus(res.status);
+          fetchData();
+        }
+      });
     } catch (error) {
       console.error(error);
     }
   };
 
   const [status, setStatus] = useState(false);
-
 
   return (
     <>
@@ -73,18 +75,18 @@ export default function ListProperty() {
             <Link to="/host/property/add">
               <button
                 type="button"
-                className="bg-[#ff385c] h-16 flex items-center text-white py-2 px-3 rounded-lg"
+                className="bg-[#ff385c] h-full border rounded-lg text-[1.6em] flex items-center text-white py-2 px-3 rounded-lg"
               >
                 <span>Thêm</span>
                 <span>
-                  <PlusIcon className="w-7 ml-2" color="white" />
+                  <PlusIcon className="w-8 ml-2" color="white" />
                 </span>
               </button>
             </Link>
           </div>
         </div>
 
-        {data.length > 0 ? (
+        {data?.length > 0 ? (
           <table class="w-full text-left text-gray-700 table-hover">
             <thead className="bg-gray-200">
               <tr>
@@ -109,49 +111,47 @@ export default function ListProperty() {
               </tr>
             </thead>
             <tbody>
-              {data
-                .filter((item) => item.owner.id === user.id)
-                .map((index) => (
-                  <tr
-                    key={index.propertyId}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="pr-6 pl-2 py-4">
-                      <img
-                        className="w-40 h-20 object-cover rounded-lg"
-                        src={index.thumbnail}
-                        alt=""
-                      />
-                    </td>
-                    <td className="py-4">{index.propertyName}</td>
-                    <td className="px-6 py-4">{index.address}</td>
-                    <td className="py-4">$ {index.price}</td>
-                    <td className="px-6 py-4">
-                      {index.null === false ? "trống" : "đã thuê"}
-                    </td>
-                    <td className="">
-                      {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                      <button
-                        onClick={() => handleDelete(index.propertyId)}
-                        className="p-2"
-                      >
-                        <TrashIcon className="w-7" color="#ff385c" />
+              {data?.map((index) => (
+                <tr
+                  key={index.propertyId}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <td className="pr-6 pl-2 py-4">
+                    <img
+                      className="w-40 h-20 object-cover rounded-lg"
+                      src={index.thumbnail}
+                      alt=""
+                    />
+                  </td>
+                  <td className="py-4">{index.propertyName}</td>
+                  <td className="px-6 py-4">{index.address}</td>
+                  <td className="py-4">$ {index.price}</td>
+                  <td className="px-6 py-4">
+                    {index.null === false ? "trống" : "đã thuê"}
+                  </td>
+                  <td className="">
+                    {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
+                    <button
+                      onClick={() => handleDelete(index.propertyId)}
+                      className="p-2"
+                    >
+                      <TrashIcon className="w-7" color="#ff385c" />
+                    </button>
+                    {/* </Link> */}
+                    <Link to={`/host/property/update/${index.propertyId}`}>
+                      <button className="mx-2 p-2">
+                        <PencilSquareIcon color="#eab308" className="w-7" />
                       </button>
-                      {/* </Link> */}
-                      <Link to={`/host/property/update/${index.propertyId}`}>
-                        <button className="mx-2 p-2">
-                          <PencilSquareIcon color="#eab308" className="w-7" />
-                        </button>
-                      </Link>
+                    </Link>
 
-                      <Link to={`/explore/detail/${index.propertyId}`}>
-                        <button className="p-2">
-                          <EyeIcon className="w-7" color="gray" />
-                        </button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                    <Link to={`/explore/detail/${index.propertyId}`}>
+                      <button className="p-2">
+                        <EyeIcon className="w-7" color="gray" />
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         ) : (

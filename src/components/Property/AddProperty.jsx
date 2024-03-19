@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import * as ProvinceService from "../../Services/ProvinceService";
@@ -7,37 +7,31 @@ import SelectAddress from "./SelectAddress";
 import Utilies from "../utilies/Utilies";
 import Category from "../category/Category";
 import axios from "axios";
-import { counterSelector } from "../../redux-tookit/selector";
-import { useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import ToastMessage from "./ToastMessage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../Services/firebaseService";
 import Rule from "./Rule";
+import { UserContext } from "../UserContext";
+import { Alert } from "../Alert/Alert";
 
 export default function AddProperty() {
   const navigate = useNavigate();
-  // get user
-  const counter = useSelector(counterSelector);
 
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  const [userName, setUserName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // GET USER
+  const isAuthenticated = useContext(UserContext).isAuthenticated;
+  const user = useContext(UserContext).user;
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-
     if (user) {
       setUserId(user.id);
     }
+  }, [user]);
 
-    if (user) {
-      setUserName(`${user.lastName} ${user.firstName}`);
-    }
-  }, []);
-
-  // State
   // province - district - ward
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -53,30 +47,6 @@ export default function AddProperty() {
   const ArrayProVince = Object.values(provinces);
   const ArrayDistrict = Object.values(districts);
   const ArrayWard = Object.values(wards);
-
-  const [detailAddress, setDetailAddress] = useState();
-
-  const [images, setImages] = useState([]);
-  const [urls, setUrls] = useState([]);
-
-  // handle remove url
-  const handleRemoveImage = (index) => {
-    const newUrls1 = [...urls];
-    // remove image at index
-    newUrls1.splice(index, 1);
-
-    setUrls(newUrls1);
-  };
-
-  const handleChange = (e) => {
-    for (let i = 0; i < e.target.files.length; i++) {
-      const newImage = e.target.files[i];
-      newImage["id"] = Math.random();
-      setImages((prevState) => [...prevState, newImage]);
-
-      setUrls((prev) => [...prev, URL.createObjectURL(newImage)]);
-    }
-  };
 
   // get provinceName - districtName - wardName
   useEffect(() => {
@@ -95,6 +65,49 @@ export default function AddProperty() {
       setWardName(selectWard.ward_name);
     }
   }, [province, provinces, districts, district, wards, ward]);
+
+  // detail address
+  const [detailAddress, setDetailAddress] = useState();
+
+  // image
+  const [images, setImages] = useState([]);
+  const [urls, setUrls] = useState([]);
+
+  // handle remove url
+  const handleRemoveImage = (index) => {
+    const newUrls1 = [...urls];
+    // remove image at index
+    newUrls1.splice(index, 1);
+
+    setUrls(newUrls1);
+  };
+
+  // handle change image
+  const handleChange = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      const newImage = e.target.files[i];
+      newImage["id"] = Math.random();
+      setImages((prevState) => [...prevState, newImage]);
+
+      setUrls((prev) => [...prev, URL.createObjectURL(newImage)]);
+    }
+  };
+
+  // category
+  const [selectedCategory, setselectedCategory] = useState([]);
+
+  const handleCategories = (newCategory) => {
+    setselectedCategory(newCategory);
+  };
+  // Utilities - get all util id
+  const [selectUtils, setSelectUtils] = useState([]);
+
+  const handleUtilsChange = (newUtils) => {
+    setSelectUtils(newUtils);
+  };
+
+  // rules
+  const [selectRules, setSelectRules] = useState([]);
 
   // property data body
   const [data, setData] = useState({
@@ -138,14 +151,29 @@ export default function AddProperty() {
     ],
   });
 
-  //  get full address
+  //  get full data
   useEffect(() => {
     const fullAddress = `${detailAddress}, ${wardName}, ${districtName}, ${provinceName}`;
     setData((prevData) => ({
       ...prevData,
+      owner: {
+        id: userId,
+      },
       address: fullAddress,
+      categories: selectedCategory.map((id) => ({ categoryId: id })),
+      propertyUtilitis: selectUtils.map((id) => ({ utilitiesId: id })),
+      rulesList: selectRules.map((id) => ({ rulesId: id })),
     }));
-  }, [provinceName, districtName, wardName, detailAddress]);
+  }, [
+    provinceName,
+    districtName,
+    wardName,
+    detailAddress,
+    selectedCategory,
+    selectRules,
+    selectUtils,
+    userId,
+  ]);
 
   // input handle change
   const change = (e) => {
@@ -155,6 +183,7 @@ export default function AddProperty() {
       [name]: value,
     });
   };
+
   // get province
   useEffect(() => {
     const resultProvince = async () => {
@@ -211,38 +240,15 @@ export default function AddProperty() {
     }
   };
 
+  // data save success
   const [dataSave, setDataSave] = useState(null);
 
   // save property
-  const saveProperty = async (
-    listImage,
-    userId,
-    selectedCategory,
-    selectRules,
-    selectUtils
-  ) => {
+  const saveProperty = async (listImage) => {
     const dataThum = {
       ...data,
-      owner: {
-        id: userId,
-      },
       thumbnail: listImage[0],
       imagesList: [...listImage.map((url) => ({ url }))],
-      categories: [
-        ...selectedCategory.map((id) => ({
-          categoryId: id,
-        })),
-      ],
-      rulesList: [
-        ...selectRules.map((id) => ({
-          rulesId: id,
-        })),
-      ],
-      propertyUtilitis: [
-        ...selectUtils.map((id) => ({
-          utilitiesId: id,
-        })),
-      ],
     };
 
     try {
@@ -252,7 +258,6 @@ export default function AddProperty() {
       );
 
       if (response.status === 200) {
-        // alert("add successfully!");
         setDataSave(response.data);
       }
     } catch (error) {
@@ -261,53 +266,15 @@ export default function AddProperty() {
   };
   // end save property
 
-  // category
-  const [selectedCategory, setselectedCategory] = useState([]);
-
-  const handleCategories = (newCategory) => {
-    setselectedCategory(newCategory);
-  };
-  // Utilities - get all util id
-  const [selectUtils, setSelectUtils] = useState([]);
-
-  const handleUtilsChange = (newUtils) => {
-    setSelectUtils(newUtils);
-  };
-
-  // rules
-  const [selectRules, setSelectRules] = useState([]);
-
-  const [isLoading, setIsLoading] = useState(false);
-
   // submit
   const uploadAndSave = async (e) => {
     e.preventDefault();
-
-    if (
-      !userName ||
-      !data ||
-      !province ||
-      !district ||
-      !ward ||
-      !detailAddress ||
-      !selectedCategory.length ||
-      images.length === 0
-    ) {
-      alert("Vui lòng điền đầy đủ thông tin vào các trường.");
-      return;
-    }
 
     setIsLoading(true);
 
     try {
       const listImage = await uploadMultipleFiles(images);
-      await saveProperty(
-        listImage,
-        userId,
-        selectedCategory,
-        selectRules,
-        selectUtils
-      );
+      await saveProperty(listImage);
     } catch (error) {
       alert("Đã xãy ra lỗi.");
     } finally {
@@ -317,9 +284,11 @@ export default function AddProperty() {
 
   useEffect(() => {
     if (dataSave) {
+      Alert(2000, "Tạo tài sản mới", "Tạo thành công", "success", "OK");
+
       const timeoutId = setTimeout(() => {
         navigate("/host/property/list");
-      }, 1000);
+      }, 2500);
 
       // Cleanup effect để tránh lỗi memory leak
       return () => clearTimeout(timeoutId);
@@ -328,26 +297,18 @@ export default function AddProperty() {
 
   if (isLoading) {
     return (
-      <div className="mx-4 my-4">
+      <div className="mx-4 my-4 flex flex-col items-center justify-center">
         <p>Đang tải...</p>
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "30%" }}>
           <LinearProgress />
         </Box>
       </div>
     );
   }
 
-  if (dataSave) {
-    return (
-      <div className="flex justify-center">
-        <ToastMessage />
-      </div>
-    );
-  }
-
   return (
     <div className="mx-4 mt-3 mb-4">
-      <form>
+      <form onSubmit={uploadAndSave}>
         <div>
           <div className="font-medium mt-8 flex items-center text-gray-900 text-[2rem]">
             <span>TẠO TÀI SẢN MỚI</span>
@@ -607,14 +568,14 @@ export default function AddProperty() {
             </div>
 
             {/* property image */}
-            <div className="col-span-2 h-60">
+            <div className="col-span-2">
               <label
                 htmlFor="cover-photo"
                 className="block font-medium leading-6 text-gray-900"
               >
                 Hình ảnh
               </label>
-              <div className="mt-3 h-[12.5rem] flex flex-col items-center justify-center rounded-lg ring-inset ring-1 ring-gray-300 px-6 py-10">
+              <div className="mt-4 flex flex-col items-center justify-center rounded-lg ring-inset ring-1 ring-gray-300 px-6 py-14">
                 <div className="text-center">
                   <PhotoIcon
                     className="mx-auto h-12 w-12 text-gray-300"
@@ -623,9 +584,9 @@ export default function AddProperty() {
                   <div className="my-4 flex flex-col items-center leading-6 text-gray-600">
                     <label
                       htmlFor="file-upload"
-                      className="block items-center flex relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500 h-10 outline-2 outline"
+                      className="block items-center flex relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500 outline-2 outline text-[1.6em]"
                     >
-                      <span className="px-4">Chọn ảnh</span>
+                      <span className="px-4 py-4">Chọn ảnh</span>
                       <input
                         required
                         id="file-upload"
@@ -645,7 +606,7 @@ export default function AddProperty() {
             </div>
 
             {/* image preview  */}
-            {urls.map((url, index) => (
+            {urls?.map((url, index) => (
               <div key={index} className="relative sm:col-span-2">
                 <button
                   onClick={() => handleRemoveImage(index)}
@@ -660,19 +621,19 @@ export default function AddProperty() {
           <hr />
         </div>
 
-        <div className="flex items-center justify-end gap-x-4">
+        <div className="flex items-center justify-end gap-x-4 text-[1.6em]">
           <Link to="/property/list">
             <button
               type="submit"
-              className="block rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-[#ff385c] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
+              className=" rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-[#ff385c] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
             >
               Hủy
             </button>
           </Link>
           <button
-            onClick={uploadAndSave}
+            // onClick={uploadAndSave}
             type="submit"
-            className="block bg-indigo-600 text-white rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-indigo-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
+            className=" bg-indigo-600 text-white rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-indigo-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
           >
             Lưu
           </button>

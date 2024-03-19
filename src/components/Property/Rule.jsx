@@ -12,7 +12,6 @@ export default function Rule({ Rules, value }) {
     setCount(value.length);
   }, [value]);
 
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -44,7 +43,7 @@ export default function Rule({ Rules, value }) {
         className="hover:cursor-pointer flex mt-3 items-center justify-center h-16 rounded-md p-2 px-4 ring-1 ring-gray-300 bg-white"
         onClick={handleOpen}
       >
-        {value.length > 0 ? (`Đã chọn ${count}`) : ("--- Chọn ---")}
+        {value?.length > 0 ? `Đã chọn ${count}` : "--- Chọn ---"}
       </div>
       <Modal
         open={open}
@@ -54,30 +53,27 @@ export default function Rule({ Rules, value }) {
         className="flex justify-center items-center"
       >
         <Box className="rounded-lg bg-white absolute w-[40%] p-4">
-          <div className="flex itemsl-center justify-between">
+          <div className="flex items-center justify-between text-[1.6em] mb-2">
             <div className="font-medium">Nội quy thuê tài sản</div>
 
-            <div className="mb-3 flex justify-end" onClick={handleClose}>
-              <button className="border-2 border border-red-800 rounded-lg">
-                <XMarkIcon className="w-8" color="#FF385C" />
+            <div className=" flex justify-end" onClick={handleClose}>
+              <button className="border-2 border border-red-800 rounded-lg p-2">
+                <XMarkIcon className="w-14" color="#FF385C" />
               </button>
             </div>
           </div>
 
-          <div
-            className="border-y py-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4"
-            variant="h5"
-          >
-            {data.map((index) => (
+          <div className="border-y py-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4 text-[2em]">
+            {data?.map((index) => (
               <div
                 key={index.rulesId}
                 onClick={() => handleRules(index)}
                 className={`${
-                  value.includes(index.rulesId) ? "bg-danger text-white" : ""
+                  value?.includes(index.rulesId) ? "bg-[#FF385C] text-white" : ""
                 } hover:cursor-pointer border flex items-center gap-3 p-3 rounded-lg`}
               >
                 <span>
-                  <XMarkIcon className="w-8" />
+                  <XMarkIcon className="w-14" />
                 </span>
                 <span>{index.rulesName}</span>
               </div>
@@ -87,7 +83,7 @@ export default function Rule({ Rules, value }) {
           <div className="mt-3 flex justify-end">
             <button
               onClick={handleClose}
-              className="bg-indigo-600 text-white py-2 px-3 font-medium rounded-lg"
+              className="bg-indigo-600 text-[2em] text-white py-2 px-3 font-medium rounded-lg"
             >
               Lưu
             </button>

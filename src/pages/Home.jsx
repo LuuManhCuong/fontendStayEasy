@@ -25,7 +25,7 @@ function Home() {
       .get(`http://localhost:8080/api/v1/stayeasy/property`)
       .then(function (response) {
         dispatch(counterSlice.actions.totalRecord(response.data.length));
-        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
+        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data.properties));
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());

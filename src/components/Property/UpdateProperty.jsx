@@ -1,12 +1,7 @@
-
 /* eslint-disable array-callback-return */
 import React, { useEffect } from "react";
 import { useState } from "react";
-import {
-  PhotoIcon,
-  XMarkIcon,
-  ChevronUpDownIcon,
-} from "@heroicons/react/24/solid";
+import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import Utilies from "../utilies/Utilies";
 import Category from "../category/Category";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -17,11 +12,16 @@ import { useSelector } from "react-redux";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import ToastMessage from "./ToastMessage";
 import Rule from "./Rule";
+import { Alert } from "../Alert/Alert";
 
 export default function UpdateProperty() {
   const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [status, setStatus] = useState();
+
   const { propertyId } = useParams();
 
   const [property, setProperty] = useState({
@@ -72,22 +72,9 @@ export default function UpdateProperty() {
     propertyUtilitis,
   } = property;
 
-  const [ownerName, setOwnerName] = useState("");
-  useEffect(() => {
-    setOwnerName(`${owner.lastName} ${owner.firstName}`);
-  }, [owner]);
-
   // get user
-  const counter = useSelector(counterSelector);
 
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-
-  const [userId, setUserId] = useState(user.id);
-
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, [counter]);
-
+  // image
   const [urls, setUrls] = useState([]);
   const [images, setImages] = useState([]);
 
@@ -105,6 +92,7 @@ export default function UpdateProperty() {
     setUrls(newUrls1);
   };
 
+  // handle change image
   const handleChange = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
       const newImage = e.target.files[i];
@@ -124,8 +112,8 @@ export default function UpdateProperty() {
   };
 
   useEffect(() => {
-    setselectedCategory([...categories.map((item) => item.categoryId)])
-  }, [categories])
+    setselectedCategory([...categories.map((item) => item.categoryId)]);
+  }, [categories]);
 
   // Utilities - get all util id
   const [selectUtils, setSelectUtils] = useState([]);
@@ -174,24 +162,22 @@ export default function UpdateProperty() {
     }
   };
 
-  const [status, setStatus] = useState();
-
   // save property
   const saveProperty = async (
     urls,
-    userId,
     selectedCategory,
     selectRules,
     selectUtils
   ) => {
     const dataThum = {
       ...property,
-      ownerId: userId,
       thumbnail: urls[0],
       imagesList: [...urls.map((url) => ({ url }))],
-      categories: [...selectedCategory.map((id) => ({
-        categoryId: id
-      }))],
+      categories: [
+        ...selectedCategory.map((id) => ({
+          categoryId: id,
+        })),
+      ],
       rulesList: [
         ...selectRules.map((id) => ({
           rulesId: id,
@@ -211,7 +197,6 @@ export default function UpdateProperty() {
 
       if (response.status === 200) {
         setStatus(response.status);
-        // console.log("data update: ", response.data);
       }
     } catch (error) {
       console.log("error!", error);
@@ -219,9 +204,6 @@ export default function UpdateProperty() {
   };
   // end save property
 
-  
-
-  const [isLoading, setIsLoading] = useState(false);
   // submit
   const uploadAndSave = async (e) => {
     e.preventDefault();
@@ -230,15 +212,9 @@ export default function UpdateProperty() {
 
     try {
       await uploadMultipleFiles(images);
-      await saveProperty(
-        urls,
-        userId,
-        selectedCategory,
-        selectRules,
-        selectUtils
-      );
+      await saveProperty(urls, selectedCategory, selectRules, selectUtils);
     } catch (error) {
-      alert("Đã xãy ra lỗi.");
+      Alert(2000, "Lỗi!", "Cập nhật thất bại!", "error", "OK");
     } finally {
       setIsLoading(false);
     }
@@ -256,41 +232,35 @@ export default function UpdateProperty() {
     loadData();
   }, []);
 
-  // /////
-
+  // Alert
   useEffect(() => {
     if (status === 200) {
+      Alert(2000, "Tạo tài sản mới", "Tạo thành công", "success", "OK");
+
       const timeoutId = setTimeout(() => {
         navigate("/host/property/list");
-      }, 1000);
+      }, 2500);
 
       // Cleanup effect để tránh lỗi memory leak
       return () => clearTimeout(timeoutId);
     }
   }, [status, navigate]);
 
+  // loading
   if (isLoading) {
     return (
-      <div className="mx-4 my-4">
+      <div className="mx-4 my-4 flex flex-col justify-center items-center">
         <p>Đang tải...</p>
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "30%" }}>
           <LinearProgress />
         </Box>
       </div>
     );
   }
 
-  if (status === 200) {
-    return (
-      <div className="flex justify-center">
-        <ToastMessage />
-      </div>
-    );
-  }
-
   return (
     <div className="mx-4 mt-3 mb-4">
-      <form>
+      <form onSubmit={uploadAndSave}>
         <div>
           <div className="font-medium mt-8 flex items-center text-gray-900 text-[2rem]">
             <span>Cập nhật tài sản</span>
@@ -538,7 +508,7 @@ export default function UpdateProperty() {
             </div>
 
             {/* image preview  */}
-            {urls.map((url, index) => (
+            {urls?.map((url, index) => (
               <div key={index} className="relative sm:col-span-2">
                 <button
                   onClick={() => handleRemoveImage(index)}
@@ -563,7 +533,6 @@ export default function UpdateProperty() {
             </button>
           </Link>
           <button
-            onClick={uploadAndSave}
             type="submit"
             className="block bg-indigo-600 text-white rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-indigo-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
           >
@@ -574,4 +543,3 @@ export default function UpdateProperty() {
     </div>
   );
 }
-
