@@ -1,28 +1,24 @@
 import React from "react";
-import Sidebar from "../Sidebar";
-import Header from "../../header/Header";
 import Footer from "../../footer/Footer";
 import { Outlet } from "react-router-dom";
-import "../Property.css"
+import "../Property.css";
+import CommonHeader from "../../header/CommonHeader";
 
 export default function Layout() {
   return (
-    <div>
+    <div className="flex flex-col items-center">
+      <CommonHeader />
 
-        <Header/>
+      <div style={{marginTop: "8rem", minHeight: "81vh"}}>
+        {/* <div className="col-3 col-md-2 fixed">
+          <Sidebar />
+        </div> */}
 
-        <div className="layout row g-0">
-          <div className="col-6 col-md-2 border">
-            <Sidebar />
-          </div>
-    
-          <div className="col-6 col-md-10 border">
-            <Outlet/>
-          </div>
+        <div className="w-full">
+          <Outlet />
         </div>
-
-        <Footer/>
-
+      </div>
+      <div className="w-full fixed bg-white" style={{bottom: "0"}}><Footer/></div>
     </div>
   );
 }

@@ -306,19 +306,23 @@ function Detail() {
           className="w-full h-[500px] flex justify-center mb-4 slider_detail"
           key={id}
         >
-          <Slider {...settings} className="w-[80%]">
-            {dataDetail.imagesList?.map((item, index) => (
-              <div key={index} className=" h-[450px]">
-                <img
-                  style={styleImg}
-                  src={item.url}
-                  testindex={index}
-                  alt=""
-                  onClick={() => onClickImage(item)}
-                />
-              </div>
-            ))}
-          </Slider>
+          {dataDetail.imagesList?.length > 1 ? (
+            <Slider {...settings} className="w-[80%]">
+              {dataDetail.imagesList?.map((item, index) => (
+                <div key={index} className=" h-[450px]">
+                  <img
+                    style={styleImg}
+                    src={item.url}
+                    testindex={index}
+                    alt=""
+                    onClick={() => onClickImage(item)}
+                  />
+                </div>
+              ))}
+            </Slider>
+          ) : (
+            <img src={dataDetail.imagesList?.[0].url} alt="" />
+          )}
         </div>
         <div className="w-full flex justify-between ml-24 mr-24 box-border">
           {/* left */}

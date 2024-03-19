@@ -22,7 +22,7 @@ export default function PostManage() {
       if (response.status === 200) {
         setData(response.data.properties);
         // console.log(response.data);
-        setActive(response.data[0].propertyId);
+        setActive(response?.data.properties[0]?.propertyId);
       }
     } catch (error) {
       console.error("da xay ra loi: ", error);

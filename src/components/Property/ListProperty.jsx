@@ -1,11 +1,29 @@
 import axios from "axios";
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { Link } from "react-router-dom";
+import {
+  EyeIcon,
+  TrashIcon,
+  PencilSquareIcon,
+  PlusIcon,
+  CheckIcon,
+  ChevronUpDownIcon,
+} from "@heroicons/react/24/solid";
+import { Listbox, Transition } from "@headlessui/react";
+import ToastMessage from "./ToastMessage";
+import { useNavigate } from "react-router-dom";
+import { DeleteAlert } from "../Alert/Alert";
 
 export default function ListProperty() {
   const [data, setData] = useState([]);
+  const [resStatus, setResStatus] = useState();
+
+  const navigate = useNavigate();
+
+  // get data
+
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -22,91 +40,225 @@ export default function ListProperty() {
 
   // get data
   useEffect(() => {
-    
-
     fetchData();
   }, []);
 
   // handle delete property
-  const handleDelete = (propertyId) => {
-    // Show a confirmation dialog
-    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa không?");
-
-    // If the user confirms, proceed with the deletion
-    if (isConfirmed) {
-      fetch(
-        `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-        .then((res) => {
-          if (!res.ok) {
-            alert(`Xóa không thành công: ${propertyId}`);
-            throw new Error(`Xóa không thành công: ${res.status}`);
-          }
-
-          // Update the state with the new property list
+  const handleDelete = async (propertyId) => {
+    try {
+      await DeleteAlert(async () => {
+        const res = await axios.delete(
+          `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`
+        );
+        if (res.status === 200) {
+          setResStatus(res.status);
           fetchData();
-          // alert(`Xóa thành công: ${propertyId}`);
-        })
-        .catch((e) => console.error("Lỗi khi xóa: ", e));
-    } else {
-      // If the user cancels, show a message
-      alert(`Đã hủy xóa: ${propertyId}`);
+        }
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  return (
-    <div className="mx-4">
-      <div className="d-flex justify-content-between mb-4">
-        <h2>Danh sách phòng</h2>
-        <Link to="/property/add">
-          <button type="button" className="bg-success text-white p-2 rounded">
-            Thêm phòng
-          </button>
-        </Link>
-      </div>
+  const [status, setStatus] = useState(false);
 
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Property Id</th>
-            <th scope="col">Property name</th>
-            <th scope="col">Address</th>
-            <th scope="col">Price</th>
-            <th scope="col">Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((index) => (
-            <tr key={index.propertyId}>
-              <th scope="row">{index.propertyId}</th>
-              <td>{index.propertyName}</td>
-              <td>{index.address}</td>
-              <td>{index.price}</td>
-              <td>
-                {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                <button
-                  onClick={() => handleDelete(index.propertyId)}
-                  className="bg-danger text-white me-3 p-2 rounded"
+  return (
+    <>
+      <div className="mx-4 my-4">
+        <div className="flex mb-4 justify-content-between">
+          <h2>Danh sách tài sản</h2>
+          <div className="flex">
+            <div className="me-4">
+              <Status status={status} setStatus={setStatus} />
+            </div>
+
+            <Link to="/host/property/add">
+              <button
+                type="button"
+                className="bg-[#ff385c] h-full border rounded-lg text-[1.6em] flex items-center text-white py-2 px-3 rounded-lg"
+              >
+                <span>Thêm</span>
+                <span>
+                  <PlusIcon className="w-8 ml-2" color="white" />
+                </span>
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        {data?.length > 0 ? (
+          <table class="w-full text-left text-gray-700 table-hover">
+            <thead className="bg-gray-200">
+              <tr>
+                <th scope="col" className="px-2 py-3">
+                  Hình ảnh
+                </th>
+                <th scope="col" className="py-3">
+                  Tên
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Địa chỉ
+                </th>
+                <th scope="col" className="py-3">
+                  Giá
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Trạng thái
+                </th>
+                <th scope="col" className="py-3">
+                  Thao tác
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.map((index) => (
+                <tr
+                  key={index.propertyId}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
-                  Xóa
-                </button>
-                {/* </Link> */}
-                <Link to={`/property/update/${index.propertyId}`}>
-                  <button className="bg-warning text-white p-2 rounded">
-                    Sửa
-                  </button>
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                  <td className="pr-6 pl-2 py-4">
+                    <img
+                      className="w-40 h-20 object-cover rounded-lg"
+                      src={index.thumbnail}
+                      alt=""
+                    />
+                  </td>
+                  <td className="py-4">{index.propertyName}</td>
+                  <td className="px-6 py-4">{index.address}</td>
+                  <td className="py-4">$ {index.price}</td>
+                  <td className="px-6 py-4">
+                    {index.null === false ? "trống" : "đã thuê"}
+                  </td>
+                  <td className="">
+                    {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
+                    <button
+                      onClick={() => handleDelete(index.propertyId)}
+                      className="p-2"
+                    >
+                      <TrashIcon className="w-7" color="#ff385c" />
+                    </button>
+                    {/* </Link> */}
+                    <Link to={`/host/property/update/${index.propertyId}`}>
+                      <button className="mx-2 p-2">
+                        <PencilSquareIcon color="#eab308" className="w-7" />
+                      </button>
+                    </Link>
+
+                    <Link to={`/explore/detail/${index.propertyId}`}>
+                      <button className="p-2">
+                        <EyeIcon className="w-7" color="gray" />
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="flex flex-col items-center">
+            <span>
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/stayeasy02.appspot.com/o/images%2F3024051-removebg-preview.png?alt=media&token=8cd7bab2-40a7-4619-84de-305650b7f053"
+                alt="not found"
+              />
+            </span>
+            <span className="block font-medium">Chưa có tài sản.</span>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
+
+const people = [
+  {
+    id: 1,
+    name: "Trống",
+  },
+  {
+    id: 2,
+    name: "Đã thuê",
+  },
+  {
+    id: 3,
+    name: "Tất cả",
+  },
+];
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+const Status = ({ status, setStatus }) => {
+  const [selected, setSelected] = useState(people[2]);
+  return (
+    <Listbox value={selected} onChange={setSelected}>
+      {({ open }) => (
+        <>
+          <div className="relative w-56">
+            <Listbox.Button className="relative h-16 border w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:leading-6">
+              <span className="flex items-center">
+                <span className="flex items-center block">{selected.name}</span>
+              </span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                <ChevronUpDownIcon
+                  className="h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </span>
+            </Listbox.Button>
+
+            <Transition
+              show={open}
+              as={Fragment}
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                {people.map((person) => (
+                  <Listbox.Option
+                    key={person?.id}
+                    className={({ active }) =>
+                      classNames(
+                        active ? "bg-indigo-600 text-white" : "text-gray-900",
+                        "relative cursor-default select-none py-2 pl-3 pr-9"
+                      )
+                    }
+                    value={person}
+                  >
+                    {({ selected, active }) => (
+                      <>
+                        <div className="flex items-center">
+                          <span
+                            className={classNames(
+                              selected ? "font-semibold" : "font-normal",
+                              "ml-3 me-3 block truncate h-10 items-center flex"
+                            )}
+                          >
+                            {person.name}
+                          </span>
+                        </div>
+
+                        {selected ? (
+                          <span
+                            className={classNames(
+                              active ? "text-white" : "text-indigo-600",
+                              "absolute inset-y-0 right-0 flex items-center pr-4"
+                            )}
+                          >
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ) : null}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Transition>
+          </div>
+        </>
+      )}
+    </Listbox>
+  );
+};

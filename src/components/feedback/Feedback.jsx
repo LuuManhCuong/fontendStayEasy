@@ -282,8 +282,7 @@ const Feedback = ({ userId,propertyId}) => {
             <textarea
               name="commentEdit"
               id="commentEdit"
-              defaultValue={feedbacks.content  ||""}
-              value={content}
+              defaultValue={feedbacks.content}
               onChange={(e) => setContent(e.target.value)}
               style={{ height: "100px", width: "100%" }}
               placeholder="Nhập bình luận của bạn..."
