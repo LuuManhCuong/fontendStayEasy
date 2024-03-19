@@ -23,9 +23,7 @@ function Home() {
       .then(function (response) {
         console.log(response.data);
         dispatch(counterSlice.actions.totalRecord(response.data.length));
-        dispatch(
-          dataHomeSlice.actions.getDataHomeSuccess(response.data.properties)
-        );
+        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data.properties));
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());

@@ -56,21 +56,18 @@ export default function Utilies({ Utils, value }) {
         className="flex justify-center items-center"
       >
         <Box className="rounded-lg bg-white absolute w-[40%] p-4">
-          <div className="mb-3 flex justify-between">
+          <div className="mb-3 items-center text-[1.6em] flex justify-between">
             <span className="font-medium">Miễn phí</span>
             <button
               onClick={handleClose}
-              className="border-2 border border-red-800 rounded-lg"
+              className="border-2 p-2 border border-red-800 rounded-lg"
             >
-              <XMarkIcon className="w-8" color="#FF385C" />
+              <XMarkIcon className="w-14" color="#FF385C" />
             </button>
           </div>
 
-          <div
-            className="border-t py-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4"
-            variant="h5"
-          >
-            {data.map((index) => (
+          <div className="border-y py-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4 text-[2em]">
+            {data?.map((index) => (
               <div
                 onClick={() => {
                   handleFree(index);
@@ -89,10 +86,10 @@ export default function Utilies({ Utils, value }) {
             ))}
           </div>
 
-          <div className="mt-3 flex justify-end border-t pt-4">
+          <div className="mt-3 flex justify-end">
             <button
               onClick={handleClose}
-              className="bg-indigo-600 text-white py-2 px-3 font-medium rounded-lg"
+              className="bg-indigo-600 text-[2em] text-white py-2 px-3 font-medium rounded-lg"
             >
               Lưu
             </button>
