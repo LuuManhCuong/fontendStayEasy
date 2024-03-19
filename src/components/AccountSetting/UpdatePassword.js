@@ -1,16 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import { changePassword } from '../../redux-tookit/actions/authActions';
+import { changePassword, verifyPhone } from '../../redux-tookit/actions/authActions';
 import { useDispatch } from 'react-redux';
-import { Alert, Button, Typography } from '@material-tailwind/react';
-import { UserContext } from '../UserContext';
-import moment from 'moment';
 
 export const UpdatePassword = ({ title, value }) => {
     const dispatch = useDispatch();
 
     const [isEditting, setEditting] = useState(false);
-    const [isValidate, setValidate] = useState(false);
 
     const [passwordErrorMessage, setPasswordErrorMessage] = useState();
 
@@ -47,7 +43,17 @@ export const UpdatePassword = ({ title, value }) => {
 
 
     const handleUpdatePassword = () => {
-        dispatch(changePassword(data));
+        if(oldpassword!==""&&newpassword!==""&&confirmpassword!==""){
+            if(oldpassword===newpassword){
+                setPasswordErrorMessage("Mật khẩu mới không được trùng với mật khẩu cũ!");
+            }else if(confirmpassword!==newpassword){
+                setPasswordErrorMessage("Mật khẩu mới của bạn không khớp. Vui lòng thử lại!");
+            }else{
+                dispatch(changePassword(data));
+            }
+        }else{
+            setPasswordErrorMessage("Vui lòng nhập mật khẩu!");
+        }
     };
 
     const validatePassword = (pass)=>{
@@ -56,20 +62,6 @@ export const UpdatePassword = ({ title, value }) => {
         }else {
             SetPowerOfPasswordMessage(false);
         };
-    }
-
-    const checkValueInput = () => {
-        if(oldpassword!==""&&newpassword!==""&&confirmpassword!==""){
-            if(oldpassword===newpassword){
-                setPasswordErrorMessage("Mật khẩu mới không được trùng với mật khẩu cũ!");
-            }else if(confirmpassword!==newpassword){
-                setPasswordErrorMessage("Mật khẩu mới của bạn không khớp. Vui lòng thử lại!");
-            }else{
-                setPasswordErrorMessage("Vui lòng nhập mật khẩu!");
-            }
-        }else{
-            setPasswordErrorMessage("Vui lòng nhập mật khẩu!");
-        }
     }
 
     return (
@@ -96,13 +88,6 @@ export const UpdatePassword = ({ title, value }) => {
                                 setPasswordErrorMessage();
                                 setOldPassword(e.target.value);
                             }}
-                            onBlur={()=>{
-                                if(oldpassword!=""||confirmpassword!==newpassword||newpassword===oldpassword){
-                                    setValidate(false);
-                                }else{
-                                    setValidate(true);
-                                }
-                            }}
                             />
                             <button className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600" onClick={()=>{togglePasswordVisibility(0)}}>
                                 {isOldPasswordVisible ? (
@@ -127,13 +112,6 @@ export const UpdatePassword = ({ title, value }) => {
                                 setNewPassword(e.target.value);
                                 validatePassword(e.target.value);
                             }}
-                            onBlur={()=>{
-                                if(newpassword!=""||confirmpassword!==newpassword||newpassword===oldpassword){
-                                    setValidate(false);
-                                }else{
-                                    setValidate(true);
-                                }
-                            }}
                             />
                             <button className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600" onClick={()=>{togglePasswordVisibility(1)}}>
                                 {isNewPasswordVisible ? (
@@ -154,13 +132,6 @@ export const UpdatePassword = ({ title, value }) => {
                                 setPasswordErrorMessage();
                                 setConfirmPassword(e.target.value);
                             }}
-                            onBlur={()=>{
-                                if(confirmpassword!=""||confirmpassword!==newpassword||newpassword===oldpassword){
-                                    setValidate(false);
-                                }else{
-                                    setValidate(true);
-                                }
-                            }}
                             />
                             <button className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600" onClick={()=>{togglePasswordVisibility(2)}}>
                                 {isConfirmPasswordVisible ? (
@@ -178,7 +149,7 @@ export const UpdatePassword = ({ title, value }) => {
                             <p className={`text-2xl ${powerOfPasswordMessage?"text-[#008489]":"text-[#C13515]"}`}>Độ bảo mật của mật khẩu: {powerOfPasswordMessage?"Mạnh":"Yếu"}</p>
                         </div>
                     }
-                    <button onClick={()=>{isValidate?handleUpdatePassword():checkValueInput()}} className="px-4 py-3 bg-[#008489] rounded-xl text-white font-medium">Thay đổi mật khẩu</button>
+                    <button onClick={()=>{handleUpdatePassword()}} className="px-4 py-3 bg-[#008489] rounded-xl text-white font-medium">Thay đổi mật khẩu</button>
                     {/* error area */}
                     {passwordErrorMessage &&
                         <div className='flex mt-4'>
