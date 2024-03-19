@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CommonHeader from "../../components/header/CommonHeader";
 import Footer from "../../components/footer/Footer";
 import { Link } from "react-router-dom";
@@ -24,6 +24,9 @@ import Typography from "@mui/material/Typography";
 
 import Box from "@mui/material/Box";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
+import { UserContext } from "../UserContext";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 export default function Statistic() {
   const [state, setState] = useState([
@@ -33,7 +36,7 @@ export default function Statistic() {
       key: "selection",
     },
   ]);
-
+  const user = useContext(UserContext).user
   const request = [
     {
       avatar: "/static/images/avatar/1.jpg",
@@ -114,7 +117,59 @@ export default function Statistic() {
       content: "Ali Connors",
     },
   ];
+  const [stompClient, setStompClient] = useState(null);
+  useEffect(() => {
 
+    const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
+    const client = Stomp.over(socket);
+    client.debug = null;
+    client.connect({}, () => {
+    });
+
+    setStompClient(client);
+
+    return () => {
+      if (client.connected) {
+        client.disconnect();
+      }
+    };
+
+
+  }, []);
+  function acceptRoom() {
+    // id của chủ phòng - người gửi thông báo
+    console.log(user.id);
+    // id của khác- người nhận thông báo
+    let fakeIDUser = '2A0A5BF4-8280-4BCC-A3E2-58512A661DF4'
+    console.log(fakeIDUser);
+    let data = {
+      senderId: user?.id,
+      receiverId: fakeIDUser,
+      content: `${user.firstName} ${user.lastName} vừa chấp nhận lịch đặt phòng của bạn`
+    }
+    stompClient.send(
+      `/api/v1/stayeasy/app/notification/${data.receiverId.toLowerCase()}`,
+      {},
+      JSON.stringify(data)
+    );
+  }
+  function cancelRoom() {
+    // id của chủ phòng - người gửi thông báo
+    console.log(user.id);
+    // id của khác- người nhận thông báo
+    let fakeIDUser = '2A0A5BF4-8280-4BCC-A3E2-58512A661DF4'
+    console.log(fakeIDUser);
+    let data = {
+      senderId: user?.id,
+      receiverId: fakeIDUser,
+      content: `${user.firstName} ${user.lastName} vừa từ chối lịch đặt phòng của bạn`
+    }
+    stompClient.send(
+      `/api/v1/stayeasy/app/notification/${data.receiverId.toLowerCase()}`,
+      {},
+      JSON.stringify(data)
+    );
+  }
   return (
     <div className="w-[100%] bg-gray-100 px-4">
       {/* date area */}
@@ -188,6 +243,10 @@ export default function Statistic() {
                         <span className="font-medium">{e.name}</span>{" "}
                         {e.content}
                       </p>
+                    </div>
+                    <div className='flex gap-2'>
+                      <button onClick={acceptRoom} className='hover:border hover:border-[#E31C5F] text-2xl rounded-lg p-2 w-[8rem]'>Xác nhận</button>
+                      <button onClick={cancelRoom} className='border border-[#E31C5F] text-2xl rounded-lg p-2 w-[8rem]'>Từ chối</button>
                     </div>
                   </button>
                   <Divider variant="inset" />
