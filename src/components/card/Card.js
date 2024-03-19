@@ -9,6 +9,8 @@ import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import axios from "axios";
 import Slider from "react-slick";
 import { UserContext } from "../UserContext";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 function Card(props) {
   // console.log("property: ", props.item);
 
@@ -21,6 +23,8 @@ function Card(props) {
   let timeStamp = checkin.getTime() + 86400000;
   const checkout = new Date(timeStamp);
   const navigate = useNavigate();
+  const [stompClient, setStompClient] = useState(null);
+
   const isActive = props.item.likeList?.some(
     (like) => like?.idUser === user?.id
   );
@@ -30,11 +34,33 @@ function Card(props) {
 
   // Kiểm tra xem người dùng đã like property này hay chưa => true/false
 
+  useEffect(() => {
+
+    const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
+    const client = Stomp.over(socket);
+    client.debug = null;
+    client.connect({}, () => {
+    });
+
+    setStompClient(client);
+
+    return () => {
+      if (client.connected) {
+        client.disconnect();
+      }
+    };
+
+
+  }, []);
   const handleLike = (e, idPost) => {
     e.stopPropagation();
+
+
+    // console.log(props.item.owner.id);
     // like
     if (user && !isActive) {
       // console.log("like id: ", idPost, "idUSer: ", user?.id);
+
       axios
         .post(`http://localhost:8080/api/v1/stayeasy/like`, {
           idPost: idPost,
@@ -43,6 +69,20 @@ function Card(props) {
         .then(function (response) {
           dispatch(grouptSlice.actions.reloadLike());
           console.log("res ", response.data);
+
+          if (user?.id !== props.item.owner.id) {
+            let data = {
+              senderId: user?.id,
+              receiverId: props.item.owner.id,
+              content: `${user.firstName} ${user.lastName} vừa thích bài đăng của bạn!`
+            }
+            stompClient.send(
+              `/api/v1/stayeasy/app/notification/${data.receiverId}`,
+              {},
+              JSON.stringify(data)
+            );
+          }
+
         })
         .catch(function (error) {
           console.log(error);
@@ -177,7 +217,7 @@ function Card(props) {
         </div>
         <div className={`heart-btn flex absolute top-5 right-[2rem] text-fav-icon text-5xl bg-transparent 
               ${isActive ? "active" : ""}`} onClick={(e) => handleLike(e, props.item.propertyId)}>
-          <FontAwesomeIcon style={{ stroke:'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })}/>
+          <FontAwesomeIcon style={{ stroke: 'white' }} className="text-4xl z-10 text-customColor transition-all ease-in duration-200" icon={icon({ name: "heart", family: "classic", style: "solid" })} />
 
         </div>
         <div className="p-2">
