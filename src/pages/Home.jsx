@@ -20,7 +20,7 @@ function Home() {
   const dispatch = useDispatch();
   const { dataHome, isLoading } = useSelector(dataHomeSelector);
   const [total, setTotal] = useState(0);
-  const [size, setSize] = useState(1);
+  const [size, setSize] = useState(10);
 
   const { reloadLike } = useSelector(grouptSelector);
   useEffect(() => {

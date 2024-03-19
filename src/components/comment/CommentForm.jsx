@@ -46,22 +46,13 @@ const CommentForm = ({ propertyId, ownerId }) => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [newFeedback, setNewFeedback] = useState("");
   const commentContainerRef = useRef(null);
-  const [rating, setRating] = useState(1);
-  const [disable, setDisable] = useState(false);
+;
 
   const user = useContext(UserContext).user;
 
   // useEffect(() => {
   //   setUser(JSON.parse(localStorage.getItem("user")));
   // }, [counter]);
-
-  useEffect(() => {
-    feedbacks.some((feedback) => {
-      if (feedback.userId === user?.id) {
-        setDisable(true);
-      }
-    });
-  }, [feedbacks, user?.id]);
 
 
   useEffect(() => {
@@ -94,7 +85,6 @@ const CommentForm = ({ propertyId, ownerId }) => {
             username: `${user?.firstName}  ${user?.lastName}`,
             avatar: user?.avatar,
             propertyId: propertyId,
-            rating: rating,
           })
         );
       });
@@ -150,20 +140,6 @@ const CommentForm = ({ propertyId, ownerId }) => {
             <div className="w-full rounded-2xl ml-10 p-4 bg-white mt-2 h-full shadow-checkout-shadow border-checkout-bg border-[1px] mb-4">
               <div className="flex">
               <h1 className="text-3xl">{feedback.username || "Ẩn Danh"}</h1>
-              <div className="pl-4 flex">
-              {[...Array(5)].map((star, index) => {
-              const ratingValue = index + 1;
-                return (
-                  <label key={index}>
-                    <StarIcon
-                      style={{fontSize: "25px"}}
-                      className={`${ratingValue <= feedback.rating ? "text-yellow-500" : "text-gray-300"}`}
-                    />
-                  </label>
-                );
-              }
-              )}
-              </div>
               </div>
               <span className="text-2xl italic">
                 {moment(feedback.createAt).format("YYYY-MM-DD HH:mm")}
@@ -194,21 +170,6 @@ const CommentForm = ({ propertyId, ownerId }) => {
             <p className="text-3xl m-0 font-semibold">
               {user?.firstName + " " + user?.lastName}
             </p>
-            <div className="pl-4 flex">
-            {[...Array(5)].map((star, index) => {
-              const ratingValue = index + 1;
-              return (
-                <label key={index}>
-                  <StarIcon
-                    style={{fontSize: "25px"}}
-                    onClick={() => setRating(ratingValue)}
-                    className={`cursor-pointer ${ratingValue <= (rating || 0) ? "text-yellow-500" : "text-gray-300"}`}
-                  />
-                </label>
-              );
-            }
-            )}
-            </div>
           </div>
 
           <div className="rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] w-[95%] ml-[2rem] mt-2">
@@ -222,9 +183,9 @@ const CommentForm = ({ propertyId, ownerId }) => {
               className="p-4"
             ></textarea>
           </div>
-          <div className={`${disable ? "hidden" : ""} w-full flex justify-end pr-12 pb-2 mt-3`}>
+          <div className={`w-full flex justify-end pr-12 pb-2 mt-3`}>
             <div
-              className={`bg-[#ff5a5f] w-[25%] rounded-2xl text-center cursor-pointer hover:bg-[#ff5a5f] ${disable ? "hidden" : ""}`}
+              className={`bg-[#ff5a5f] w-[25%] rounded-2xl text-center cursor-pointer hover:bg-[#ff5a5f]`}
               onClick={handleSendFeedback}
             >
               <p className="text-white font-medium text-3xl pt-2">

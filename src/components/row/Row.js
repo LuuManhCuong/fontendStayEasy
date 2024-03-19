@@ -6,7 +6,7 @@ function Row(props) {
       key={props.property.length}>
       {props.property.map((item, index) => {
         return (
-          <div key={index} className="mt-8 ml-10 ssm:w-[80%] sm:w-[45%] md:w-[45%] lg:w-[30%] 2lg:w-[23%]">
+          <div key={index} className="mt-8 ml-10 ssm:w-[80%] sm:w-[45%] md:w-[45%] lg:w-[35%] 2lg:w-[23%]">
             <Card item={item} index={index} />
           </div>
         );
