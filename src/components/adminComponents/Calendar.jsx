@@ -6,10 +6,6 @@ import { DateRangePicker } from "react-date-range";
 import { addDays } from "date-fns";
 import axios from "axios";
 
-import Box from "@mui/material/Box";
-import AutoGraphIcon from "@mui/icons-material/AutoGraph";
-import TrendingDownIcon from "@mui/icons-material/TrendingDown";
-import { MdOutlineSsidChart } from "react-icons/md";
 import { Card } from "./Statistical";
 
 function Calendar({ propertyId }) {
@@ -88,41 +84,10 @@ function Calendar({ propertyId }) {
   // Chỉ render DateRangePicker khi state đã được khởi tạo
   return (
     <div className="rounded-lg w-full">
-      <h1>Thống kê từ đầu tháng</h1>
-      <div className="flex justify-between py-10">
-        <Card
-          title="Doanh thu ($)"
-          condition={compareRevenue || 0}
-          compare={compareRevenue.toFixed(2)}
-          thisMonth={thisMonth?.revenue}
-          lastMonth={lastMonth.revenue}
-        />
-
-        <Card
-          title="Lượt đặt phòng"
-          condition={compareTotalBookings || 0}
-          compare={compareTotalBookings.toFixed(2)}
-          thisMonth={thisMonth?.totalBookings}
-          lastMonth={lastMonth.totalBookings}
-        />
-        <Card
-          title="Lượt hủy phòng"
-          condition={compareTotalCancelBookings || 0}
-          compare={compareTotalCancelBookings.toFixed(2)}
-          thisMonth={thisMonth?.totalCancelBooking}
-          lastMonth={lastMonth.totalCancelBooking}
-        />
-        <Card
-          title="Lượt yêu thích"
-          condition={comparetoTalLike || 0}
-          compare={comparetoTalLike.toFixed(2)}
-          thisMonth={thisMonth?.totalLike}
-          lastMonth={lastMonth.totalLike}
-        />
-      </div>
+      
 
       <div className="w-full py-10">
-      <h1>Lịch đặt phòng sắp tới</h1>
+        <h1>Lịch đặt phòng sắp tới</h1>
         <DateRangePicker
           onChange={(item) => setState([{ ...state, ...item }])}
           showSelectionPreview={true}
@@ -139,5 +104,3 @@ function Calendar({ propertyId }) {
 }
 
 export default Calendar;
-
-

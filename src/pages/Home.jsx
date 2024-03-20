@@ -6,10 +6,7 @@ import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  dataHomeSelector,
-  grouptSelector,
-} from "../redux-tookit/selector";
+import { dataHomeSelector, grouptSelector } from "../redux-tookit/selector";
 import axios from "axios";
 import { dataHomeSlice } from "../redux-tookit/reducer/dataHomeSlice";
 import { counterSlice } from "../redux-tookit/reducer/counterSlice";
@@ -24,8 +21,9 @@ function Home() {
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/property`)
       .then(function (response) {
+        console.log(response.data);
         dispatch(counterSlice.actions.totalRecord(response.data.length));
-        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
+        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data.properties));
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());
