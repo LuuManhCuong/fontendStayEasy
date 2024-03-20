@@ -90,7 +90,7 @@ function Header({ page }) {
         .then(function (response) {
           setSuggest(response.data);
         })
-        .catch(function (error) {});
+        .catch(function (error) { });
     } else if (page === "home") {
       axios
         .get(
@@ -234,7 +234,7 @@ function Header({ page }) {
           </NavLink>
           <button
             className="hover:bg-gray-100 p-3 mt-1 rounded-[100%]"
-            onClick={() => {}}
+            onClick={() => { }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -249,7 +249,7 @@ function Header({ page }) {
           </button>
           {/* Thông Báo */}
 
-          <Dropdown className="d-inline mx-2">
+          {/* <Dropdown className="d-inline mx-2">
             <Dropdown.Toggle id="dropdown-autoclose-true">
 
               <i className="fa-regular fa-bell"></i> <Badge bg="secondary">{notificationList.length > 99 ? '99+' : notificationList.length}</Badge>
@@ -265,8 +265,31 @@ function Header({ page }) {
                   ))
               }
             </Dropdown.Menu>
-          </Dropdown>
+          </Dropdown> */}
+          <div className="flex mr-4">
+            <Dropdown>
+              <DropdownToggle
+                bsPrefix="false"
+                className="bg-transparent border-white p-0"
+                id="dropdown-basic"
+              >
+                <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
+                  <i style={{ color: 'black', fontSize: '17px' }} className="fa-regular fa-bell"></i> <Badge bg="secondary">{notificationList.length > 99 ? '99+' : notificationList.length}</Badge>
+                </div>
+              </DropdownToggle>
+              <Dropdown.Menu style={{ height: '300px', overflowY: 'scroll' }}>
+                {
+                  notificationList <= 0 ? <p>Hiện chưa có thông báo nào</p> :
+                    [...notificationList].reverse().map(e => (
+                      <Dropdown.Item href="#" key={e.id}>
+                        <p>{e.content}</p>
+                      </Dropdown.Item>
+                    ))
+                }
 
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
           {/* Menu */}
           <div className="flex mr-4">
             <Dropdown>
