@@ -46,7 +46,7 @@ function Rules({rulesList}) {
                 {
                     rulesList.map((item, index) => (
                         <div key={index} className="flex items-center gap-2 align-middle">
-                            <div className="w-10 h-10 bg-gray-300 rounded-lg flex items-center justify-center">
+                            <div className="w-10 h-10  rounded-lg flex items-center justify-center">
                                 {ListIcon.map((icon, index) => {
                                     if(icon.name === item.rulesType){
                                         return icon.icon
@@ -54,7 +54,7 @@ function Rules({rulesList}) {
                                 })}
                             </div>
                             <div className="ml-4">
-                                <p className="font-bold text-gray-800 m-0 text-[1.7rem]">{item.rulesName}</p>
+                                <p className="font-medium text-gray-800 m-0 text-[1.7rem]">{item.rulesName}</p>
                             </div>
                         </div>
                     ))

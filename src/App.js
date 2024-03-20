@@ -32,7 +32,6 @@ import Statistic from "./components/Property/Statistic";
 import ListProperty from "./components/Property/ListProperty";
 import AddProperty from "./components/Property/AddProperty";
 import UpdateProperty from "./components/Property/UpdateProperty";
-import Layout from "./components/Property/Layout/Layout";
 import Host from "./pages/host/Host";
 import { ProtectedRoute } from "./redux-tookit/actions/ProtectedRoute";
 import Trip from "./pages/booking/Trip";
@@ -51,12 +50,13 @@ function App() {
           <Route path="/explore/detail/:id" element={<Detail />} />
 
           {/* property manager */}
-          <Route path="/property" element={<Layout />}>
+          <Route path="/host/property" element={<Host />}>
             <Route path="statistic" element={<Statistic />} />
             <Route path="list" element={<ListProperty />} />
             <Route path="add" element={<AddProperty />} />
             <Route path="update/:propertyId" element={<UpdateProperty />} />
           </Route>
+          {/* <Route path="/property/list" com/> */}
 
 
         {/* account setting */}

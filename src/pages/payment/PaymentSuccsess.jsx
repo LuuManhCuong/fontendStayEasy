@@ -34,7 +34,15 @@ const PaymentSuccsess = () => {
 }, []); // Empty dependency array to ensure useEffect runs only once on component mount
      // Assuming jsonData is your JSON array
      if (bill.length === 0) {
-      return <div>Loading...</div>;
+      return (
+        <div className=
+          "flex justify-center items-center h-screen w-screen bg-gray-100 opacity-100" >
+          <div className="flex flex-col items-center">
+            <img src="https://cdn.dribbble.com/users/2356828/screenshots/15188850/media/f8152a69b40f21eec559e6e0d05a46f1.gif" alt="Loading" className="w-40% h-40%" />
+            <p className="text-lg font-medium text-gray-700 mt-4">Quá trình thanh toán sắp hoàn tất...</p>
+          </div>
+        </div>
+      );
     }
     const name = bill[0].bookingDTO.propertyDTOS.propertyName;
     const mail = bill[0].bookingDTO.userDTOS.email;

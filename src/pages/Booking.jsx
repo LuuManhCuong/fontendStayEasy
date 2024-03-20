@@ -7,8 +7,12 @@ import { TiHeartFullOutline } from "react-icons/ti";
 import axios from "axios";
 import { differenceInCalendarDays, format } from "date-fns";
 import BookingModal from "./booking/BookingModal";
-import { calculatePricing } from "./booking/calculatePricing";
+import { calculatePricing , generateHolidayPrices } from "./booking/calculatePricing";
 import { UserContext } from "../components/UserContext";
+import Rules from "../components/rules/Rules";
+import Amenities from "../components/Amenities/Amenities";
+import { Alert } from "../components/Alert/Alert";
+
 const Booking = () => {
   const [place, setPlace] = useState([]);
   const { id } = useParams();
@@ -32,14 +36,12 @@ const Booking = () => {
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDialogOpen1, setIsDialogOpen1] = useState(false);
+  const [isDialogOpen2, setIsDialogOpen2] = useState(false);
   const currency = "USD";
   const method = "SALE";
   const intent = "PAYPAL";
   const description = `${user?.useName} Payment for booking ${place.propertyName}`;
-
-  const [selectedPayment, setSelectedPayment] = useState(
-    "Credit or debit card"
-  );
+  const [selectedPayment, setSelectedPayment] = useState("Paypal");
 
   const handlePaymentSelect = (paymentType) => {
     setSelectedPayment(paymentType);
@@ -57,6 +59,9 @@ const Booking = () => {
   const handleOpenDialog1 = () => {
     setIsDialogOpen1(!isDialogOpen1);
   };
+  const handleOpenDialog2 = () => {
+    setIsDialogOpen2(!isDialogOpen2);
+  };
   const togglePopupHouseRule = () => {
     setIsOpenHouseRuleModal(!isOpenHouseRuleModal);
   };
@@ -69,7 +74,6 @@ const Booking = () => {
     setIsOpenChargeForDamageModal(!isOpenChargeForDamageModal);
   };
   useEffect(() => {
- 
     if (!id) return;
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/property/${id}`)
@@ -89,6 +93,7 @@ const Booking = () => {
     ? calculatePricing(checkIn, checkOut, place, numberNight)
     : {};
 
+  const litsPrice = place ? generateHolidayPrices (checkIn, checkOut, numberNight) : {};
   async function bookThisPlace() {
     try {
       const response = await axios.post(
@@ -108,10 +113,11 @@ const Booking = () => {
           total: pricing.total,
         }
       );
-
       // Lấy dữ liệu từ response
       const { data } = response;
-
+      if(!response){
+        Alert(3000, "Đặt phòng thành công" , "Chúng tôi đang chuyển hướng đến trang thanh toán Paypal, vui lòng chờ trong dây lát" , 'success' , "OK")
+      }
       // Kiểm tra xem có approvalUrl trong response không
       if (data && data.approvalUrl) {
         // Redirect đến approvalUrl
@@ -122,6 +128,7 @@ const Booking = () => {
       }
     } catch (error) {
       // Xử lý lỗi nếu có
+      Alert(2000, "Không thể đặt phòng" , "Không thể đặt phòng trong  khoảng thời gian này, hãy sửa ngày của bạn" , 'error' , "OK")
       console.error("Đã xảy ra lỗi:", error);
     }
   }
@@ -189,9 +196,12 @@ const Booking = () => {
                 </span>
                 <div className="flex justify-between items-center mt-10">
                   <p className="font-medium text-3xl">Số khách</p>
-                  <a>
-                    <span className="underline font-medium">Sửa</span>
-                  </a>
+                  <button
+                    className="underline font-medium"
+                    onClick={handleOpenEdit}
+                  >
+                    Sửa
+                  </button>
                 </div>
                 <span>{numGuest} khách</span>
                 {isOpenEdit && (
@@ -323,7 +333,7 @@ const Booking = () => {
                               handlePaymentSelect("Credit or debit card")
                             }
                           >
-                            <div className="">
+                            <div className="text-2xl">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 256 256"
@@ -386,7 +396,7 @@ const Booking = () => {
                             className="flex items-center gap-3 p-3 text-2xl text-gray-600 hover:bg-gray-100 cursor-pointer rounded-lg border-l-transparent w-full"
                             onClick={() => handlePaymentSelect("PayPal")}
                           >
-                            <div className="">
+                            <div className="text-2xl">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="35"
@@ -404,7 +414,7 @@ const Booking = () => {
                             className="flex items-center gap-3 p-3 text-2xl text-gray-600 hover:bg-gray-100 cursor-pointer rounded-lg border-l-transparent w-full"
                             onClick={() => handlePaymentSelect("Google Pay")}
                           >
-                            <div className="">
+                            <div className="text-2xl">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="35"
@@ -448,7 +458,7 @@ const Booking = () => {
                       onClick={togglePopupCountry}
                     >
                       <div className="flex flex-col items-start">
-                        <span className="font-thin text-xl">
+                        <span className="font-thin text-2xl">
                           Country/region
                         </span>
                         <span className="text-2xl">Vietnam</span>
@@ -519,12 +529,12 @@ const Booking = () => {
                     Chúng tôi mong mỗi vị khách hãy ghi nhớ một số điều đơn giản
                     để tạo nên một vị khách tuyệt vời.
                   </p>
-                  <ul>
-                    <li>● Tuân theo nguyên tắc của chủ nhà</li>
-                    <li>● Hãy xem đây như nhà của bạn</li>
-                  </ul>
+                  <Rules rulesList={place.rulesList}></Rules>
                 </div>
-                <hr className="my-5" />
+                <div className="flex flex-col mt-5">
+                < Amenities utilitiesList ={place.propertyUtilitis}></Amenities>
+                </div>
+
               </div>
 
               {/* policy */}
@@ -682,7 +692,7 @@ const Booking = () => {
                         >
                           <path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM609.3 512H471.4c5.4-9.4 8.6-20.3 8.6-32v-8c0-60.7-27.1-115.2-69.8-151.8c2.4-.1 4.7-.2 7.1-.2h61.4C567.8 320 640 392.2 640 481.3c0 17-13.8 30.7-30.7 30.7zM432 256c-31 0-59-12.6-79.3-32.9C372.4 196.5 384 163.6 384 128c0-26.8-6.6-52.1-18.3-74.3C384.3 40.1 407.2 32 432 32c61.9 0 112 50.1 112 112s-50.1 112-112 112z" />
                         </svg>
-                        <p className="text-3xl mt-3 ml-7">3 guests maximum</p>
+                        <p className="text-3xl mt-3 ml-7">Tối đa {place.numGuests} khách</p>
                       </div>
                       <hr />
                       <div className="flex items-center mt-4">
@@ -856,9 +866,36 @@ const Booking = () => {
               <div className="mt-5">
                 <h2 className="text-4xl">Chi tiết giá</h2>
                 <div className="flex justify-between items-center">
-                  <p>
-                    ${place.price} x {numberNight + 1} ngày
-                  </p>
+                        <a   className="underline underline-offset-4 text-black "
+                          onClick={handleOpenDialog2}>
+                          ${place.price} x {numberNight} đêm
+                     </a>
+                  {isDialogOpen2 && (
+                             <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z50">
+                             <div className="bg-white   p-8 rounded-lg drop-shadow-xl">
+                                  <button
+                                    onClick={handleOpenDialog2}
+                                    className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md"
+                                  >
+                                    X
+                                  </button>
+                                  <h3 className="text-4xl">Chi tiết giá cơ sở</h3>
+                                  {litsPrice.map((item, index) => (
+                                    <div class="flex justify-between items-center mt-10">
+                                      <p class=" text-3xl">Ngày {item.date}</p>
+                                      <div class="px-16"></div>
+                                    <p class="  text-3xl text-pink">{item.price} $ </p></div>
+                                  ))}
+                                    <div class="flex justify-between items-center mt-10">
+                                <h3 className="text-4xl">Tổng giá cơ sở</h3>
+                                <div class="px-16"></div>
+                                <h3 className="text-4xl">${pricing.price}</h3>
+                                </div>
+                                </div>
+                              </div>
+                            )}
+                        
+                  
                   <p>${pricing.price ? `${pricing.price}` : ""}</p>
                 </div>
                 {/* Khuyen mai */}
@@ -883,7 +920,18 @@ const Booking = () => {
                       </div>
                     </div>
                   )}
-                  <p>${pricing.discount ? `${pricing.discount}` : ""}</p>
+                  <p className="text-pink-600"> - ${pricing.discount ? `${pricing.discount}` : ""}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <a   className="underline underline-offset-4 text-black ">
+                   Phí dọn dẹp
+                  </a>
+                  <p>
+                    $
+                    {pricing.cleanFee
+                      ? `${pricing.cleanFee}`
+                      : ""}
+                  </p>
                 </div>
                 <div className="flex justify-between items-center">
                   <a
