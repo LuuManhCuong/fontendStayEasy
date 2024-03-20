@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { login, signup } from "../../redux-tookit/actions/authActions";
 import LoginForm from "../../components/auth/LoginForm";
 import RegisterForm from "../../components/auth/RegisterForm";
+import ForgotPassword from "../../components/auth/ForgotPassword";
 
 
 export default function Login() {
@@ -15,6 +16,8 @@ export default function Login() {
   const location = useLocation();
 
   const [isLogin, setIsLogin] = useState(true);
+
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   
   const registerState = {
     setIsLogin: setIsLogin
@@ -25,6 +28,11 @@ export default function Login() {
     location: location
   }
 
+  const forgotPassState = {
+    setIsLogin: setIsLogin,
+    setIsForgotPassword: setIsForgotPassword
+  }
+
   return (
     <>
       <CommonHeader />
@@ -33,7 +41,7 @@ export default function Login() {
         <div className="flex flex-col justify-center w-[59rem] rounded-2xl border border-black">
           <div className="text-center">
             <h1 className="text-[1.7rem] font-bold py-[1.7rem]">
-              {isLogin ? "Đăng nhập" : "Đăng ký"}
+              {!isLogin ? "Đăng nhập" : isForgotPassword ? "Quên Mật khẩu" : "Đăng ký"}
             </h1>
             <hr className="m-0" />
           </div>
@@ -42,22 +50,46 @@ export default function Login() {
           <div className="px-14 py-8">
 
             {/* form start */}
-              {isLogin ? (
-                <LoginForm state={loginState}/>
-                ) : (
+              {!isLogin ? (
                 <RegisterForm state={registerState}/>
-              )}
+              ) : isForgotPassword ? (
+                <ForgotPassword state={forgotPassState} />
+              ) : 
+                <LoginForm state={loginState}/>
+              }
                 
 
-            {/* switch modal */}
-            <div className="justify-center text-center my-3">
-              {isLogin ? "Bạn chưa có tài khoản?" : "Bạn đã có tài khoản?"}
-              <button
-                className="text-[#FF002C]"
-                onClick={() => {setIsLogin(!isLogin)}}>
-                {isLogin ? "Đăng ký" : "Đăng nhập"}
-              </button>
-            </div>
+              {isForgotPassword
+              ?
+              <div div className="justify-center text-center my-3">
+                Bạn đã có tài khoản? 
+                <button className="text-[#FF002C]" onClick={() => {
+                    setIsLogin(true);
+                    setIsForgotPassword(false);
+                  }}>
+                  Đăng nhập
+                </button>
+              </div>
+              :
+                <div className="justify-center text-center my-3">
+                  {setIsLogin ? "Bạn chưa có tài khoản?" : "Bạn đã có tài khoản?"}
+                  <button className="text-[#FF002C]" onClick={() => {
+                    setIsLogin(!isLogin);
+                    setIsForgotPassword(false);
+                  }}>
+                    {isLogin ? "Đăng ký" : "Đăng nhập"}
+                  </button>
+                </div>
+            }
+
+            {isLogin&&(
+                <div className="justify-center text-center my-3">
+                  <button className="text-[#FF002C]"
+                    onClick={() => {
+                      setIsForgotPassword(true);
+                      }}>Quên mật khẩu</button>
+                </div>
+              )}
 
             {/* line */}
             <div className="flex items-center justify-center my-3">

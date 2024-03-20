@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
-import { changePassword, verifyPhone } from '../../redux-tookit/actions/authActions';
+import { changePassword } from '../../redux-tookit/actions/authActions';
 import { useDispatch } from 'react-redux';
 
 export const UpdatePassword = ({ title, value }) => {

@@ -24,12 +24,15 @@ export const fetchUserInfo = async (setUser, setIsAuthenticated, dispatch)=>{
 
       if (response.ok) {
         //Nếu thành công thì set user value và login value
+        console.log(responseData);
         setIsAuthenticated(responseData.login);
         setUser(responseData.user);
       }else if(response.status===500){
+        console.log(responseData);
         refreshToken(dispatch);
       }
       else{
+        console.log(responseData);
         setIsAuthenticated(responseData.login);
         setUser(responseData.user);
         localStorage.removeItem("access_token");
@@ -71,8 +74,12 @@ export const updateInformation = (title, raw, setIsDisabled, setIsEditing, isEdi
       else if(response.status===403){
         //Lỗi không tìm thấy user trong token(token trong db đã bị xóa hoặc vô hiệu hóa)
         Alert(2000, `Thay đổi ${title}`, 'Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại', 'warning', 'OK');
+        
+        //Xóa token trong localStorage hiện tại
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
+
+        //Gọi lại countSlide để load lại data
         dispatch(counterSlice.actions.increase());
       }else{
         //Lỗi Server

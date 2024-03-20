@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
-import { sendEmailCode, signup } from "../../redux-tookit/actions/authActions";
+import { signup } from "../../redux-tookit/actions/authActions";
+import { sendEmailCode } from "../../redux-tookit/actions/emailActions";
+import "./Loading.css";
 
 
 export default function RegisterForm({ state }) {
     const dispatch = useDispatch();
   
     const [isSendCode, setIsSendCode] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+
     const [isVerify, setIsVerify] = useState(false);
 
     const [isSecondForm, setIsSecondForm] = useState(false);
@@ -49,73 +52,88 @@ export default function RegisterForm({ state }) {
     const [emailCode, setEmailCode] = useState(); //code random
     const [confirmEmailCode, setConfirmEmailCode] = useState(""); //code input
   
-    const [codeEmailError, setCodeEmailError] = useState();
-    const [codeEmailSuccess, setCodeEmailSuccess] = useState();
+    const [codeEmailError, setCodeEmailError] = useState(); //message code error
+    const [codeEmailSuccess, setCodeEmailSuccess] = useState(); //message code success
 
-    // state countdown
+    // state countdown -> countdown time to resend code
     const [countdown, setCountdown] = useState(60);
-  
-    // generate random code to send email
-    const generateRandomString = () => {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let result = '';
-      for (let i = 0; i < 6; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-      }
-      setEmailCode(result);
+
+    // set state message
+    const setMessage = ( emailSuccessMessage, errorRegisterMessage, codeEmailError, isSendCode, isVerify) =>{
+        setCodeEmailSuccess(emailSuccessMessage);
+        setErrorRegisterMessage(errorRegisterMessage);
+        setCodeEmailError(codeEmailError);
+        setIsSendCode(isSendCode);
+        setIsVerify(isVerify);
     }
   
     // data send email code
     const dataSendEmailCode = {
-      code: emailCode, 
       email: username,
+      setEmailCode: setEmailCode,
       setCountdown: setCountdown,
-      setIsSendCode: setIsSendCode,
-      setCodeEmailError: setCodeEmailError,
-      setCodeEmailSuccess: setCodeEmailSuccess,
-      setErrorRegisterMessage: setErrorRegisterMessage
+      setMessage: setMessage,
+      setIsSending: setIsSending
     }
-  
-    // random code every time page loading
-    useEffect((e) => {generateRandomString();},[]);
   
     // method validate email input and send email from authAction
     const handleSendEmailCode = () => {
-        console.log("isSendCode: "+isSendCode);
-        console.log("countdown: "+countdown);
-
         if (username==="" ||!username) {
             setErrorRegisterMessage("Vui lòng nhập email!");
             setIsSendCode(false);
         } else if (!/\S+@\S+\.\S+/.test(username)) {
             setErrorRegisterMessage("Email không hợp lệ!");
         }else {
-            setErrorRegisterMessage();
             if (!isSendCode) {
+                setIsSending(true);
                 dispatch(sendEmailCode(dataSendEmailCode));
                 // Gửi email và sau đó đặt thời gian đếm ngược
+
+                let countdownValue = 57;
+
+                // Gửi email và sau đó đặt thời gian đếm ngược
                 // Trong trường hợp này, tôi sẽ đặt thời gian đếm ngược là 60 giây
-                if(countdown === 60){
-                    setTimeout(() => {
+                const interval = setInterval(() => {
+                    if (countdownValue > 0) {
+                        setCountdown(countdownValue);
+                        countdownValue -= 1;
+                    } else {
                         setIsSendCode(false);
-                        setCountdown(60);
-                    }, 60000);
-                    // Đếm ngược mỗi giây
-                    const interval = setInterval(() => {
-                        setCountdown(prevCountdown => prevCountdown - 1);
-                    }, 1000);
-                    // Dừng đếm ngược khi component bị unmount
-                    return () => clearInterval(interval);
-                }
+                        clearInterval(interval);
+                    }
+                }, 1000);
+                
+                // Dừng đếm ngược khi component bị unmount
+                return () => clearInterval(interval);
             }
         }
     }
 
     //method resend code to email
     const handleReSendEmailCode = () =>{
-        setErrorRegisterMessage();
-        generateRandomString();
-        dispatch(sendEmailCode(dataSendEmailCode));
+        if(!isSendCode){
+            setIsSending(true);
+            dispatch(sendEmailCode(dataSendEmailCode));
+
+            let countdownValue = 57;
+
+            // Gửi email và sau đó đặt thời gian đếm ngược
+            // Trong trường hợp này, tôi sẽ đặt thời gian đếm ngược là 60 giây
+            const interval = setInterval(() => {
+                if (countdownValue > 0) {
+                    setCountdown(countdownValue);
+                    countdownValue -= 1;
+                } else {
+                    setIsSendCode(false);
+                    clearInterval(interval);
+                }
+            }, 1000);
+            
+            // Dừng đếm ngược khi component bị unmount
+            return () => clearInterval(interval);
+        }else{
+            setErrorRegisterMessage("Vui lòng thử lại sau 60 giây.");
+        }
     }
 
     // method validate email input and send email from authAction
@@ -124,9 +142,9 @@ export default function RegisterForm({ state }) {
             setCodeEmailSuccess();
             setCodeEmailError("Mã xác minh không hợp lệ!");
         } else {
-          setIsVerify(true);
-          setIsSecondForm(true);
-          setCodeEmailError();
+          setIsVerify(true);// đã xác thực thành công
+          setIsSecondForm(true);// chuyển qua trang thứ 2
+          setCodeEmailError();// đặt lại message error của code
         }
       }
   
@@ -238,7 +256,9 @@ export default function RegisterForm({ state }) {
                     value={username}
                     onChange={(e) => {setUsername(e.target.value)}}/>
                 </div>
+                
                 {/* confirm code */}
+                {isVerify&&
                 <div className="flex items-center mb-6 w-full">
                     <div className="w-[45%]">
                         <label htmlFor="confirmCode" className="block text-gray-800 font-medium mb-2">Code<span className="text-red-500"> (*)</span></label>
@@ -248,17 +268,24 @@ export default function RegisterForm({ state }) {
                         onChange={(e) => {setConfirmEmailCode(e.target.value);}}/>
                     </div>
                     <div className="flex items-center w-[50%] pl-4 mt-[2.7rem]">
-                        <button onClick={()=>{isSendCode?handleReSendEmailCode():handleSendEmailCode()}} disabled={isSendCode} className="py-2 px-3 border-[#da0964] h-fit rounded-lg">{isSendCode?"Gửi lại":"Gửi mã"}</button>
-                        {isSendCode && <p className="mt-3">({countdown}s)</p>}
+                        <button onClick={()=>{handleReSendEmailCode()}} 
+                            disabled={isSendCode} className="py-2 px-3 h-fit rounded-lg text-4xl">
+                            Gửi lại{isSendCode && <span className="mt-3"> ({countdown}s)</span>}
+                        </button>
+                        {isSending&&<div className="loading"></div>}
                     </div>
                 </div>
+                }
 
+                <div className="flex justify-center p-2">
+                    {isSending&&!isVerify&&<div className="loading2"></div>}
+                </div>
                 {/* Button */}
                 <div className="flex items-center justify-between">
-                  <button className="bg-[#da0964] hover:bg-[#ff002bda] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-                    onClick={() => {handleCheckCode()}} 
-                    type="button">Xác minh
-                  </button>
+                    <button className="bg-[#da0964] hover:bg-[#ff002bda] transition duration-1000 text-white font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                    onClick={() => {isVerify?handleCheckCode():handleSendEmailCode()}} 
+                    type="button">{isVerify?"Xác minh":"Gửi mã"}
+                    </button>
                 </div>
             </>
         )}

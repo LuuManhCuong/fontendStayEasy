@@ -5,10 +5,11 @@ import { useDispatch } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
 import { updateInformation } from "../../redux-tookit/actions/userActions";
-import { Alert } from "../Alert/Alert";
-import { verifyPhone } from "../../redux-tookit/actions/authActions";
+import { sendPhoneCode } from "../../redux-tookit/actions/emailActions";
 
 import ReactInputVerificationCode from 'react-input-verification-code';
+
+import "./Loading.css";
 
 
 export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isDisable }) => {
@@ -17,32 +18,23 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
 
   const [isEditing, setIsEditing] = useState(false);
   const [phoneErrorMessage, setPhoneErrorMessage] = useState();
-
+  
   const [phone, setPhone] = useState(user?.phone);
-
+  
   const [isValidate, setIsValidate] = useState(false);
-
+  
   useEffect(()=>{
     if(!user){
       return;
     }
     setPhone(user.phone);
   }, [user]);
-
+  
   const raw = JSON.stringify({
     "id": user?.id,
     "phone": phone
   });
-
-  const handleUpdatePhone = () => {
-    if(code!=codeConfirm){
-      setCodeErrorMessage("Code không đúng!");
-    }else{
-      dispatch(updateInformation('số điện thoại', raw, setIsDisabled, setIsEditing, isEditing));
-      setCodeErrorMessage();
-    }
-  };
-
+  
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
@@ -50,28 +42,106 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
   // test phone code
   const [code, setCode] = useState();
   const [codeConfirm, setCodeConfirm] = useState();
-
+  
   const [isSendCode, setIsSendCode] = useState(false);
-  const [codeErrorMessage, setCodeErrorMessage] = useState();
+  const [isSending, setIsSending] = useState(false);
+  const [isVerify, setIsVerify] = useState(false);
+  
+  const [codeErrorMessage, setCodeErrorMessage] = useState(); //message code error
+  const [codeSuccessMessage, setCodeSuccessMessage] = useState(); //message code success
 
-  const generateRandomNumber = () => {
-      const min = 1000;
-      const max = 9999;
-      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-      setCode(randomNum);
-  };
+  // state countdown -> countdown time to resend code
+  const [countdown, setCountdown] = useState(60);
 
-  useEffect((e)=>{generateRandomNumber();},[]);
+  // set state message
+  const setMessage = ( phoneSuccessMessage, phoneErrorMessage, phoneCodeError, isSendCode, isVerify) =>{
+      setCodeSuccessMessage(phoneSuccessMessage);
+      setPhoneErrorMessage(phoneErrorMessage);
+      setCodeErrorMessage(phoneCodeError);
+      setIsSendCode(isSendCode);
+      setIsVerify(isVerify);
+  }
 
-  const sendCode = () => {
-    setCodeErrorMessage();
-    if(!phone||phone===""){
-      Alert(1500, 'Thay đổi số điện thoại', 'Nhập thông tin đi ba!😒', 'error', 'OK');
-    }else if(phone.length>12||phone.length<9){
+  // data send email code
+  const dataSendPhoneCode = {
+    phone: phone,
+    setCode: setCode,
+    setIsSending: setIsSending,
+    setCountdown: setCountdown,
+    setMessage: setMessage
+  }
+
+  // method validate email input and send email from authAction
+  const handleSendPhoneCode = () => {
+    if (phone==="" ||!phone) {
       setPhoneErrorMessage("Số điện thoại không hợp lệ");
+      setCodeErrorMessage();
+      setIsSendCode(false);
+    }else if(phone&&(phone.length>=12||phone.length<10)){
+      setPhoneErrorMessage("Số điện thoại không hợp lệ");
+      setCodeErrorMessage();
+      setIsSendCode(false);
+    }else {
+        if (!isSendCode) {
+          setIsSending(true);
+          dispatch(sendPhoneCode(dataSendPhoneCode));
+          // Gửi email và sau đó đặt thời gian đếm ngược
+
+          let countdownValue = 60;
+
+          // Gửi email và sau đó đặt thời gian đếm ngược
+          // Trong trường hợp này, tôi sẽ đặt thời gian đếm ngược là 60 giây
+          const interval = setInterval(() => {
+              if (countdownValue > 0) {
+                  setCountdown(countdownValue);
+                  countdownValue -= 1;
+              } else {
+                  setIsSendCode(false);
+                  clearInterval(interval);
+              }
+          }, 1000);
+          
+          // Dừng đếm ngược khi component bị unmount
+          return () => clearInterval(interval);
+      }
     }
-    else{
-      dispatch(verifyPhone({ phone: phone, code: code }, setIsSendCode, setCodeErrorMessage));
+  }
+
+  //method resend code to email
+  const handleReSendPhoneCode = () =>{
+      if(!isSendCode){
+          setIsSending(true);
+          dispatch(sendPhoneCode(dataSendPhoneCode));
+          let countdownValue = 57;
+
+          // Gửi email và sau đó đặt thời gian đếm ngược
+          // Trong trường hợp này, tôi sẽ đặt thời gian đếm ngược là 60 giây
+          const interval = setInterval(() => {
+              if (countdownValue > 0) {
+                  setCountdown(countdownValue);
+                  countdownValue -= 1;
+              } else {
+                  setIsSendCode(false);
+                  clearInterval(interval);
+              }
+          }, 1000);
+          
+          // Dừng đếm ngược khi component bị unmount
+          return () => clearInterval(interval);
+      }else{
+          setPhoneErrorMessage("Vui lòng thử lại sau 60 giây.");
+      }
+  }
+
+  // method validate email input and send email from authAction
+  const handleCheckCode = () => {
+    if (code!=codeConfirm) {
+        setCodeSuccessMessage();
+        setCodeErrorMessage("Mã xác minh không hợp lệ!");
+    } else {
+      dispatch(updateInformation('số điện thoại', raw, setIsDisabled, setIsEditing, isEditing));
+      setCodeErrorMessage();// đặt lại message error của code
+      setIsSendCode(false);
     }
   }
   
@@ -87,9 +157,11 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
                     setPhone(user?.phone);
                     setPhoneErrorMessage();
                     setCodeErrorMessage();
+                    setCodeSuccessMessage();
                     setIsDisabled(0);
                     setIsValidate(false);
                     setIsSendCode(false);
+                    setIsVerify(false);
                   }} className="underline font-medium text-2xl">Hủy</button>
                 </div>
                 <p className="text-gray-500 text-[1.5rem] p-0 m-0">{description}</p>
@@ -122,27 +194,54 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
                     </div>
                 }
 
+                {/* success code message */}
+                {!codeSuccessMessage == ""? (
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 mb-3 rounded relative" role="alert">
+                        <span class="block sm:inline">{codeSuccessMessage}</span>
+                    </div>
+                ) : ("")}
+
+                {/* error code verify message */}
+                {codeErrorMessage ? (
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 mb-3 rounded relative" role="alert">
+                        <span class="block sm:inline">{codeErrorMessage}</span>
+                    </div>
+                ) : ("")}
+
                 {/* form code verify */}
-                {isSendCode &&
+                {isVerify &&
                   <div className="py-4 w-full">
-                    <ReactInputVerificationCode 
+                    <ReactInputVerificationCode
+                      length={6}
                       value={codeConfirm}
                       onChange={(e) => {
                         setCodeErrorMessage();
                         setCodeConfirm(e);
                       }}/>
-                    <div className="">Chưa nhận được mã?   <button className="pt-2 underline font-medium" onClick={()=>{isSendCode?sendCode():console.log("Lỗi");}}>Gửi lại</button>
+                    <div className="flex">
+                      <div>Chưa nhận được mã? <button className="pt-2 underline font-medium" disabled={isSendCode} onClick={()=>{handleReSendPhoneCode()}}>Gửi lại {isSendCode && <span className="mt-3"> ({countdown}s)</span>}</button></div>
+                      {!isVerify&&isSending&&(
+                        <div class="balls">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 }
-                {/* error code verify message */}
-                {codeErrorMessage &&
-                    <div className="flex items-center gap-2 mt-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-label="Error" role="img" focusable="false" fill="#C13515" className="block h-[12px] w-[12px] mb-[0.7rem]"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm0 10.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm.8-6.6H7.2v5.2h1.6z"></path></svg>
-                        <p className="text-xl text-[#C13515]">{codeErrorMessage}</p>
-                    </div>
-                }
-                <button onClick={()=>{isSendCode?handleUpdatePhone():sendCode()}} className="px-5 py-3 bg-black rounded-2xl text-white font-medium">{isSendCode?"Lưu":"Gửi mã"}</button>
+
+                <button onClick={()=>{isVerify?handleCheckCode():handleSendPhoneCode()}} 
+                    className={`flex items-center gap-3 px-5 py-3 bg-black rounded-2xl text-white font-medium`}>
+                      {isVerify?"Xác nhận":"Gửi mã"}
+                      {!isVerify&&isSending&&(
+                        <div class="balls">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                      )}
+                </button>
               </>
           ) : (
             <div className="flex justify-between">

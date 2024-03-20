@@ -6,15 +6,21 @@ import { grouptSlice } from "../../redux-tookit/reducer/grouptSlice";
 import { grouptSelector } from "../../redux-tookit/selector";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import ForgotPassword from "./ForgotPassword";
 
 // Component show menu when not authenticate yet
 // Show Popup for Login and register
 export default function AuthModal() {
   const dispatch = useDispatch();
 
+  // Lấy phần path name của URL hiện tại
+  const currentPath = window.location.pathname;
+
   const { isOpenLoginModal } = useSelector(grouptSelector);
 
   const [isLogin, setIsLogin] = useState(true);
+
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   // method show modal
   const toggleOpenPopup = () => {
@@ -33,21 +39,32 @@ export default function AuthModal() {
   const loginState = {
   }
 
+  const forgotPassState = {
+    setIsLogin: setIsLogin,
+    setIsForgotPassword: setIsForgotPassword
+  }
+
   return (
     <>
       <Dropdown.Menu className="w-[23rem] h-[fit] border-white rounded-full shadow-lg px-0">
         <Dropdown.Item>
           <div className="w-full" onClick={() => {
+              if(currentPath!=="/login"){
                 setIsLogin(true);
+                setIsForgotPassword(false);
                 toggleOpenPopup();
+              }
               }}>
             <p className="text-2xl font-medium mt-2 px-2">Đăng nhập</p>
           </div>
         </Dropdown.Item>
         <Dropdown.Item>
           <div className="w-full" onClick={() => {
-              setIsLogin(false);
-              toggleOpenPopup();
+              if(currentPath!=="/login"){
+                setIsLogin(false);
+                setIsForgotPassword(false);
+                toggleOpenPopup();
+              }
             }}>
             <p className="text-2xl mt-2 px-2">Đăng ký</p>
           </div>
@@ -80,7 +97,7 @@ export default function AuthModal() {
                 </svg>
               </button>
               <h2 className="text-3xl justify-center text-center font-semibold">
-                {isLogin ? "Đăng nhập" : "Đăng ký"}
+                {!isLogin ? "Đăng nhập" : isForgotPassword ? "Quên Mật khẩu" : "Đăng ký"}
               </h2>
             </div>
             {/* header area end */}
@@ -90,19 +107,46 @@ export default function AuthModal() {
             <div className="px-10 py-4 overflow-auto max-h-[88%] max-h-[200px]:max-h-[30%] z-50">
 
               {/* form start */}
-              {isLogin?(
-                  <LoginForm state={loginState} />
-                ):(
+              {!isLogin?(
                   <RegisterForm state={registerState}/>
+                ):isForgotPassword?(
+                  <ForgotPassword state={forgotPassState} />
+                ):(
+                  <LoginForm state={loginState} />
               )}
 
               {/* switch modal */}
+              {isForgotPassword
+              ?
               <div className="justify-center text-center my-3">
-                {setIsLogin ? "Bạn chưa có tài khoản?" : "Bạn đã có tài khoản?"}
-                <button className="text-[#FF002C]" onClick={() => {setIsLogin(!isLogin)}}>
-                  {isLogin ? "Đăng ký" : "Đăng nhập"}
+                Bạn đã có tài khoản? 
+                <button className="text-[#FF002C]" onClick={() => {
+                  setIsLogin(true);
+                  setIsForgotPassword(false);
+                }}>
+                  Đăng nhập
                 </button>
               </div>
+              :
+                <div className="justify-center text-center my-3">
+                  {setIsLogin ? "Bạn chưa có tài khoản?" : "Bạn đã có tài khoản?"}
+                  <button className="text-[#FF002C]" onClick={() => {
+                    setIsLogin(!isLogin);
+                    setIsForgotPassword(false);
+                  }}>
+                    {isLogin ? "Đăng ký" : "Đăng nhập"}
+                  </button>
+                </div>
+              }
+
+              {isLogin&&(
+                <div className="justify-center text-center my-3">
+                  <button className="text-[#FF002C]"
+                    onClick={() => {
+                      setIsForgotPassword(true);
+                      }}>Quên mật khẩu</button>
+                </div>
+              )}
 
               {/* line */}
               <div className="flex items-center justify-center my-3">

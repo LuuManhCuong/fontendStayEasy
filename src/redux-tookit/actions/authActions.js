@@ -145,6 +145,8 @@ export const logout = (navigate) => async (dispatch) => {
   }
 };
 
+
+//-----------------------------------------------------------------------------------------
 // Method changePass
 export const changePassword = (data) => async (dispatch) => {
   try {
@@ -189,6 +191,46 @@ export const changePassword = (data) => async (dispatch) => {
   }
 };
 
+
+//-----------------------------------------------------------------------------------------
+// Method reset password
+export const resetPassword = (data) => async (dispatch) => {
+  try {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      email: data.email,
+      newPassword : data.newpassword
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+
+    const response = await fetch("http://localhost:8080/api/v1/auth/reset-password", requestOptions);
+    const responseData = await response.json();
+
+    if (response.ok) {
+      data.setPasswordErrorMessage();
+      data.setIsLogin(true);
+      data.setIsForgotPassword(false);
+      Alert(1500, 'Quên mật khẩu', responseData.message || "Thành công" ,'success', 'OK');
+    } else {
+        data.setPasswordErrorMessage(responseData.message || "Có lỗi xảy ra!");
+    }
+    }catch(error){
+      Alert(2000, 'Quên mật khẩu', error.message || "Thất bại" ,'error', 'OK');
+  }
+};
+
+
+//-----------------------------------------------------------------------------------------
+
+
 // Method refresh token
 export const refreshToken = async (dispatch) => {
   try {
@@ -216,8 +258,10 @@ export const refreshToken = async (dispatch) => {
         localStorage.setItem("access_token", responseData.access_token);
         localStorage.setItem("refresh_token", responseData.refresh_token);
         dispatch(counterSlice.actions.increase());
-      }else{
-        console.log(responseData.message || "Có lỗi xảy ra!");
+      }
+      else{
+        Alert(2000, 'Thông báo', 'Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại', 'warning', 'OK');
+
         //xóa token đã hết hạn
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
@@ -230,75 +274,7 @@ export const refreshToken = async (dispatch) => {
   }
 };
 
-// Method sen phone code
-export const verifyPhone = ( data, setIsSendCode, setCodeErrorMessage ) => async (dispatch) =>{
-  const myHeaders = new Headers();
-  myHeaders.append("Authorization", "App b3f0b48fc1f9f190b0450618894e6bc2-1fbd37c5-dc8c-4730-93d2-70b682dc527b");
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Accept", "application/json");
-
-  const raw = JSON.stringify({
-    "messages": [
-      {
-          "destinations": [{"to":"84342531726"}, {"to": `${data.phone}`}],
-          "from": "StayEasy",
-          "text": `Your verification PIN is: ${data.code}`
-      }
-    ]
-  });
-
-  const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-  };
-
-  const response = await fetch("https://y3ep3j.api.infobip.com/sms/2/text/advanced", requestOptions);
-  const responseData = await response.json();
-  if(response.ok){
-    setIsSendCode(true);
-  }else{
-    setIsSendCode(false);
-    setCodeErrorMessage("Không gửi được code. vui lòng thử lại!");
-  }
-};
 
 
-// Method send email code
-export const sendEmailCode = ( data ) => async(dispatch) => {
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
 
-  const raw = JSON.stringify({
-    "code": data.code,
-    "email": data.email
-  });
 
-  const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow"
-  };
-
-  const response = await fetch("http://localhost:8080/api/v1/auth/verify-email", requestOptions);
-  const responseData = await response.json();
-  if(response.ok){
-    data.setCountdown(60);
-    data.setCodeEmailError();
-    data.setErrorRegisterMessage();
-    data.setIsSendCode(true);
-    data.setCodeEmailSuccess(responseData.message);
-  }else if(response.status === 400){
-    data.setCodeEmailSuccess();
-    data.setErrorRegisterMessage();
-    data.setIsSendCode(false);
-    data.setCodeEmailError(responseData.message || "Không gửi được code")
-  }else{
-    data.setCodeEmailSuccess();
-    data.setErrorRegisterMessage();
-    data.setIsSendCode(false);
-    data.setCodeEmailError("Không gửi được code. vui lòng thử lại!");
-  }
-};
