@@ -11,32 +11,37 @@ import BookingModal from "./booking/BookingModal";
 import { calculatePricing } from "./booking/calculatePricing";
 import { UserContext } from "../components/UserContext";
 const Booking = () => {
-    const [place, setPlace] = useState([]);
-    const { id } = useParams();
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-    const urlParams = new URLSearchParams(window.location.search);
-    const checkIn = urlParams.get('checkin');
-    const checkOut = urlParams.get('checkout');
-    const numGuest = urlParams.get('numGuest');
-    const [redirect, setRedirect] = useState('');
-    const numberNight = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
-    // show UI
-    const [isOpenPayFunction, setIsOpenPayFunction] = useState(false);
-    const [isOpenCountryModal, setIsOpenCountryModal] = useState(false);
-    const [isOpenHouseRuleModal, setIsOpenHouseRuleModal] = useState(false);
-    const [isOpenPolicyModal, setIsOpenPolicyModal] = useState(false);
-    const [isOpenChargeForDamageModal, setIsOpenChargeForDamageModal] = useState(false);
-    const [isOpenEdit, setIsOpenEdit] = useState(false);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isDialogOpen1, setIsDialogOpen1] = useState(false);
+  const [place, setPlace] = useState([]);
+  const { id } = useParams();
+  //   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const user = useContext(UserContext).user;
+  const urlParams = new URLSearchParams(window.location.search);
+  const checkIn = urlParams.get("checkin");
+  const checkOut = urlParams.get("checkout");
+  const numGuest = urlParams.get("numGuest");
+  const [redirect, setRedirect] = useState("");
+  const numberNight = differenceInCalendarDays(
+    new Date(checkOut),
+    new Date(checkIn)
+  );
+  // show UI
+  const [isOpenPayFunction, setIsOpenPayFunction] = useState(false);
+  const [isOpenCountryModal, setIsOpenCountryModal] = useState(false);
+  const [isOpenHouseRuleModal, setIsOpenHouseRuleModal] = useState(false);
+  const [isOpenPolicyModal, setIsOpenPolicyModal] = useState(false);
+  const [isOpenChargeForDamageModal, setIsOpenChargeForDamageModal] =
+    useState(false);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen1, setIsDialogOpen1] = useState(false);
+  const currency = "USD";
+  const method = "SALE";
+  const intent = "PAYPAL";
+  const description = `${user?.useName} Payment for booking ${place.propertyName}`;
 
-
-    const currency = 'USD';
-    const method = 'SALE';
-    const intent = 'PAYPAL';
-    const description = `${user.userName} Payment for booking ${place.propertyName}`
-
-    const [selectedPayment, setSelectedPayment] = useState("Credit or debit card");
+  const [selectedPayment, setSelectedPayment] = useState(
+    "Credit or debit card"
+  );
 
   const handlePaymentSelect = (paymentType) => {
     setSelectedPayment(paymentType);

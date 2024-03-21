@@ -72,87 +72,7 @@ export default function Host() {
     },
   ];
 
-  const request = [
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-  ];
-
+  
   const inbox = [
     {
       avatar: "/static/images/avatar/1.jpg",
@@ -243,10 +163,10 @@ export default function Host() {
   return (
     <>
       <CommonHeader padding={8} />
-      <div className="mt-[8.1rem] max-[769px]:mt-0 bg-white max-h-[calc(100vh-0)] flex">
+      <div className="mt-[8.1rem] bg-gray-100 max-[769px]:mt-0 max-h-[calc(100vh-0)] flex">
         {/* <div className='flex w-[100vw]'> */}
-        {/* right menu */}
-        <Card className="h-[81vh] shadow-none fixed rounded-none max-w-[15vw] w-full py-4 px-2">
+        {/* left menu */}
+        <Card className="h-[81vh] shadow-none fixed rounded-none max-w-[15vw] w-full py-4 px-2 border-r-2">
           <List>
             {sideBar.map((e, i) => {
               return (
@@ -272,16 +192,16 @@ export default function Host() {
           </List>
         </Card>
 
-        <div className="bg-gray-100 px-2 w-[65vw] ml-[15vw]">
+        <div className="px-2 w-[65vw] ml-[15vw] mb-32">
           <Outlet />
         </div>
 
         {/* inbox area */}
-        <div className="h-[calc(100vh-0)] w-[20vw] bg-gray-100 py-4">
-          <Box className="max-w-[100%] h-[84.7rem] rounded-xl shadow-xl bg-white pt-2">
+        <div className="w-[20vw] py-4">
+          <Box className="max-w-[100%] rounded-xl h-[60vh] bg-white pt-2">
             <h2 className="m-4">Tin nhắn</h2>
             {/* list inbox */}
-            <div className="w-[100%] h-[79rem] overflow-scroll">
+            <div className="w-[100%] h-[51vh] z-10 overflow-scroll">
               {inbox.map((e, i) => {
                 return (
                   <>
@@ -310,7 +230,7 @@ export default function Host() {
         </div>
         {/* </div> */}
       </div>
-      <Footer />
+      <div className="fixed bg-white w-full" style={{bottom: 0}}><Footer/></div>
     </>
   );
 }

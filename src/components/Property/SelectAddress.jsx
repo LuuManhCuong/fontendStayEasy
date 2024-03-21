@@ -15,6 +15,7 @@ export default function SelectAddress({
 }) {
     
   const [selected, setSelected] = useState(value);
+
   return (
     <div className="col-span-full">
       <Listbox value={selected} onChange={setSelected}>
@@ -42,7 +43,7 @@ export default function SelectAddress({
                 leaveTo="opacity-0"
               >
                 <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  {option.map((item) => (
+                  {option?.map((item) => (
                     <Listbox.Option
                       onClick={() =>
                         setValue(

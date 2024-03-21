@@ -4,7 +4,7 @@ import {
   Route,
 } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Experience from "./pages/Experience";
@@ -40,6 +40,7 @@ function App() {
   // Sử dụng useSelector để truy cập các trạng thái từ Redux store
   const isAuthenticated = useContext(UserContext).isAuthenticated;
 
+
   return (
     <>
         <Routes>
@@ -50,7 +51,7 @@ function App() {
           <Route path="/explore/detail/:id" element={<Detail />} />
 
           {/* property manager */}
-          <Route path="/host/property" element={<Host />}>
+          <Route path="/host/property" element={isAuthenticated ? <Host /> : <Navigate to="/login" />}>
             <Route path="statistic" element={<Statistic />} />
             <Route path="list" element={<ListProperty />} />
             <Route path="add" element={<AddProperty />} />
