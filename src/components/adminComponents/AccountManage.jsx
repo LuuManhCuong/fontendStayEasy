@@ -37,7 +37,7 @@ function AccountManage() {
               <td>{e.firstName}</td>
               <td>{e.email}</td>
               <td>{e.roleName}</td>
-              <td></td>
+              <td>{e.address?e.address.city:""}</td>
             </tr>
           ))}
         </tbody>
