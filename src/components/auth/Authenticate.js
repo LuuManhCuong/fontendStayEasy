@@ -97,7 +97,7 @@ export default function AuthModal() {
                 </svg>
               </button>
               <h2 className="text-3xl justify-center text-center font-semibold">
-                {!isLogin ? "Đăng nhập" : isForgotPassword ? "Quên Mật khẩu" : "Đăng ký"}
+                {!isLogin ? "Đăng ký" : isForgotPassword ? "Quên Mật khẩu" : "Đăng nhập"}
               </h2>
             </div>
             {/* header area end */}

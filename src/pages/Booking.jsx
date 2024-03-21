@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai";
 import Footer from "../components/footer/Footer";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { GoStarFill } from "react-icons/go";
 import { TiHeartFullOutline } from "react-icons/ti";
 import axios from "axios";
@@ -501,18 +501,21 @@ const Booking = () => {
 
             {/* Required for your trip */}
             <div className="w-full">
-              <h2 className="text-4xl">Cần thiết cho chuyến đi</h2>
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col mt-5">
+            <h2 className="text-4xl mb-5">Cần thiết cho chuyến đi</h2>
                   <h4>Số điện thoại</h4>
-                  <p>
-                    Thêm và xác nhận số điện thoại của bạn để nhận thông tin cập
-                    nhật về chuyến đi.
-                  </p>
-                </div>
-                <button className="w-24 h-14 border border-black rounded-xl font-medium">
-                  Add
-                </button>
+                  <div className="flex justify-between items-center">
+                  {user?.phone
+                  ?
+                  <>
+                    <p className="mt-3">{'+' + user?.phone.slice(0, 2) + ' ' + user?.phone.slice(2, 5) + ' ' + user?.phone.slice(5, 8) + ' ' + user?.phone.slice(8)}</p>
+                    <Link to="/account-settings/personal-info" className="py-1 px-3 border border-black rounded-xl font-medium">Thay đổi</Link>
+                  </>
+                  : 
+                  <>
+                    <p>Thêm và xác nhận số điện thoại của bạn để nhận thông tin cập nhật về chuyến đi.</p>
+                    <Link to="/account-settings/personal-info" className="py-1 px-3 border border-black rounded-xl font-medium mb-4">Thêm</Link>
+                  </>
+                  }
               </div>
               <hr className="my-5" />
             </div>
