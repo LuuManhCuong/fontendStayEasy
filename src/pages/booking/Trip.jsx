@@ -7,6 +7,8 @@ import axios from "axios";
 import { UserContext } from "../../components/UserContext";
 import TicketMenu from "./TicketMenu"
 import { now } from 'moment/moment';
+import { Alert } from "../../components/Alert/Alert";
+import { CallEnd } from '@mui/icons-material';
 export default function Trip() {
     const [detailTrip, setDetailTrip] = useState(0);
     const [listBoking, setListBooking] = useState([]);
@@ -19,18 +21,15 @@ export default function Trip() {
         axios
             .get(`http://localhost:8080/api/v1/stayeasy/booking/traveler/${userId}`)
             .then((response) => {
-                console.log(activeMenu);
                 const filteredData = response.data.filter(item => {
-                    if (item.confirmation === activeMenu && item.status === true) {
-                        console.log(item.status);
+                    if ( item.confirmation === activeMenu && item.status === true) {
                         return true; // Trả về true để giữ lại phần tử thỏa mãn điều kiện
-                    } else if (item.confirmation === activeMenu) {
-                        return true; // Trả về true để giữ lại phần tử có confirmation khớp với activeMenu
+                    } else if (activeMenu === "REJECTED" && item.confirmation === activeMenu &&  item.cancel !== true) {
+                        return true; // Trả về true để giữ lại phần tử có confirmation khớp với activeMenu // vé đã hủy 
                     } else {
                         return false; // Trả về false để loại bỏ các phần tử không thỏa mãn điều kiện
                     }
                 });
-                // console.log(filteredData);
                 const convertedData = filteredData.map((cardData, index) => {
                     // Lấy từng giá trị riêng lẻ cho ngày, tháng, năm, giờ checkout
                     const checkInDate = new Date(cardData.checkIn);
@@ -42,6 +41,8 @@ export default function Trip() {
                     return {
                         idBooking: cardData.bookingId,
                         total: cardData.total,
+                        cleanFee: cardData.propertyDTOS.serviceFee,
+                        bnbFee : cardData.propertyDTOS.discount,
                         status: cardData.status,
                         comfirm: cardData.confirmation,
                         numGuest: cardData.numOfGuest,
@@ -55,19 +56,19 @@ export default function Trip() {
                             time: checkinTime,
                             date: checkinDayOfWeek,
                             day: checkInDate.getDate(),
-                            month: checkInDate.getMonth() + 1,
+                            month: checkInDate.getMonth(),
                             year: checkInDate.getFullYear()
                         },
                         checkout: {
                             time: checkoutTime,
                             date: checkoutDayOfWeek,
                             day: checkOutDate.getDate(),
-                            month: checkOutDate.getMonth() + 1,
+                            month: checkOutDate.getMonth(),
                             year: checkOutDate.getFullYear()
                         },
                         address: {
                             street: cardData.propertyDTOS.address,
-                            city: "Hà Nội",
+                            city: "",
                             country: "Việt Nam"
                         },
                         index: index + 1
@@ -75,7 +76,7 @@ export default function Trip() {
                 },);
                 setListBooking(filteredData);
                 setDataCard(convertedData);
-                console.log(filteredData);
+               
             })
             .catch((error) => {
                 console.error(error);
@@ -167,27 +168,44 @@ const TripDetail = ({ data, toggleClose }) => {
     const [refundAmount, setRefundAmount] = useState();
     const [messageReponse, setmessageReponse] = useState('');
     const [isOpen , setIsOpen] = useState(false);
+    const [load , setLoad] = useState(false);
+    const handCheckout = (id) => {
+        // Gọi phương thức POST của Axios
+        axios.post(`http://localhost:8080/api/v1/stayeasy/payment/performPayout/${id}`)
+            .then(response => {
+                setLoad(true);
+                // Xử lý kết quả trả về nếu cần
+                Alert(2000, 'Trả phòng trong ngày', 'Trả phòng thành công', 'succsess', 'OK');
+                window.location.reload();
+            })
+            .catch(error => {
+                // Xử lý lỗi nếu có
+                console.error('Error:', error);
+                Alert(2000, 'Trả phòng trong ngày', 'Chúng tôi đã ghi nhận thông tin của bạn và đang chờ xử lí', 'warning', 'OK');
+            
+            }
+            );
+           
+    };
     const handleCancel = (data, status) => {
         setShowCancellationCard(status);
         const checkDateCancel = differenceInCalendarDays(new Date(data.checkInDate), new Date());
         let refundPercentage = 0;
-        console.log(checkDateCancel);
+    
         if (checkDateCancel >= 5) {
-            refundPercentage = 1; // Hoàn 100%
+            refundPercentage = 1 *data.total ; // Hoàn 100%
             setMessage('Hoàn trả 100% cho booking của bạn')
         } else if (checkDateCancel >= 3) {
-            refundPercentage = 0.9; // Hoàn 50%
+            refundPercentage = data.total - ((data.total * data.bnbFee/100)/2) ; // Hoàn 50%
             setMessage('Hoàn trả 100% cho booking của bạn, khấu trừ 50% phí dịch vụ ariBnb')
         } else if (checkDateCancel <= 2 && checkDateCancel > 1) {
-            refundPercentage = 0.7; // Hoàn 70%
+            refundPercentage = (data.total* 70/100) - (data.total* (data.bnbFee/200)) ; // Hoàn 50% // Hoàn 70%
             setMessage('Hoàn trả 70% booking của bạn')
         } else if (checkDateCancel <= 1) {
-            refundPercentage = 0.2; // Không hoàn tiền, chỉ hoàn phí dọn dẹp nếu có
+            refundPercentage = data.total * data.cleanFee/100; // Không hoàn tiền, chỉ hoàn phí dọn dẹp nếu có
             setMessage('Nếu bạn hủy vé, chúng tôi chỉ có thể gửi lại bạn phí dọn dẹp (nếu có)')
         }
-
-        const finalRefundAmount = data.total * refundPercentage;
-        setRefundAmount(finalRefundAmount); // Cập nhật số tiền hoàn trả
+        setRefundAmount(refundPercentage.toFixed(2)); // Cập nhật số tiền hoàn trả
     };
     const submitCancel = (data) => {
         const refundDTO = {
@@ -196,7 +214,6 @@ const TripDetail = ({ data, toggleClose }) => {
             refundAmount: refundAmount,
         };
         // Gọi hàm/API để xử lý việc hoàn tiền với refundDTO
-        console.log(refundDTO);
         setDataRefund(refundDTO);
         postData(urlRefund, refundDTO)
     }
@@ -209,25 +226,24 @@ const TripDetail = ({ data, toggleClose }) => {
         try {
             // Sử dụng phương thức post của axios
             const response = await axios.post(url, data);
+            if(!response) {
+                setLoad(true);
+            }
             // Xử lý kết quả trả về
-            console.log(response.data);
-            if (response.data.message === 'Hủy booking thành công') {
+            if (response.data.message === 'Hủy booking thành công và đã hoàn tiển.') {
                 setShowCancellationCard(false);
                 setmessageReponse(response.data.message)
-                setTimeout(() => {
-                 setIsOpen(true);
-            console.log('show'); 
-                }, 5000);
-            
+                Alert(2000, 'Hủy đặt phòng', 'Hủy booking thành công và đã hoàn tiển', 'succsess', 'OK');
+                window.location.reload();
             }
             return response.data;
-            
         } catch (error) {
             // Xử lý lỗi
             console.error('Có lỗi xảy ra trong quá trình gửi dữ liệu:', error);
+            Alert(2000, 'Hủy đặt phòng', 'Có lỗi xảy ra trong quá trình gửi dữ liệu ', 'error', 'OK');
         }
     }
-    
+
     const handleCheckboxChange = (event) => {
         const { name, checked } = event.target;
         setCancellationReasons(prev => ({ ...prev, [name]: checked }));
@@ -267,6 +283,8 @@ const TripDetail = ({ data, toggleClose }) => {
         },
     ]
 
+    
+
     const itemsPerSlide = 1;
     const itemsToMove = 1;
     // session1 index
@@ -282,6 +300,17 @@ const TripDetail = ({ data, toggleClose }) => {
     const goToNext = () => {
         setCurrentIndex((prevIndex) => Math.min(prevIndex + itemsToMove, data.img.length - itemsPerSlide + 1));
     };
+        if(load) {
+        return (
+            <div className=
+              "flex justify-center items-center h-screen w-screen bg-gray-100 opacity-100" >
+              <div className="flex flex-col items-center">
+                <img src="https://cdn.dribbble.com/users/2356828/screenshots/15188850/media/f8152a69b40f21eec559e6e0d05a46f1.gif" alt="Loading" className="w-20% h-20%" />
+                <p className="text-lg font-medium text-gray-700 mt-4">Quá trình thanh toán sắp hoàn tất...</p>
+              </div>
+            </div>
+          );
+    }
     return (
         <>
              {isOpen && (<div className={`fixed inset-0 flex items-center justify-center ${isOpen ? '' : 'hidden'}`}>
@@ -391,12 +420,19 @@ const TripDetail = ({ data, toggleClose }) => {
                                                         <label><input type="checkbox" name="changePlans" checked={cancellationReasons.changePlans} onChange={handleCheckboxChange} className="form-checkbox h-5 w-5" /> Thay đổi kế hoạch</label>
                                                         <label><input type="checkbox" name="other" checked={cancellationReasons.other} onChange={handleCheckboxChange} className="form-checkbox h-5 w-5" /> Lí do khác</label>
                                                     </div>
-                                                    <p className='text-xl font-semibold'>Khoản tiền hoàn trả: {refundAmount} $</p>
-                                                    <p className='text-pink text-xl font-semibold'>{showMessage}</p>
-                                                    {/* Nút Submit và Cancel */}
+                                                    <div className="flex flex-col space-y-4">
+                                                    <p className='text-3xl font-semibold'>Khoản tiền hoàn trả: {refundAmount} $</p>
+                                                    <p className={`text-2xl font-semibold ${showMessage ? 'text-red-600' : ''}`}>{showMessage}</p>
+                                                    { (data.total - refundAmount).toFixed(2) > 0 && (
+                                                    <div>
+                                                        <p className='text-2xl font-semibold text-red-600'>Khoản khấu trừ: - {(data.total - refundAmount).toFixed(2)} $</p>
+                                                    </div>
+                                                    )}
+                                                    </div>
+                                                     {/* Nút Submit và Cancel */}
                                                     <div className='flex justify-end gap-4'>
-                                                        <button className='bg-zinc-950 hover:bg-zinc-950 text-white font-bold py-2 px-4 rounded' onClick={() => submitCancel(data)}>Submit</button>
-                                                        <button className='bg-pink-600 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded' onClick={() => cancelRefund()}>Cancel</button>
+                                                        <button className='bg-zinc-950 hover:bg-zinc-950 text-white font-bold py-2 px-4 rounded' onClick={() => submitCancel(data)}>Xác nhận</button>
+                                                        <button className='bg-pink-600 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded' onClick={() => cancelRefund()}>Quay lại</button>
                                                     </div>
                                                 </div>
                                             )}
@@ -415,24 +451,29 @@ const TripDetail = ({ data, toggleClose }) => {
                                                         <label><input type="checkbox" name="changePlans" checked={cancellationReasons.changePlans} onChange={handleCheckboxChange} className="form-checkbox h-5 w-5" /> Thay đổi kế hoạch</label>
                                                         <label><input type="checkbox" name="other" checked={cancellationReasons.other} onChange={handleCheckboxChange} className="form-checkbox h-5 w-5" /> Lí do khác</label>
                                                     </div>
-                                                    <p className='text-xl font-semibold'>Khoản tiền hoàn trả: {refundAmount} $</p>
-                                                    <p className='text-pink text-xl font-semibold'>{showMessage}</p>
+                                                    <p className='text-3xl font-semibold'>Khoản tiền hoàn trả: {refundAmount} $</p>
+                                                    <p className='text-red-600 text-2xl font-semibold'>{showMessage}</p>
                                                     {/* Nút Submit và Cancel */}
                                                     <div className='flex justify-end gap-4'>
-                                                        <button className='bg-zinc-950 hover:bg-zinc-950 text-white font-bold py-2 px-4 rounded' onClick={() => submitCancel(data)}>Submit</button>
-                                                        <button className='bg-pink-600 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded' onClick={() => cancelRefund()}>Cancel</button>
+                                                        <button className='bg-zinc-950 hover:bg-zinc-950 text-white font-bold py-2 px-4 rounded' onClick={() => submitCancel(data)}>Xác nhận</button>
+                                                        <button className='bg-pink-600 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded' onClick={() => cancelRefund()}>Quay lại</button>
                                                     </div>
                                                 </div>
                                             )}
                                         </div>
 
                                         ) : data.comfirm === 'REJECTED' ? (
+                                            <a href={`/explore`}>
                                             <p className='bg-red-600 shadow-xl py-3 px-5 rounded-xl text-3xl font-medium'>ĐẶT LẠI</p>
+                                            </a>
                                         ) : data.comfirm === 'COMPLETED' ? (
                                             <p className='bg-green-600 shadow-xl py-3 px-5 rounded-xl text-3xl font-medium'>ĐÃ HOÀN THÀNH CHUYẾN ĐI</p>
                                         ) :
                                           data.comfirm === 'IN_PROGRESS'? (
+                                            <div className='flex flex-col gap-2 mb-4'>
                                                 <p className='bg-lime-400  shadow-xl py-3 px-5 rounded-xl text-3xl font-medium'>ĐANG DIỄN RA</p>
+                                                <button className='bg-zinc-950 text-white  shadow-xl py-3 px-5 rounded-xl text-3xl font-medium' onClick={() => handCheckout(data.idBooking)}>Trả Phòng</button>
+                                            </div>                  
                                             ): null} 
                                 </div>
                             </div>
