@@ -31,6 +31,7 @@ import UpdateProperty from "./components/Property/UpdateProperty";
 import Host from "./pages/host/Host";
 import { ProtectedRoute } from "./redux-tookit/actions/ProtectedRoute";
 import Trip from "./pages/booking/Trip";
+import CategoryResult from "./pages/CategoryResult";
 
 function App() {
   // Sử dụng useSelector để truy cập các trạng thái từ Redux store
@@ -133,6 +134,8 @@ function App() {
             </ShowComponent>
           }
         />
+
+        <Route path="/category" element={<CategoryResult />} />
       </Routes>
     </>
   );
