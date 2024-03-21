@@ -168,7 +168,7 @@ const CommentForm = ({ propertyId, ownerId }) => {
               alt="Image Description"
             />
             <p className="text-3xl m-0 font-semibold">
-              {user?.firstName + " " + user?.lastName}
+              {user?.firstName != null && user?.lastName != null ? user?.firstName + " " + user?.lastName: "Ẩn Danh"}
             </p>
           </div>
 

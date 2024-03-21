@@ -47,7 +47,7 @@ const Feedback = ({ userId,propertyId}) => {
 
   const getFeedback = async () => {
     const res = await axios.get(
-      `http://localhost:8080/api/v1/stayeasy/test/${userId}/${propertyId}`
+      `http://localhost:8080/api/v1/stayeasy/trip/feedback/${userId}/${propertyId}`
     );
     setFeedbacks(res.data);
   };
@@ -62,7 +62,7 @@ const Feedback = ({ userId,propertyId}) => {
     newFeedback.property.propertyId = propertyId;
     newFeedback.rating = rating;
     newFeedback.content = content;
-    axios.post(`http://localhost:8080/api/v1/stayeasy/test/add`, newFeedback)
+    axios.post(`http://localhost:8080/api/v1/stayeasy/trip/feedback/add`, newFeedback)
     .then(function (response) {
       console.log("response: ", response);
       setNewFeedback({
@@ -92,7 +92,7 @@ const Feedback = ({ userId,propertyId}) => {
         editFeedback.property.propertyId = propertyId;
         editFeedback.content = content;
         const res = await axios.put(
-          `http://localhost:8080/api/v1/stayeasy/test/edit/${feedbackId}`,
+          `http://localhost:8080/api/v1/stayeasy/trip/feedback/edit/${feedbackId}`,
           editFeedback
         );
       setEditFeedback({
@@ -114,7 +114,7 @@ const Feedback = ({ userId,propertyId}) => {
 
   const handleDeleteFeedback = async(feedbackId) => {
     await axios.delete(
-      `http://localhost:8080/api/v1/stayeasy/test/delete/${feedbackId}`
+      `http://localhost:8080/api/v1/stayeasy/trip/feedback/delete/${feedbackId}`
     );
     getFeedback();
   };

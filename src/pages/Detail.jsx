@@ -30,6 +30,7 @@ import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
 import { differenceInCalendarDays, format } from "date-fns";
 import Rules from "../components/rules/Rules";
+import UtilitiesDetail from "../components/utilies/UtilitiesDetail";
 
 function Detail() {
   const user = useContext(UserContext).user;
@@ -338,16 +339,9 @@ function Detail() {
               <div className="flex mt-2 text-[17px] font-normal justify-start ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
                 <span className="pl-2 pr-2">-</span>
-                {dataDetail.propertyUtilitis?.map((item, index) => (
-                  <p key={index}>
-                    {item.quantity} {item.utilitiesName}
-                    {index !== dataDetail.propertyUtilitis.length - 1 ? (
-                      <span className="pl-2 pr-2"> - </span>
-                    ) : (
-                      ""
-                    )}
-                  </p>
-                ))}
+                <p>{dataDetail.numBedRoom} Giường</p>
+                <span className="pl-2 pr-2">-</span>
+                <p>{dataDetail.numBathRoom} Phòng tắm</p>
               </div>
               <div className="w-[50%] rating text-lg font-semibold flex pt-4">
                 <div className="flex">
@@ -387,6 +381,9 @@ function Detail() {
 
             {/* info-rules */}
             <Rules rulesList={dataDetail.rulesList}></Rules>
+
+            {/* info-utilities */}
+            <UtilitiesDetail utilities={dataDetail.propertyUtilitis}></UtilitiesDetail>
 
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
