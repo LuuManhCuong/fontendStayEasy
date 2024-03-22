@@ -1,6 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Badge, Dropdown, DropdownButton, DropdownToggle } from "react-bootstrap";
+import {
+  Badge,
+  Dropdown,
+  DropdownButton,
+  DropdownToggle,
+} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
@@ -90,7 +95,7 @@ function Header({ page }) {
         .then(function (response) {
           setSuggest(response.data);
         })
-        .catch(function (error) { });
+        .catch(function (error) {});
     } else if (page === "home") {
       axios
         .get(
@@ -118,23 +123,20 @@ function Header({ page }) {
       setPlaceholder("Nhập từ khóa tìm kiếm!!!");
     }
   }
-  const [notificationList, setNotificationList] = useState([])
+  const [notificationList, setNotificationList] = useState([]);
   useEffect(() => {
-    if(user){
-
+    if (user) {
       fetch(`http://localhost:8080/api/v1/stayeasy/notification/user/get`, {
         headers: {
-          "Authorization": `BEARER ${localStorage.getItem('access_token')}`,
-        }
+          Authorization: `BEARER ${localStorage.getItem("access_token")}`,
+        },
       })
-        .then(data => data.json())
-        .then(data => {
-          setNotificationList(data)
-        })
+        .then((data) => data.json())
+        .then((data) => {
+          setNotificationList(data);
+        });
     }
-
-  }, [user])
-
+  }, [user]);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
@@ -143,11 +145,17 @@ function Header({ page }) {
     if (user) {
       client.connect({}, () => {
         if (client.connected) {
-          client.subscribe(`/api/v1/stayeasy/notification/${user.id}`, (notification) => {
-            const receivedNotification = JSON.parse(notification.body);
-            console.log(receivedNotification);
-            setNotificationList((prevNotifications) => [...prevNotifications, receivedNotification]);
-          });
+          client.subscribe(
+            `/api/v1/stayeasy/notification/${user.id}`,
+            (notification) => {
+              const receivedNotification = JSON.parse(notification.body);
+              console.log(receivedNotification);
+              setNotificationList((prevNotifications) => [
+                ...prevNotifications,
+                receivedNotification,
+              ]);
+            }
+          );
         }
       });
     }
@@ -159,8 +167,6 @@ function Header({ page }) {
         client.disconnect();
       }
     };
-
-
   }, [user]);
   return (
     <header className="header">
@@ -271,10 +277,32 @@ function Header({ page }) {
                 id="dropdown-basic"
               >
                 <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                  <svg className="ml-3 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#000000" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
-                  {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
+                  <svg
+                    className="ml-3 h-7 w-7"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      fill="#000000"
+                      d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+                    />
+                  </svg>
+                  <p
+                    style={{
+                      margin: "0",
+                      color: "black",
+                      fontSize: "1.6rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {user?.lastName + user?.firstName || ""}
+                  </p>
                   {user && user?.avatar ? (
-                    <img className="w-[3.3rem] h-[3.3rem] rounded-full" alt="avatar" src={user?.avatar} />
+                    <img
+                      className="w-[3.3rem] h-[3.3rem] rounded-full"
+                      alt="avatar"
+                      src={user?.avatar}
+                    />
                   ) : user && !user?.avatar ? (
                     <div class="relative inline-flex items-center justify-center w-[3.3rem] h-[3.3rem] overflow-hidden bg-black rounded-full dark:bg-gray-600">
                       <span class="font-medium text-2xl text-white dark:text-gray-300">

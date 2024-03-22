@@ -7,6 +7,7 @@ import axios from "axios";
 import { UserContext } from "../../components/UserContext";
 import TicketMenu from "./TicketMenu"
 import { now } from 'moment/moment';
+import Feedback from '../../components/feedback/Feedback';
 import { Alert } from "../../components/Alert/Alert";
 import { CallEnd } from '@mui/icons-material';
 export default function Trip() {
@@ -40,6 +41,8 @@ export default function Trip() {
                     const checkinDayOfWeek = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'][checkInDate.getDay()];
                     return {
                         idBooking: cardData.bookingId,
+                        userId: cardData.userId,
+                        propertyId: cardData.propertyId,
                         total: cardData.total,
                         cleanFee: cardData.propertyDTOS.serviceFee,
                         bnbFee : cardData.propertyDTOS.discount,
@@ -138,7 +141,7 @@ export default function Trip() {
                     })}
                 </div>
                 {detailTrip != 0 ?
-                    <TripDetail data={dataCard[detailTrip - 1]} toggleClose={() => {
+                    <TripDetail userId={userId} data={dataCard[detailTrip - 1]} toggleClose={() => {
                         setDetailTrip(0);
                     }} />
 
@@ -154,7 +157,7 @@ export default function Trip() {
 }
 
 // popup detail trip
-const TripDetail = ({ data, toggleClose }) => {
+const TripDetail = ({ userId,data, toggleClose }) => {
     const [cancellationReasons, setCancellationReasons] = useState({
         cannotArrive: false,
         changePlans: false,
@@ -502,6 +505,10 @@ const TripDetail = ({ data, toggleClose }) => {
                             </div>
                         </div>
                         <hr />
+                        
+                        <div className='flex gap-4 items-center mt-5'>
+                            <Feedback userId={userId} propertyId={data.propertyId} />
+                        </div>
 
                         {/* cancel area */}
                         <div className='flex gap-4 items-center mt-5'>
