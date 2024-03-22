@@ -59,19 +59,6 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/search/result" element={<SearchResult />} />
         <Route path="/explore/detail/:id" element={<Detail />} />
-
-        {/* <Route path="/property/list" com/> */}
-
-        {/* property manager */}
-        <Route
-          path="/host/property"
-          element={isAuthenticated ? <Host /> : <Navigate to="/login" />}
-        >
-          <Route path="statistic" element={<Statistic />} />
-          <Route path="list" element={<ListProperty />} />
-          <Route path="add" element={<AddProperty />} />
-          <Route path="update/:propertyId" element={<UpdateProperty />} />
-        </Route>
         {/* <Route path="/property/list" com/> */}
 
         {/* account setting */}
