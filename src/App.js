@@ -1,8 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import Home from "./pages/Home";
@@ -43,12 +39,12 @@ function App() {
 
   return (
     <>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/experience" element={<Experience />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/search/result" element={<SearchResult />} />
-          <Route path="/explore/detail/:id" element={<Detail />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/experience" element={<Experience />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/search/result" element={<SearchResult />} />
+        <Route path="/explore/detail/:id" element={<Detail />} />
 
           {/* property manager */}
           <Route path="/host/property" element={isAuthenticated ? <Host /> : <Navigate to="/login" />}>
@@ -59,14 +55,11 @@ function App() {
           </Route>
           {/* <Route path="/property/list" com/> */}
 
-
         {/* account setting */}
         <Route element={<ProtectedRoute />}>
           <Route path="/booking/:id" element={<Booking />} />
           {/* booking */}
           <Route path="/booking" element={<Booking />} />
-          <Route path="/account/bookings" element={<BookingPage />} />
-          <Route path="/account/bookings/:id" element={<BookingDetail />} />
           <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
           <Route path="/payment/paypal/cancel" element={<CancelPayment />} />
 
@@ -109,10 +102,7 @@ function App() {
           />
 
           {/* host */}
-          <Route
-            path="/host"
-            element={<Host />}
-          />
+          <Route path="/host" element={<Host />} />
 
           {/* Trip */}
           <Route path="/trips" element={<Trip />} />

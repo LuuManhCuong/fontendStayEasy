@@ -24,6 +24,7 @@ export default function Finished({ setRevenue, setNumGuest }) {
   }, [data]);
 
   // lượng khách
+
   const [guest, setGuest] = useState([]);
 
   const totalGuest = guest.reduce((acc, cur) => acc + cur, 0);

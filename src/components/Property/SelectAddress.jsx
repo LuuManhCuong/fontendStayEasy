@@ -13,7 +13,6 @@ export default function SelectAddress({
   setValue,
   type,
 }) {
-    
   const [selected, setSelected] = useState(value);
 
   return (

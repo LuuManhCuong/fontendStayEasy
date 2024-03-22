@@ -512,7 +512,7 @@ function Detail() {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col justify-between">
+                <div className="flex flex-col justify-between text-center">
                   <button
                     className="h-[4.8rem] bg-red-600 rounded-xl"
                     type="submit"
@@ -522,25 +522,26 @@ function Detail() {
                       Đặt phòng
                     </p>
                   </button>
+                    <p className="text-black text-2xl pt-2">Bạn vẫn chưa bị trừ tiền</p>
                 </div>
                 <div className="pt-6 pb-4 border-b-2">
                   <div className="flex justify-between text-lg">
                     <p className="text-[17px]">
-                      {dataDetail.price} x {totalDays}
+                      {dataDetail.price} x {totalDays} đêm
                     </p>
                     <p className="text-[17px]">
                       {dataDetail.price * totalDays}$
                     </p>
                   </div>
-                  <div className="flex justify-between text-lg">
+                  {/* <div className="flex justify-between text-lg">
                     <p className="text-[17px]">Phí dịch vụ StayEasy</p>
                     <p className="text-[17px]">10$</p>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="flex justify-between text-lg pt-6 font-semibold">
                   <p className="text-[17px]">Tổng trước thuế</p>
                   <p className="text-[17px]">
-                    {dataDetail.price * totalDays + 10}$
+                    {dataDetail.price * totalDays}$
                   </p>
                 </div>
               </div>
