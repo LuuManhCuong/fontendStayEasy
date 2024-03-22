@@ -53,7 +53,7 @@ function Detail() {
   const [checkin, setCheckin] = useState(
     urlParams.get("checkin") ? new Date(urlParams.get("checkin")) : today
   );
-  const idUser = JSON.parse(localStorage.getItem("user"))?.id;
+  const idUser = user ? user.id : null;
   const [checkout, setCheckout] = useState(
     urlParams.get("checkout")
       ? new Date(urlParams.get("checkout"))
@@ -580,7 +580,7 @@ function Detail() {
         {/* <h2>host: {dataDetail.owner?.id}</h2>
         <h2>user: {idUser}</h2> */}
 
-        {idUser !== dataDetail.owner?.id && (
+        {idUser !== dataDetail.owner.id && (
           <div className="flex justify-center w-full">
             <div className="border-black/30 border-b-2 w-[89%] p-12 box-border flex justify-center">
               <Col className="col-5">
