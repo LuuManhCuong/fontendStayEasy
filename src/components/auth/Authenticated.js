@@ -3,7 +3,6 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { counterSlice } from "../../redux-tookit/reducer/counterSlice";
 import { BookmarkIcon } from "@heroicons/react/24/solid";
 import { logout } from "../../redux-tookit/actions/authActions";
 

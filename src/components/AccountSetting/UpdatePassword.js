@@ -98,7 +98,7 @@ export const UpdatePassword = ({ title, value }) => {
                             </button>
                         </div>
                     </div>
-                    <Link to="/">
+                    <Link to="/login">
                         <p className="text-[#008489] text-xl hover:underline mb-4">Bạn cần mật khẩu mới?</p>
                     </Link>
                     <div className="w-full mt-2 mb-4">

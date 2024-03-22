@@ -61,23 +61,39 @@ export default function LoginAndSecurity({ title }) {
 
 const Login = () => {
   const userFetch = useContext(UserContext).user;
-  const [lastestUpdateDate, setLastestUpdateDate] = useState();
+  const [caculatorTime, setCaculatorTime] = useState();
+  const [unit, setUnit] = useState();
 
   useEffect(()=>{
       if(!userFetch){
           return;
       }else{
-          const startDate = moment(userFetch?.updateAt, 'YYYY-MM-DD');
-          const now = moment();
+        // Tạo một đối tượng moment từ LocalDateTime
+        const dateTimeMoment = moment(userFetch?.updateAt);
+        
+        // Lấy ngày giờ hiện tại
+        const currentDateTime = moment();
   
-          const daysDiff = now.diff(startDate, 'days');
-          const hoursDiff = now.diff(startDate, 'hours');
+        // Tính khoảng thời gian giữa hai ngày giờ
+        const duration = moment.duration(currentDateTime.diff(dateTimeMoment));
 
-          if(hoursDiff>24){
-            setLastestUpdateDate(daysDiff + ' ngày');
+        if(Math.floor(duration.asSeconds())>60){
+          if(Math.floor(duration.asMinutes())>60){
+            if(Math.floor(duration.asHours())>24){
+              setCaculatorTime(Math.floor(duration.asDays()));
+              setUnit("ngày");
+            }else{
+              setCaculatorTime(Math.floor(duration.asHours()));
+              setUnit("giờ");
+            }
           }else{
-            setLastestUpdateDate(hoursDiff + ' giờ');
+            setCaculatorTime(Math.floor(duration.asMinutes()));
+            setUnit("phút");
           }
+        }else{
+          setCaculatorTime(Math.floor(duration.asSeconds()));
+          setUnit("giây");
+        }
       }
   },[userFetch]);
 
@@ -87,7 +103,7 @@ const Login = () => {
         <div className="lg:w-[55%]">
           <h1 className="font-bold text-gray-600 mt-12 mb-12">Login</h1>
           {/* password */}
-          <UpdatePassword title="Mật khẩu" value={`Cập nhật lần cuối ${lastestUpdateDate} trước`} button="Thay đổi"/>
+          <UpdatePassword title="Mật khẩu" value={`Cập nhật lần cuối ${!caculatorTime? '0 giờ trước' : caculatorTime + " "+ unit +" trước"}`} button="Thay đổi"/>
           <hr />
 
           <h1 className="font-bold text-gray-600 mt-12 mb-12">

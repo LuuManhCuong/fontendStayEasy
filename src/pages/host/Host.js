@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import CommonHeader from "../../components/header/CommonHeader";
+
 import Footer from "../../components/footer/Footer";
+import Header from "../../components/header/Header";
+
 import { Link, Outlet } from "react-router-dom";
 
 import { DateRangePicker } from "react-date-range";
@@ -242,7 +245,8 @@ export default function Host() {
 
   return (
     <>
-      <CommonHeader padding={8} />
+      {/* <CommonHeader padding={8} /> */}
+      <Header></Header>
       <div className="mt-[8.1rem] max-[769px]:mt-0 bg-white max-h-[calc(100vh-0)] flex">
         {/* <div className='flex w-[100vw]'> */}
         {/* right menu */}
