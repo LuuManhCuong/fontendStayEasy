@@ -40,7 +40,7 @@ export default function CommonHeader({ padding }) {
           </svg>
         </Link>
         <div className="gap-2 font-medium min-[768px]:flex max-[768px]:hidden">
-          <NavLink to="/host/home"
+          <NavLink to="/host/register"
             className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-full text-[1.5rem]"

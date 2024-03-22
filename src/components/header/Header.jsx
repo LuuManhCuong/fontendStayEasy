@@ -204,29 +204,11 @@ function Header({ page }) {
           >
             Khám phá
           </NavLink>
-
-          <NavLink
-            to="/admin-dashboard"
-            className={(navData) =>
-              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
-            }
-          >
-            Admin
-          </NavLink>
-
-          <NavLink
-            to="/host/property/statistic"
-            className={(navData) =>
-              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
-            }
-          >
-            Host
-          </NavLink>
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
           <NavLink
-            to="/property/list"
+            to="/host/register"
             className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl text-[1.5rem]"
