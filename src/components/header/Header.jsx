@@ -84,7 +84,7 @@ function Header({ page }) {
       setShowHistory(false);
     }
   }, [address]);
-
+  console.log(("admin : ", user));
   // suggest explore
   React.useEffect(() => {
     if (page === "explore") {
@@ -211,23 +211,32 @@ function Header({ page }) {
             Khám phá
           </NavLink>
 
-          <NavLink
-            to="/admin-dashboard"
-            className={(navData) =>
-              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
-            }
-          >
-            Admin
-          </NavLink>
+          {user?.roleName === "USER" && (
+            <NavLink
+              to="/host/property/statistic"
+              className={(navData) =>
+                navData.isActive
+                  ? "font-medium nav-item admin"
+                  : "nav-item admin"
+              }
+            >
+              Chủ nhà
+            </NavLink>
+          )}
 
-          <NavLink
-            to="/host/property/statistic"
-            className={(navData) =>
-              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
-            }
-          >
-            Host
-          </NavLink>
+          {user?.roleName === "ADMIN" && (
+            <NavLink
+              style={{ color: "red" }}
+              to="/admin-dashboard"
+              className={(navData) =>
+                navData.isActive
+                  ? "font-medium nav-item admin"
+                  : "nav-item admin"
+              }
+            >
+              Admin
+            </NavLink>
+          )}
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
@@ -257,35 +266,48 @@ function Header({ page }) {
             </svg>
           </button> */}
           {/* Thông Báo */}
-          {
-            isAuthenticated ?
-              <div className="flex mr-4">
-                <Dropdown>
-                  <DropdownToggle
-                    bsPrefix="false"
-                    className="bg-transparent border-white p-2"
-                    id="dropdown-basic"
-                  >
-                    <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                      <i style={{ color: 'black', fontSize: '17px' }} className="fa-regular fa-bell"></i> <Badge bg="secondary">{notificationList.length > 99 ? '99+' : notificationList.length}</Badge>
-                    </div>
-                  </DropdownToggle>
-                  <Dropdown.Menu style={{ height: '300px', width: '200px', overflowY: 'scroll' }}>
-                    {
-                      notificationList <= 0 ? <p>Hiện chưa có thông báo nào</p> :
-                        [...notificationList].reverse().map(e => (
-                          <Dropdown.Item href="#" key={e.id}>
-                            <p>{e.content}</p>
-                          </Dropdown.Item>
-                        ))
-                    }
-
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div> :
-              <></>
-
-          }
+          {isAuthenticated ? (
+            <div className="flex mr-4">
+              <Dropdown>
+                <DropdownToggle
+                  bsPrefix="false"
+                  className="bg-transparent border-white p-2"
+                  id="dropdown-basic"
+                >
+                  <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
+                    <i
+                      style={{ color: "black", fontSize: "17px" }}
+                      className="fa-regular fa-bell"
+                    ></i>{" "}
+                    <Badge bg="secondary">
+                      {notificationList.length > 99
+                        ? "99+"
+                        : notificationList.length}
+                    </Badge>
+                  </div>
+                </DropdownToggle>
+                <Dropdown.Menu
+                  style={{
+                    height: "300px",
+                    width: "200px",
+                    overflowY: "scroll",
+                  }}
+                >
+                  {notificationList <= 0 ? (
+                    <p>Hiện chưa có thông báo nào</p>
+                  ) : (
+                    [...notificationList].reverse().map((e) => (
+                      <Dropdown.Item href="#" key={e.id}>
+                        <p>{e.content}</p>
+                      </Dropdown.Item>
+                    ))
+                  )}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          ) : (
+            <></>
+          )}
           {/* Menu */}
           <div className="flex mr-4">
             <Dropdown>
