@@ -9,7 +9,6 @@ export function UserContextProvider({ children }) {
   const dispatch = useDispatch();
   const [user, setUser] = useState();
   const [isAuthenticated, setIsAuthenticated] = useState();
-  const [isTokenExpired, setIsTokenExpired] = useState();
   const [ready,setReady] = useState(false);
 
   const counter = useSelector(counterSelector);

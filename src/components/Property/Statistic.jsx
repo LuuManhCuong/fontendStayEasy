@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import CommonHeader from "../../components/header/CommonHeader";
 import Footer from "../../components/footer/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { DateRangePicker } from "react-date-range";
 import { addDays } from "date-fns";
@@ -27,8 +27,10 @@ import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import { UserContext } from "../UserContext";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import { useDispatch } from "react-redux";
+import { Alert } from "../Alert/Alert";
 
-export default function Statistic() {
+export default function Statistic({ role }) {
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -133,8 +135,6 @@ export default function Statistic() {
         client.disconnect();
       }
     };
-
-
   }, []);
   function acceptRoom() {
     // id của chủ phòng - người gửi thông báo
@@ -170,6 +170,19 @@ export default function Statistic() {
       JSON.stringify(data)
     );
   }
+
+  const navigate = useNavigate();
+
+  // method logout
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    if(role&&!role.includes("ROLE_HOST")){
+      Alert(3000, 'Thông báo', 'Bạn không có quyền truy cập. Hãy thử đăng nhập tài khoản khác','error', 'OK');
+      navigate("/");
+    }
+  },[role]);
+
   return (
     <div className="w-[100%] bg-gray-100 px-4">
       {/* date area */}

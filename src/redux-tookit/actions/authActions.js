@@ -49,6 +49,9 @@ export const login = (data) => (dispatch) => {
         // Kiểm tra nếu có thông tin trang trước đó, chuyển hướng lại đó sau khi đăng nhập thành công
         const from = data.location.state?.from?.pathname || '/'; data.navigate(from, { replace: true });
       }
+      if(result.user.roles&&result.user.roles.includes("ROLE_ADMIN")){
+        data.navigate("/admin-dashboard");
+      }
       //Show thông báo
       Alert(1500, 'Đăng nhập', 'Đăng nhập thành công','success', 'OK');
     })
@@ -82,7 +85,7 @@ export const signup = (data) => async (dispatch) => {
           password: data.registerPassword,
           firstName: data.firstName,
           lastName: data.lastName,
-          role: "USER",
+          role: ["USER"],
       });
 
       const requestOptions = {
@@ -143,7 +146,8 @@ export const logout = (navigate) => async (dispatch) => {
       })
       .catch((error) => {
         console.error(error);
-        Alert(1500, 'Đăng xuất', 'Đăng xuất thất bại' ,'error', 'OK');
+        dispatch(counterSlice.actions.increase());
+        // Alert(1500, 'Đăng xuất', 'Đăng xuất thất bại' ,'error', 'OK');
       });
   } else {
     Alert(2000, 'Đăng xuất', 'Bạn chưa đăng nhập!' ,'warning', 'OK');

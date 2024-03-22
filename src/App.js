@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Experience from "./pages/Experience";
@@ -17,9 +17,6 @@ import PaymentsPayouts from "./pages/AccountSetting/PaymentsPayouts";
 import Login from "./pages/AccountSetting/Login";
 
 import { UserContext } from "./components/UserContext";
-
-import BookingPage from "./pages/booking/BookingsPage";
-import BookingDetail from "./pages/booking/BookingDetail";
 import Booking from "./pages/Booking";
 import PaymentSuccsess from "./pages/payment/PaymentSuccsess";
 import CancelPayment from "./pages/payment/CancelPayment";
@@ -31,11 +28,20 @@ import UpdateProperty from "./components/Property/UpdateProperty";
 import Host from "./pages/host/Host";
 import { ProtectedRoute } from "./redux-tookit/actions/ProtectedRoute";
 import Trip from "./pages/booking/Trip";
+import { Alert } from "./components/Alert/Alert";
+import RegisterHost from "./pages/host/RegisterHost";
 import CategoryResult from "./pages/CategoryResult";
 
 function App() {
   // Sử dụng useSelector để truy cập các trạng thái từ Redux store
   const isAuthenticated = useContext(UserContext).isAuthenticated;
+
+  const roleUser = useContext(UserContext).user?.roles;
+  useEffect(()=>{
+    if(!roleUser){
+      return;
+    }
+  },[roleUser])
 
   return (
     <>
@@ -46,13 +52,7 @@ function App() {
         <Route path="/search/result" element={<SearchResult />} />
         <Route path="/explore/detail/:id" element={<Detail />} />
 
-        {/* property manager */}
-        <Route path="/host/property" element={<Host />}>
-          <Route path="statistic" element={<Statistic />} />
-          <Route path="list" element={<ListProperty />} />
-          <Route path="add" element={<AddProperty />} />
-          <Route path="update/:propertyId" element={<UpdateProperty />} />
-        </Route>
+        
         {/* <Route path="/property/list" com/> */}
 
         {/* account setting */}
@@ -63,10 +63,6 @@ function App() {
           <Route path="/payment/paypal/success" element={<PaymentSuccsess />} />
           <Route path="/payment/paypal/cancel" element={<CancelPayment />} />
 
-          <Route
-            path="/admin-dashboard"
-            element={<AdminDarhBoard></AdminDarhBoard>}
-          />
 
           <Route
             path="/account-settings"
@@ -101,18 +97,26 @@ function App() {
             element={<PaymentsPayouts title="Thanh toán và Hoàn tiền" />}
           />
 
+          <Route path="/host/register" element={<RegisterHost />}/>
+
+          {/* admin */}
+          <Route path="/admin-dashboard" element={<AdminDarhBoard role={roleUser}/>}/>
+
+        {/* property manager */}
+        <Route path="/host/property" element={<Host role={roleUser}/>}>
+          <Route path="statistic" element={<Statistic />} />
+          <Route path="list" element={<ListProperty />} />
+          <Route path="add" element={<AddProperty/>} />
+          <Route path="update/:propertyId" element={<UpdateProperty/>} />
+        </Route>
           {/* host */}
-          <Route path="/host" element={<Host />} />
 
           {/* Trip */}
           <Route path="/trips" element={<Trip />} />
         </Route>
 
         {/* login */}
-        <Route
-          path="/login"
-          element={isAuthenticated ? <Navigate to="/" /> : <Login />}
-        />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />}/>
 
         {/* inbox */}
         <Route

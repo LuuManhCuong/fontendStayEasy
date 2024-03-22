@@ -1,13 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./admin.scss";
-import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import Statistical from "../../components/adminComponents/Statistical";
 import PostManage from "../../components/adminComponents/PostManage";
 import AccountManage from "../../components/adminComponents/AccountManage";
 import Seting from "../../components/adminComponents/Seting";
-import { Link } from "react-router-dom";
-import { redirect } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import { Card, List, ListItem, ListItemPrefix } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
@@ -15,9 +14,25 @@ import {
   Cog6ToothIcon,
   ArchiveBoxIcon,
 } from "@heroicons/react/24/solid";
-import { UserContext } from "../../components/UserContext";
+import CommonHeader from "../../components/header/CommonHeader";
+import { Alert } from "../../components/Alert/Alert";
 
-function AdminDarhBoard() {
+function AdminDarhBoard({ role }) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role && !role.includes("ROLE_ADMIN")) {
+      Alert(
+        3000,
+        "Thông báo",
+        "Bạn không có quyền truy cập. Hãy thử đăng nhập tài khoản khác",
+        "error",
+        "OK"
+      );
+      navigate("/");
+    }
+  }, [role]);
+
   const sidebar = [
     {
       cate: "Thống kê",
@@ -49,41 +64,36 @@ function AdminDarhBoard() {
       component: <Seting></Seting>,
     },
   ];
-  const user = useContext(UserContext).user;
+  // const user = useContext(UserContext).user;
 
   const [isActive, setActive] = useState(sidebar[0]);
-  return (
+  return role && role.includes("ROLE_ADMIN") ? (
     <>
-      {user?.roleName === "ADMIN" ? (
-        <>
-          <Header></Header>
-          <div className="flex h-full w-full">
-            {/* left menu */}
-            <Card className="h-[calc(100vh-0)] w-[20rem] max-w-[24rem] py-4 px-2 shadow-xl shadow-blue-gray-900/5">
-              <List>
-                {sidebar.map((e, i) => {
-                  return (
-                    <Link to={e.link} onClick={() => setActive(e)}>
-                      <ListItem>
-                        <ListItemPrefix>{e.icon}</ListItemPrefix>
-                        <h4 className="max-[1200px]:hidden w-full">{e.cate}</h4>
-                      </ListItem>
-                    </Link>
-                  );
-                })}
-              </List>
-            </Card>
-            <div className="w-full p-10 bg-gray-100">{isActive.component}</div>
-          </div>
-          <Footer></Footer>
-        </>
-      ) : (
-        <h2>
-          {" "}
-          Bạn không có quyền truy cập vào đường dẫn này!!! Vui lòng quay lại{" "}
-        </h2>
-      )}
+      <CommonHeader padding={24}></CommonHeader>
+      <div className="flex h-full w-full mt-32">
+        {/* left menu */}
+        <Card className="h-[calc(100vh-0)] w-[20rem] max-w-[24rem] py-4 px-2 shadow-xl shadow-blue-gray-900/5">
+          <List>
+            {sidebar.map((e, i) => {
+              return (
+                <Link to={e.link} onClick={() => setActive(e)}>
+                  <ListItem>
+                    <ListItemPrefix>{e.icon}</ListItemPrefix>
+                    <h4 className="max-[1200px]:hidden w-full text-3xl">
+                      {e.cate}
+                    </h4>
+                  </ListItem>
+                </Link>
+              );
+            })}
+          </List>
+        </Card>
+        <div className="w-full p-10 bg-gray-100">{isActive.component}</div>
+      </div>
+      <Footer></Footer>
     </>
+  ) : (
+    <></>
   );
 }
 
