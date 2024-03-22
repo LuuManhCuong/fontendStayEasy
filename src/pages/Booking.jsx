@@ -13,6 +13,8 @@ import Rules from "../components/rules/Rules";
 import Amenities from "../components/Amenities/Amenities";
 import { Alert } from "../components/Alert/Alert";
 
+import "./booking/booking.css";
+
 const Booking = () => {
   const [place, setPlace] = useState([]);
   const { id } = useParams();
@@ -42,6 +44,9 @@ const Booking = () => {
   const intent = "PAYPAL";
   const description = `${user?.useName} Payment for booking ${place.propertyName}`;
   const [selectedPayment, setSelectedPayment] = useState("Paypal");
+
+  const [isLoadingPlace, setIsLoadingPlace] = useState(false);
+  const [isLoadingPrice, setIsLoadingPrice] = useState(false);
 
   const handlePaymentSelect = (paymentType) => {
     setSelectedPayment(paymentType);
@@ -73,13 +78,16 @@ const Booking = () => {
   const togglePopupChargeForDamage = () => {
     setIsOpenChargeForDamageModal(!isOpenChargeForDamageModal);
   };
+
   useEffect(() => {
     if (!id) return;
+    setIsLoadingPlace(true);
     axios
       .get(`http://localhost:8080/api/v1/stayeasy/property/${id}`)
       .then((response) => {
         if (response) {
-          setPlace(response.data)
+          setPlace(response.data);
+          setIsLoadingPlace(false);
           console.log(response.data); // Logging response data instead of place
         }
       })
@@ -87,6 +95,8 @@ const Booking = () => {
         // Handle errors
         console.error("Error fetching data:", error);
       });
+
+      !pricing?setIsLoadingPrice(true):setIsLoadingPrice(false);
   }, [id]);
 
   const pricing = place
@@ -838,147 +848,166 @@ const Booking = () => {
 
           {/* Right content */}
           <div>
-            <div className="fixed top-[23.5rem] left-[85rem] w-[32%] p-5 rounded-3xl border border-black">
-              {/* top content */}
-              <div className="flex items-center justify-between mb-5">
-                <img
-                  className="rounded-xl mr-5"
-                  width="150"
-                  height="150"
-                  src={place.thumbnail}
-                />
-                <div class="mb-4">
-                  <h4 class="text- font-semibold">{place.propertyName}</h4>
-                  <p class="text-gray-600">{place.address}</p>
-                  <div class="flex items-center mt-2">
-                    <GoStarFill />
-                    <span class="text-black-900 mr-1">{place.rating}</span>
-                    <span class="text-gray-900 ml-1">
-                      ({place.feedbackList ?? 106} reviews)
-                    </span>
-                    <TiHeartFullOutline />
-                    <span class="ml-2 text-gray-900">Superhost</span>
+            <div className="fixed top-[15rem] left-[85rem] w-[32%] p-5 rounded-3xl border border-black">
+            {/* Neu dang tinh toan thi tra ve animation */}
+            {isLoadingPlace || isLoadingPrice?(
+              <div className="flex justify-center p-[15rem]">
+                <div class="dots">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div> 
+              </div>               
+            ):(
+              <>
+                {/* top content */}
+                <div className="flex items-center justify-between mb-5">
+                  <img
+                    className="rounded-xl mr-5"
+                    width="150"
+                    height="150"
+                    src={place.thumbnail}
+                  />
+                  <div class="mb-4">
+                    <h4 class="text- font-semibold">{place.propertyName}</h4>
+                    <p class="text-gray-600">{place.address}</p>
+                    <div class="flex items-center mt-2">
+                      <GoStarFill />
+                      <span class="text-black-900 mr-1">{place.rating}</span>
+                      <span class="text-gray-900 ml-1">
+                        ({place.feedbackList ?? 106} reviews)
+                      </span>
+                      <TiHeartFullOutline />
+                      <span class="ml-2 text-gray-900">Superhost</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* center content */}
-              <div className="mt-5">
-                <h2 className="text-4xl">Chi tiết giá</h2>
-                <div className="flex justify-between items-center">
-                        <a   className="underline underline-offset-4 text-black "
-                          onClick={handleOpenDialog2}>
-                          ${place.price} x {numberNight} đêm
-                     </a>
-                  {isDialogOpen2 && (
-                             <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z50">
-                             <div className="bg-white   p-8 rounded-lg drop-shadow-xl">
-                                  <button
-                                    onClick={handleOpenDialog2}
-                                    className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md"
-                                  >
-                                    X
-                                  </button>
-                                  <h3 className="text-4xl">Chi tiết giá cơ sở</h3>
-                                  {litsPrice.map((item, index) => (
-                                    <div class="flex justify-between items-center mt-10">
-                                      <p class=" text-3xl">Ngày {item.date}</p>
+                {/* center content */}
+                <div className="mt-5">
+                      <h2 className="text-4xl">Chi tiết giá</h2>
+                      <div className="flex justify-between items-center">
+                              <a   className="underline underline-offset-4 text-black "
+                                onClick={handleOpenDialog2}>
+                                ${place.price} x {numberNight} đêm
+                          </a>
+                        {isDialogOpen2 && (
+                                  <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z50">
+                                  <div className="bg-white   p-8 rounded-lg drop-shadow-xl">
+                                        <button
+                                          onClick={handleOpenDialog2}
+                                          className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md"
+                                        >
+                                          X
+                                        </button>
+                                        <h3 className="text-4xl">Chi tiết giá cơ sở</h3>
+                                        {litsPrice.map((item, index) => (
+                                          <div class="flex justify-between items-center mt-10">
+                                            <p class=" text-3xl">Ngày {item.date}</p>
+                                            <div class="px-16"></div>
+                                          <p class="  text-3xl text-pink">{item.price} $ </p></div>
+                                        ))}
+                                          <div class="flex justify-between items-center mt-10">
+                                      <h3 className="text-4xl">Tổng giá cơ sở</h3>
                                       <div class="px-16"></div>
-                                    <p class="  text-3xl text-pink">{item.price} $ </p></div>
-                                  ))}
-                                    <div class="flex justify-between items-center mt-10">
-                                <h3 className="text-4xl">Tổng giá cơ sở</h3>
-                                <div class="px-16"></div>
-                                <h3 className="text-4xl">${pricing.price}</h3>
-                                </div>
-                                </div>
-                              </div>
-                            )}
+                                      <h3 className="text-4xl">${pricing.price}</h3>
+                                      </div>
+                                      </div>
+                                    </div>
+                                  )}
+                              
                         
-                  
-                  <p>${pricing.price ? `${pricing.price}` : ""}</p>
-                </div>
-                {/* Khuyen mai */}
-                <div className="flex justify-between items-center">
-                  <a
-                    className="underline underline-offset-4 text-black "
-                    onClick={handleOpenDialog}
-                  >
-                    Khuyến mãi
-                  </a>
-                  {isDialogOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z50">
-                      <div className="bg-white p-8 rounded-lg drop-shadow-xl">
-                        <button
+                        <p>${pricing.price ? `${pricing.price}` : ""}</p>
+                      </div>
+                      {/* Khuyen mai */}
+                      <div className="flex justify-between items-center">
+                        <a
+                          className="underline underline-offset-4 text-black "
                           onClick={handleOpenDialog}
-                          className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md"
                         >
-                          X
-                        </button>
-                        <p className="text-xl">{`Khoản phí một lần do chủ nhà tính`}</p>
-                        <p className="text-xl">{`để trang trải chi phí vệ sinh chỗ của họ.`}</p>
+                          Khuyến mãi
+                        </a>
+                        {isDialogOpen && (
+                          <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z50">
+                            <div className="bg-white p-8 rounded-lg drop-shadow-xl">
+                              <button
+                                onClick={handleOpenDialog}
+                                className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md"
+                              >
+                                X
+                              </button>
+                              <p className="text-xl">{`Khoản phí một lần do chủ nhà tính`}</p>
+                              <p className="text-xl">{`để trang trải chi phí vệ sinh chỗ của họ.`}</p>
+                            </div>
+                          </div>
+                        )}
+                        <p className="text-pink-600"> - ${pricing.discount ? `${pricing.discount}` : ""}</p>
                       </div>
-                    </div>
-                  )}
-                  <p className="text-pink-600"> - ${pricing.discount ? `${pricing.discount}` : ""}</p>
-                </div>
-                <div className="flex justify-between items-center">
-                  <a   className="underline underline-offset-4 text-black ">
-                   Phí dọn dẹp
-                  </a>
-                  <p>
-                    $
-                    {pricing.cleanFee
-                      ? `${pricing.cleanFee}`
-                      : ""}
-                  </p>
-                </div>
-                <div className="flex justify-between items-center">
-                  <a
-                    className="underline underline-offset-4 text-black "
-                    onClick={handleOpenDialog1}
-                  >
-                    Phí dịch vụ Airbnb
-                  </a>
-                  {isDialogOpen1 && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z10">
-                      <div className="bg-white p-8 rounded-lg drop-shadow-xl">
-                        <button
+                      <div className="flex justify-between items-center">
+                        <a   className="underline underline-offset-4 text-black ">
+                        Phí dọn dẹp
+                        </a>
+                        <p>
+                          $
+                          {pricing.cleanFee
+                            ? `${pricing.cleanFee}`
+                            : ""}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <a
+                          className="underline underline-offset-4 text-black "
                           onClick={handleOpenDialog1}
-                          className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md"
                         >
-                          X
-                        </button>
-                        <p className="text-xl">{`Điều này giúp chúng tôi vận hành nền tảng của mình và .`}</p>
-                        <p className="text-xl">
-                          cung cấp các dịch vụ như hỗ trợ 24/7 trong chuyến đi
-                          của bạn
-                        </p>
-                        <p className="text-xl">
-                          {" "}
-                          Số tiền này đã bao gồm thuế GTGT.
+                          Phí dịch vụ Airbnb
+                        </a>
+                        {isDialogOpen1 && (
+                          <div className="fixed inset-0 flex items-center justify-center bg-white  bg-opacity-25 z10">
+                            <div className="bg-white p-8 rounded-lg drop-shadow-xl">
+                              <button
+                                onClick={handleOpenDialog1}
+                                className="mt-4 px-4 py-2 text-black hover:bg-zinc-100 hover:rounded-full rounded-md"
+                              >
+                                X
+                              </button>
+                              <p className="text-xl">{`Điều này giúp chúng tôi vận hành nền tảng của mình và .`}</p>
+                              <p className="text-xl">
+                                cung cấp các dịch vụ như hỗ trợ 24/7 trong chuyến đi
+                                của bạn
+                              </p>
+                              <p className="text-xl">
+                                {" "}
+                                Số tiền này đã bao gồm thuế GTGT.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                        <p>
+                          $
+                          {pricing.serviceFeePercentage
+                            ? `${pricing.serviceFeePercentage}`
+                            : ""}
                         </p>
                       </div>
-                    </div>
-                  )}
-                  <p>
-                    $
-                    {pricing.serviceFeePercentage
-                      ? `${pricing.serviceFeePercentage}`
-                      : ""}
-                  </p>
                 </div>
-              </div>
-              <hr />
-              {/* bot content */}
-              <div className="mt-5">
-                <div className="flex justify-between items-center font-bold">
-                  <p>
-                    Tổng <span className="underline">(USD)</span>
-                  </p>
-                  <p>${pricing.total}</p>
+                <hr />
+                {/* bot content */}
+                <div className="mt-5">
+                  <div className="flex justify-between items-center font-bold">
+                    <p>
+                      Tổng <span className="underline">(USD)</span>
+                    </p>
+                    <p>${pricing.total}</p>
+                  </div>
                 </div>
-              </div>
+              </>
+            )}
             </div>
           </div>
         </div>
