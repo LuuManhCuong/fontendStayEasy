@@ -9,7 +9,6 @@ import Category from "../category/Category";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import ToastMessage from "./ToastMessage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../Services/firebaseService";
 import Rule from "./Rule";
@@ -22,15 +21,8 @@ export default function AddProperty() {
   const [isLoading, setIsLoading] = useState(false);
 
   // GET USER
-  const isAuthenticated = useContext(UserContext).isAuthenticated;
   const user = useContext(UserContext).user;
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    if (user) {
-      setUserId(user.id);
-    }
-  }, [user]);
+  const userId = user?.id;
 
   // province - district - ward
   const [provinces, setProvinces] = useState([]);
@@ -154,7 +146,6 @@ export default function AddProperty() {
   //  get full data
   useEffect(() => {
     const fullAddress = `${detailAddress}, ${wardName}, ${districtName}, ${provinceName}`;
-    console.log(fullAddress);
     setData((prevData) => ({
       ...prevData,
       owner: {

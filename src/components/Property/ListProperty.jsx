@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   EyeIcon,
@@ -10,19 +10,21 @@ import {
   ChevronUpDownIcon,
 } from "@heroicons/react/24/solid";
 import { Listbox, Transition } from "@headlessui/react";
-import ToastMessage from "./ToastMessage";
-import { useNavigate } from "react-router-dom";
 import { DeleteAlert } from "../Alert/Alert";
+import { UserContext } from "../UserContext";
+import image from "../../assets/image/notfound.png";
 
 export default function ListProperty() {
-  const [data, setData] = useState([]);
-  const [resStatus, setResStatus] = useState();
+  // get user
+  const isAuthenticated = useContext(UserContext).isAuthenticated;
+  const user = useContext(UserContext).user;
+ 
+  const userId = user?.id;
 
-  const navigate = useNavigate();
+  const [data, setData] = useState([]);
+
 
   // get data
-
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   const fetchData = async () => {
     try {
@@ -51,7 +53,6 @@ export default function ListProperty() {
           `http://localhost:8080/api/v1/stayeasy/property/delete/${propertyId}`
         );
         if (res.status === 200) {
-          setResStatus(res.status);
           fetchData();
         }
       });
@@ -64,108 +65,122 @@ export default function ListProperty() {
 
   return (
     <>
-      <div className="mx-4 my-4">
-        <div className="flex mb-4 justify-content-between">
-          <h2>Danh sách tài sản</h2>
-          <div className="flex">
-            <div className="me-4">
-              <Status status={status} setStatus={setStatus} />
-            </div>
+      {isAuthenticated ? (
+        <div className="mx-4 my-4">
+          <div className="flex mb-4 justify-content-between">
+            <h2>Danh sách tài sản</h2>
+            <div className="flex">
+              <div className="me-4">
+                <Status status={status} setStatus={setStatus} />
+              </div>
 
-            <Link to="/host/property/add">
-              <button
-                type="button"
-                className="bg-[#ff385c] h-full border rounded-lg text-[1.6em] flex items-center text-white py-2 px-3 rounded-lg"
-              >
-                <span>Thêm</span>
-                <span>
-                  <PlusIcon className="w-8 ml-2" color="white" />
-                </span>
-              </button>
-            </Link>
-          </div>
-        </div>
-
-        {data?.length > 0 ? (
-          <table class="w-full text-left text-gray-700 table-hover">
-            <thead className="bg-gray-200">
-              <tr>
-                <th scope="col" className="px-2 py-3">
-                  Hình ảnh
-                </th>
-                <th scope="col" className="py-3">
-                  Tên
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Địa chỉ
-                </th>
-                <th scope="col" className="py-3">
-                  Giá
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Trạng thái
-                </th>
-                <th scope="col" className="py-3">
-                  Thao tác
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.map((index) => (
-                <tr
-                  key={index.propertyId}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              <Link to="/host/property/add">
+                <button
+                  type="button"
+                  className="bg-[#ff385c] h-full border rounded-lg text-[1.6em] flex items-center text-white py-2 px-3 rounded-lg"
                 >
-                  <td className="pr-6 pl-2 py-4">
-                    <img
-                      className="w-40 h-20 object-cover rounded-lg"
-                      src={index.thumbnail}
-                      alt=""
-                    />
-                  </td>
-                  <td className="py-4">{index.propertyName}</td>
-                  <td className="px-6 py-4">{index.address}</td>
-                  <td className="py-4">$ {index.price}</td>
-                  <td className="px-6 py-4">
-                    {index.null === false ? "trống" : "đã thuê"}
-                  </td>
-                  <td className="">
-                    {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
-                    <button
-                      onClick={() => handleDelete(index.propertyId)}
-                      className="p-2"
-                    >
-                      <TrashIcon className="w-7" color="#ff385c" />
-                    </button>
-                    {/* </Link> */}
-                    <Link to={`/host/property/update/${index.propertyId}`}>
-                      <button className="mx-2 p-2">
-                        <PencilSquareIcon color="#eab308" className="w-7" />
-                      </button>
-                    </Link>
-
-                    <Link to={`/explore/detail/${index.propertyId}`}>
-                      <button className="p-2">
-                        <EyeIcon className="w-7" color="gray" />
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="flex flex-col items-center">
-            <span>
-              <img
-                src="https://firebasestorage.googleapis.com/v0/b/stayeasy02.appspot.com/o/images%2F3024051-removebg-preview.png?alt=media&token=8cd7bab2-40a7-4619-84de-305650b7f053"
-                alt="not found"
-              />
-            </span>
-            <span className="block font-medium">Chưa có tài sản.</span>
+                  <span>Thêm</span>
+                  <span>
+                    <PlusIcon className="w-8 ml-2" color="white" />
+                  </span>
+                </button>
+              </Link>
+            </div>
           </div>
-        )}
-      </div>
+
+          {data?.filter((item) => item.owner.id === userId)?.length > 0 ? (
+            <table class="w-full text-left text-gray-700 table-hover">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th scope="col" className="px-2 py-3">
+                    Hình ảnh
+                  </th>
+                  <th scope="col" className="py-3">
+                    Tên
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Địa chỉ
+                  </th>
+                  <th scope="col" className="py-3">
+                    Giá
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Trạng thái
+                  </th>
+                  <th scope="col" className="py-3">
+                    Thao tác
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {data
+                  ?.filter((item) => item.owner.id === userId)
+                  ?.map((index) => (
+                    <tr
+                      key={index.propertyId}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <td className="pr-6 pl-2 py-4">
+                        <img
+                          className="w-40 h-20 object-cover rounded-lg"
+                          src={index.thumbnail}
+                          alt=""
+                        />
+                      </td>
+                      <td className="py-4">{index.propertyName}</td>
+                      <td className="px-6 py-4">{index.address}</td>
+                      <td className="py-4">$ {index.price}</td>
+                      <td className="px-6 py-4">
+                        {index.null === false ? "trống" : "Đang diễn ra"}
+                      </td>
+                      <td className="">
+                        {/* <Link to={`/property/list-property/delete/${index.propertyId}`}> */}
+                        <button
+                          onClick={() => handleDelete(index.propertyId)}
+                          className="p-2"
+                        >
+                          <TrashIcon className="w-7" color="#ff385c" />
+                        </button>
+                        {/* </Link> */}
+                        <Link to={`/host/property/update/${index.propertyId}`}>
+                          <button className="mx-2 p-2">
+                            <PencilSquareIcon color="#eab308" className="w-7" />
+                          </button>
+                        </Link>
+
+                        <Link to={`/explore/detail/${index.propertyId}`}>
+                          <button className="p-2">
+                            <EyeIcon className="w-7" color="gray" />
+                          </button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="flex flex-col items-center">
+              <span>
+                <img
+                  src={image}
+                  alt="not found"
+                />
+              </span>
+              <span className="block font-medium">Chưa có tài sản.</span>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex  flex-col justify-center items-center mt-4 text-[1.2em] gap-4">
+          <span>Bạn chưa đăng nhập!</span>
+          <Link to="/login">
+            <button className="bg-[#FF385C] text-white py-2 px-4 rounded-lg text-[1.3em]">
+              Đăng nhập
+            </button>
+          </Link>
+        </div>
+      )}
     </>
   );
 }
@@ -177,7 +192,7 @@ const people = [
   },
   {
     id: 2,
-    name: "Đã thuê",
+    name: "Đang diễn ra",
   },
   {
     id: 3,

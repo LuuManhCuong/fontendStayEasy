@@ -64,8 +64,8 @@
         // Tính giá tiền trước giảm giá
         const price = calculateHolidayPricing(checkin , checkout, place.price);
         // Tính số tiền giảm giá
-        const discount = place.discount ? price * (place.discount / 100) : 0;
-        const cleanFee = place.serviceFee ? price * (place.serviceFee /100) : 0;
+        const discount = place.discount ? price * (place.discount / 100).toFixed(2): 0;
+        const cleanFee = place.serviceFee ? price * (place.serviceFee /100).toFixed(2) : 0;
         const serviceFeePercentage  = price * 0.1;
         // Tính tổng số tiền sau khi đã giảm giá
         const total = (price + cleanFee + serviceFeePercentage - discount).toFixed(2);
