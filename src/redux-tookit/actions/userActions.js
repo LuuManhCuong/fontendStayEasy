@@ -43,12 +43,15 @@ export const fetchUserInfo = async (setUser, setIsAuthenticated, dispatch)=>{
   } catch (error) {
     setIsAuthenticated(false);
     setUser(null);
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    Alert(2000, 'Thông báo', 'Không thể kết nối tới server', 'error', 'OK');
   }
 };
 
 
 //Update Information
-export const updateInformation = (title, raw, setIsDisabled, setIsEditing, isEditing) => async(dispatch) =>{
+export const updateInformation = (title, raw, setIsDisabled, setIsEditing, isEditing, location, navigate) => async(dispatch) =>{
   try {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
@@ -81,6 +84,12 @@ export const updateInformation = (title, raw, setIsDisabled, setIsEditing, isEdi
 
         //Gọi lại countSlide để load lại data
         dispatch(counterSlice.actions.increase());
+
+        if(location){
+          // const search = data.location.state?.search || '';
+          // Kiểm tra nếu có thông tin trang trước đó, chuyển hướng lại đó sau khi đăng nhập thành công
+          const from = location.state?.from?.pathname || '/'; navigate(from, { replace: true });
+        }
       }else{
         //Lỗi Server
         Alert(2000, `Thay đổi ${title}`, 'Thay đổi không thành công', 'error', 'OK');
@@ -88,6 +97,7 @@ export const updateInformation = (title, raw, setIsDisabled, setIsEditing, isEdi
     }
   } 
   catch (error) {
+    console.log("Loi server");
     console.error(error);
   }
 };

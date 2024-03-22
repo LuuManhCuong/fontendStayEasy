@@ -257,42 +257,35 @@ function Header({ page }) {
             </svg>
           </button> */}
           {/* Thông Báo */}
-          {isAuthenticated ? (
-            <div className="flex mr-4">
-              <Dropdown>
-                <DropdownToggle
-                  bsPrefix="false"
-                  className="bg-transparent border-white p-0"
-                  id="dropdown-basic"
-                >
-                  <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                    <i
-                      style={{ color: "black", fontSize: "17px" }}
-                      className="fa-regular fa-bell"
-                    ></i>{" "}
-                    <Badge bg="secondary">
-                      {notificationList.length > 99
-                        ? "99+"
-                        : notificationList.length}
-                    </Badge>
-                  </div>
-                </DropdownToggle>
-                <Dropdown.Menu style={{ height: "300px", overflowY: "scroll" }}>
-                  {notificationList <= 0 ? (
-                    <p>Hiện chưa có thông báo nào</p>
-                  ) : (
-                    [...notificationList].reverse().map((e) => (
-                      <Dropdown.Item href="#" key={e.id}>
-                        <p>{e.content}</p>
-                      </Dropdown.Item>
-                    ))
-                  )}
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          ) : (
-            <></>
-          )}
+          {
+            isAuthenticated ?
+              <div className="flex mr-4">
+                <Dropdown>
+                  <DropdownToggle
+                    bsPrefix="false"
+                    className="bg-transparent border-white p-2"
+                    id="dropdown-basic"
+                  >
+                    <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
+                      <i style={{ color: 'black', fontSize: '17px' }} className="fa-regular fa-bell"></i> <Badge bg="secondary">{notificationList.length > 99 ? '99+' : notificationList.length}</Badge>
+                    </div>
+                  </DropdownToggle>
+                  <Dropdown.Menu style={{ height: '300px', width: '200px', overflowY: 'scroll' }}>
+                    {
+                      notificationList <= 0 ? <p>Hiện chưa có thông báo nào</p> :
+                        [...notificationList].reverse().map(e => (
+                          <Dropdown.Item href="#" key={e.id}>
+                            <p>{e.content}</p>
+                          </Dropdown.Item>
+                        ))
+                    }
+
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div> :
+              <></>
+
+          }
           {/* Menu */}
           <div className="flex mr-4">
             <Dropdown>

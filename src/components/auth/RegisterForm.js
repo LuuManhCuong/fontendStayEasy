@@ -91,6 +91,8 @@ export default function RegisterForm({ state }) {
 
                 let countdownValue = 57;
 
+                setTimeout(()=>{setCodeEmailError();},[10000]);
+
                 // Gửi email và sau đó đặt thời gian đếm ngược
                 // Trong trường hợp này, tôi sẽ đặt thời gian đếm ngược là 60 giây
                 const interval = setInterval(() => {
@@ -114,6 +116,8 @@ export default function RegisterForm({ state }) {
         if(!isSendCode){
             setIsSending(true);
             dispatch(sendEmailCode(dataSendEmailCode));
+
+            setTimeout(()=>{setCodeEmailError();},[10000]);
 
             let countdownValue = 57;
 

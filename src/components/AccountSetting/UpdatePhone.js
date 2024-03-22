@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
@@ -14,6 +15,9 @@ import "./Loading.css";
 
 export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isDisable }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const user = useContext(UserContext).user;
 
   const [isEditing, setIsEditing] = useState(false);
@@ -89,6 +93,8 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
 
           let countdownValue = 60;
 
+          setTimeout(()=>{setCodeSuccessMessage();},[10000]);
+
           // Gửi email và sau đó đặt thời gian đếm ngược
           // Trong trường hợp này, tôi sẽ đặt thời gian đếm ngược là 60 giây
           const interval = setInterval(() => {
@@ -112,6 +118,9 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
       if(!isSendCode){
           setIsSending(true);
           dispatch(sendPhoneCode(dataSendPhoneCode));
+
+          setTimeout(()=>{setCodeSuccessMessage();},[10000]);
+
           let countdownValue = 57;
 
           // Gửi email và sau đó đặt thời gian đếm ngược
@@ -139,9 +148,9 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
         setCodeSuccessMessage();
         setCodeErrorMessage("Mã xác minh không hợp lệ!");
     } else {
-      dispatch(updateInformation('số điện thoại', raw, setIsDisabled, setIsEditing, isEditing));
+      dispatch(updateInformation('số điện thoại', raw, setIsDisabled, setIsEditing, isEditing, location, navigate));
+      setIsVerify(true);
       setCodeErrorMessage();// đặt lại message error của code
-      setIsSendCode(false);
     }
   }
   
@@ -218,10 +227,11 @@ export const PhoneUpdateForm = ({ title, description, isnull, setIsDisabled, isD
                         setCodeErrorMessage();
                         setCodeConfirm(e);
                       }}/>
-                    <div className="flex">
-                      <div>Chưa nhận được mã? <button className="pt-2 underline font-medium" disabled={isSendCode} onClick={()=>{handleReSendPhoneCode()}}>Gửi lại {isSendCode && <span className="mt-3"> ({countdown}s)</span>}</button></div>
-                      {!isVerify&&isSending&&(
-                        <div class="balls">
+                    <div className="flex gap-3">
+                      <div>Chưa nhận được mã? <button className="pt-2 underline font-medium" disabled={isSendCode} onClick={()=>{handleReSendPhoneCode()}}>Gửi lại 
+                      {isSendCode && <span className="mt-3"> ({countdown}s)</span>}</button></div>
+                      {isSending&&(
+                        <div class="balls2 underline">
                           <div></div>
                           <div></div>
                           <div></div>

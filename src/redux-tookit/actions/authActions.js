@@ -4,7 +4,8 @@ import { Alert } from "../../components/Alert/Alert";
 
 // Method login
 export const login = (data) => (dispatch) => {
-  const myHeaders = new Headers();
+  try {
+    const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   // create data
@@ -54,6 +55,10 @@ export const login = (data) => (dispatch) => {
     .catch((error) => {
       data.setErrorLoginMessage("Tên tài khoản hoặc mật khẩu sai!");
     });
+  } catch (error) {
+    //Show thông báo
+    Alert(2000, 'Đăng nhập', 'Không thể kết nối tới server','error', 'OK');
+  }
 };
 
 

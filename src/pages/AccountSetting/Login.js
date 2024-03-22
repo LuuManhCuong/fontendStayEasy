@@ -41,7 +41,7 @@ export default function Login() {
         <div className="flex flex-col justify-center w-[59rem] rounded-2xl border border-black">
           <div className="text-center">
             <h1 className="text-[1.7rem] font-bold py-[1.7rem]">
-              {!isLogin ? "Đăng nhập" : isForgotPassword ? "Quên Mật khẩu" : "Đăng ký"}
+              {!isLogin ? "Đăng ký" : isForgotPassword ? "Quên Mật khẩu" : "Đăng nhập"}
             </h1>
             <hr className="m-0" />
           </div>
