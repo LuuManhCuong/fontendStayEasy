@@ -1,6 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Badge, Dropdown, DropdownButton, DropdownToggle } from "react-bootstrap";
+import {
+  Badge,
+  Dropdown,
+  DropdownButton,
+  DropdownToggle,
+} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
@@ -90,7 +95,7 @@ function Header({ page }) {
         .then(function (response) {
           setSuggest(response.data);
         })
-        .catch(function (error) { });
+        .catch(function (error) {});
     } else if (page === "home") {
       axios
         .get(
@@ -118,23 +123,20 @@ function Header({ page }) {
       setPlaceholder("Nhập từ khóa tìm kiếm!!!");
     }
   }
-  const [notificationList, setNotificationList] = useState([])
+  const [notificationList, setNotificationList] = useState([]);
   useEffect(() => {
-    if(user){
-
+    if (user) {
       fetch(`http://localhost:8080/api/v1/stayeasy/notification/user/get`, {
         headers: {
-          "Authorization": `BEARER ${localStorage.getItem('access_token')}`,
-        }
+          Authorization: `BEARER ${localStorage.getItem("access_token")}`,
+        },
       })
-        .then(data => data.json())
-        .then(data => {
-          setNotificationList(data)
-        })
+        .then((data) => data.json())
+        .then((data) => {
+          setNotificationList(data);
+        });
     }
-
-  }, [user])
-
+  }, [user]);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
@@ -143,11 +145,17 @@ function Header({ page }) {
     if (user) {
       client.connect({}, () => {
         if (client.connected) {
-          client.subscribe(`/api/v1/stayeasy/notification/${user.id}`, (notification) => {
-            const receivedNotification = JSON.parse(notification.body);
-            console.log(receivedNotification);
-            setNotificationList((prevNotifications) => [...prevNotifications, receivedNotification]);
-          });
+          client.subscribe(
+            `/api/v1/stayeasy/notification/${user.id}`,
+            (notification) => {
+              const receivedNotification = JSON.parse(notification.body);
+              console.log(receivedNotification);
+              setNotificationList((prevNotifications) => [
+                ...prevNotifications,
+                receivedNotification,
+              ]);
+            }
+          );
         }
       });
     }
@@ -159,8 +167,6 @@ function Header({ page }) {
         client.disconnect();
       }
     };
-
-
   }, [user]);
   return (
     <header className="header">
@@ -225,7 +231,7 @@ function Header({ page }) {
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
-          <NavLink
+          {/* <NavLink
             to="/property/list"
             className={(navData) =>
               navData.isActive
@@ -249,7 +255,7 @@ function Header({ page }) {
             >
               <path d="M8 .25a7.77 7.77 0 0 1 7.75 7.78 7.75 7.75 0 0 1-7.52 7.72h-.25A7.75 7.75 0 0 1 .25 8.24v-.25A7.75 7.75 0 0 1 8 .25zm1.95 8.5h-3.9c.15 2.9 1.17 5.34 1.88 5.5H8c.68 0 1.72-2.37 1.93-5.23zm4.26 0h-2.76c-.09 1.96-.53 3.78-1.18 5.08A6.26 6.26 0 0 0 14.17 9zm-9.67 0H1.8a6.26 6.26 0 0 0 3.94 5.08 12.59 12.59 0 0 1-1.16-4.7l-.03-.38zm1.2-6.58-.12.05a6.26 6.26 0 0 0-3.83 5.03h2.75c.09-1.83.48-3.54 1.06-4.81zm2.25-.42c-.7 0-1.78 2.51-1.94 5.5h3.9c-.15-2.9-1.18-5.34-1.89-5.5h-.07zm2.28.43.03.05a12.95 12.95 0 0 1 1.15 5.02h2.75a6.28 6.28 0 0 0-3.93-5.07z"></path>
             </svg>
-          </button>
+          </button> */}
           {/* Thông Báo */}
           {
             isAuthenticated ?
@@ -289,10 +295,32 @@ function Header({ page }) {
                 id="dropdown-basic"
               >
                 <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                  <svg className="ml-3 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#000000" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
-                  {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
+                  <svg
+                    className="ml-3 h-7 w-7"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      fill="#000000"
+                      d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+                    />
+                  </svg>
+                  <p
+                    style={{
+                      margin: "0",
+                      color: "black",
+                      fontSize: "1.6rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {user?.lastName + user?.firstName || ""}
+                  </p>
                   {user && user?.avatar ? (
-                    <img className="w-[3.3rem] h-[3.3rem] rounded-full" alt="avatar" src={user?.avatar} />
+                    <img
+                      className="w-[3.3rem] h-[3.3rem] rounded-full"
+                      alt="avatar"
+                      src={user?.avatar}
+                    />
                   ) : user && !user?.avatar ? (
                     <div class="relative inline-flex items-center justify-center w-[3.3rem] h-[3.3rem] overflow-hidden bg-black rounded-full dark:bg-gray-600">
                       <span class="font-medium text-2xl text-white dark:text-gray-300">

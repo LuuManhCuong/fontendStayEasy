@@ -13,14 +13,17 @@ import LandscapeIcon from "@mui/icons-material/Landscape";
 import BalconyIcon from "@mui/icons-material/Balcony";
 import ForestIcon from "@mui/icons-material/Forest";
 import Slider from "react-slick";
+import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { dataCategorySelector } from "../../redux-tookit/selector";
+import {dataFilterSelector} from "../../redux-tookit/selector";
+import {dataFilterSlice} from "../../redux-tookit/reducer/dataFilterSlice";
 import axios from "axios";
 import { dataCategorySlice } from "../../redux-tookit/reducer/dataCategorySlice";
-import { dataHomeSlice } from "../../redux-tookit/reducer/dataHomeSlice";
 
 function Filter() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { dataCategory } = useSelector(dataCategorySelector);
 
@@ -54,16 +57,17 @@ function Filter() {
   ];
 
   const handleClick = (categoryId) => {
-    dispatch(dataHomeSlice.actions.getDataHomeRequest());
+    dispatch(dataFilterSlice.actions.getdataFilterRequest());
     axios
       .get(
         `http://localhost:8080/api/v1/stayeasy/property/category/${categoryId}`
       )
       .then(function (response) {
-        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data));
+        dispatch(dataFilterSlice.actions.getdataFilterSuccess(response.data));
+        navigate(`/category`);
       })
       .catch(function (error) {
-        dispatch(dataHomeSlice.actions.getDataHomeFailure());
+        dispatch(dataFilterSlice.actions.getdataFilterFailure());
 
         console.log(error);
       });

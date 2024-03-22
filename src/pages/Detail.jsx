@@ -30,6 +30,7 @@ import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
 import { differenceInCalendarDays, format } from "date-fns";
 import Rules from "../components/rules/Rules";
+import UtilitiesDetail from "../components/utilies/UtilitiesDetail";
 
 function Detail() {
   const user = useContext(UserContext).user;
@@ -52,7 +53,7 @@ function Detail() {
   const [checkin, setCheckin] = useState(
     urlParams.get("checkin") ? new Date(urlParams.get("checkin")) : today
   );
-  const idUser = JSON.parse(localStorage.getItem("user"))?.id;
+  const idUser = user ? user.id : null;
   const [checkout, setCheckout] = useState(
     urlParams.get("checkout")
       ? new Date(urlParams.get("checkout"))
@@ -172,6 +173,9 @@ function Detail() {
     }
     setOpenPopup(true);
   };
+
+  const hasPetRule = dataDetail.rulesList?.some(item => item.rulesType === 'pet');
+  console.log(hasPetRule);
 
   const styleImg = {
     width: "100%",
@@ -332,19 +336,12 @@ function Detail() {
               <div className="text-3xl font-medium mt-2">
                 <p>{dataDetail.address}</p>
               </div>
-              <div className="flex mt-2 text-[17px] font-normal justify-between ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
+              <div className="flex mt-2 text-[17px] font-normal justify-start ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
-                <span>-</span>
-                {dataDetail.propertyUtilitis?.map((item, index) => (
-                  <p key={index}>
-                    {item.quantity} {item.utilitiesName}
-                    {index !== dataDetail.propertyUtilitis.length - 1 ? (
-                      <span> - </span>
-                    ) : (
-                      ""
-                    )}
-                  </p>
-                ))}
+                <span className="pl-2 pr-2">-</span>
+                <p>{dataDetail.numBedRoom} Giường</p>
+                <span className="pl-2 pr-2">-</span>
+                <p>{dataDetail.numBathRoom} Phòng tắm</p>
               </div>
               <div className="w-[50%] rating text-lg font-semibold flex pt-4">
                 <div className="flex">
@@ -384,6 +381,9 @@ function Detail() {
 
             {/* info-rules */}
             <Rules rulesList={dataDetail.rulesList}></Rules>
+
+            {/* info-utilities */}
+            <UtilitiesDetail utilities={dataDetail.propertyUtilitis}></UtilitiesDetail>
 
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
@@ -503,13 +503,15 @@ function Detail() {
                         setTotalGuest={setInfants}
                       />
                     </div>
-                    <div className="flex justify-between p-2">
-                      <NumGuest
-                        type="pet"
-                        totalGuest={pet}
-                        setTotalGuest={setPet}
-                      />
-                    </div>
+                    {!hasPetRule && (
+                      <div className="flex justify-between p-2">
+                        <NumGuest
+                          type="pet"
+                          totalGuest={pet}
+                          setTotalGuest={setPet}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col justify-between text-center">
@@ -578,7 +580,7 @@ function Detail() {
         {/* <h2>host: {dataDetail.owner?.id}</h2>
         <h2>user: {idUser}</h2> */}
 
-        {idUser !== dataDetail.owner?.id && (
+        {idUser !== dataDetail.owner.id && (
           <div className="flex justify-center w-full">
             <div className="border-black/30 border-b-2 w-[89%] p-12 box-border flex justify-center">
               <Col className="col-5">

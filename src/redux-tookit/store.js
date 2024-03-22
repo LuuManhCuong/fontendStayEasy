@@ -4,6 +4,7 @@ import { dataExploreSlice } from "./reducer/dataExploreSlice";
 import { dataHomeSlice } from "./reducer/dataHomeSlice";
 import { dataDetailSlice } from "./reducer/dataDetailSlice";
 import { dataCategorySlice } from "./reducer/dataCategorySlice";
+import { dataFilterSlice } from "./reducer/dataFilterSlice";
 
 import { keySearchSlice } from "./reducer/keySearchSlice";
 import { grouptSlice } from "./reducer/grouptSlice";
@@ -17,6 +18,7 @@ const store = configureStore({
     dataCategory: dataCategorySlice.reducer,
     keySearch: keySearchSlice.reducer,
     groupt: grouptSlice.reducer,
+    dataFilter: dataFilterSlice.reducer,
   },
 });
 

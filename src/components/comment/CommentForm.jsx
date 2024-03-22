@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { counterSelector } from "../../redux-tookit/selector";
 import moment from "moment";
 import { UserContext } from "../UserContext";
+import StarIcon from '@mui/icons-material/Star';
 
 function stringToColor(string) {
   let hash = 0;
@@ -45,12 +46,14 @@ const CommentForm = ({ propertyId, ownerId }) => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [newFeedback, setNewFeedback] = useState("");
   const commentContainerRef = useRef(null);
+;
 
   const user = useContext(UserContext).user;
 
   // useEffect(() => {
   //   setUser(JSON.parse(localStorage.getItem("user")));
   // }, [counter]);
+
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
@@ -135,7 +138,9 @@ const CommentForm = ({ propertyId, ownerId }) => {
             </div>
 
             <div className="w-full rounded-2xl ml-10 p-4 bg-white mt-2 h-full shadow-checkout-shadow border-checkout-bg border-[1px] mb-4">
+              <div className="flex">
               <h1 className="text-3xl">{feedback.username || "Ẩn Danh"}</h1>
+              </div>
               <span className="text-2xl italic">
                 {moment(feedback.createAt).format("YYYY-MM-DD HH:mm")}
               </span>
@@ -150,7 +155,7 @@ const CommentForm = ({ propertyId, ownerId }) => {
       <div
         className={`${
           user?.id === ownerId ? "hidden" : ""
-        }  w-[75%] mt-8 rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] pl-8 pt-4`}
+        }  w-[75%] mt-8 rounded-2xl shadow-checkout-shadow border-checkout-bg border-[1px] pl-8 pt-4 pb-4`}
       >
         <div className="flex flex-col justify-between">
           <div className="flex items-center">
@@ -163,7 +168,7 @@ const CommentForm = ({ propertyId, ownerId }) => {
               alt="Image Description"
             />
             <p className="text-3xl m-0 font-semibold">
-              {user?.firstName + " " + user?.lastName}
+              {user?.firstName != null && user?.lastName != null ? user?.firstName + " " + user?.lastName: "Ẩn Danh"}
             </p>
           </div>
 
@@ -178,9 +183,9 @@ const CommentForm = ({ propertyId, ownerId }) => {
               className="p-4"
             ></textarea>
           </div>
-          <div className="w-full flex justify-end pr-12 pb-2 mt-3">
+          <div className={`w-full flex justify-end pr-12 pb-2 mt-3`}>
             <div
-              className="bg-[#ff5a5f] w-[25%] rounded-2xl text-center cursor-pointer hover:bg-[#ff5a5f]"
+              className={`bg-[#ff5a5f] w-[25%] rounded-2xl text-center cursor-pointer hover:bg-[#ff5a5f]`}
               onClick={handleSendFeedback}
             >
               <p className="text-white font-medium text-3xl pt-2">
