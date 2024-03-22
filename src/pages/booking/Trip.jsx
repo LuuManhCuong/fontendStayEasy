@@ -505,10 +505,12 @@ const TripDetail = ({ userId,data, toggleClose }) => {
                             </div>
                         </div>
                         <hr />
-                        
-                        <div className='flex gap-4 items-center mt-5'>
-                            <Feedback userId={userId} propertyId={data.propertyId} />
-                        </div>
+                   
+                        {   data.confirm === "COMPLETED" && 
+                            <div className='flex gap-4 items-center mt-5'>
+                                <Feedback userId={userId} propertyId={data.propertyId} />
+                            </div>
+                        }        
 
                         {/* cancel area */}
                         <div className='flex gap-4 items-center mt-5'>
