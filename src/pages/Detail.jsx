@@ -61,7 +61,7 @@ function Detail() {
   const [checkInDate, setCheckInDate] = useState(dayjs());
   const [checkOutDate, setCheckOutDate] = useState(dayjs().add(2, "day"));
   const [value, setValue] = useState([checkInDate, checkOutDate]);
-  const idUser = JSON.parse(localStorage.getItem("user"))?.id;
+  const idUser = user ? user.id : null;
   const [checkout, setCheckout] = useState(
     urlParams.get("checkout")
       ? new Date(urlParams.get("checkout"))

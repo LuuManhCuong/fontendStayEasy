@@ -163,7 +163,7 @@ const TripDetail = ({ userId,data, toggleClose }) => {
         changePlans: false,
         other: false,
     });
-
+    console.log(data.comfirm);
     const urlRefund = 'http://localhost:8080/api/v1/stayeasy/payment/refund';
     const [dataRefund, setDataRefund] = useState([]);
     const [showCancellationCard, setShowCancellationCard] = useState(false);
@@ -506,7 +506,7 @@ const TripDetail = ({ userId,data, toggleClose }) => {
                         </div>
                         <hr />
                    
-                        {   data.confirm === "COMPLETED" && 
+                        {   data.comfirm === "COMPLETED" && 
                             <div className='flex gap-4 items-center mt-5'>
                                 <Feedback userId={userId} propertyId={data.propertyId} />
                             </div>
