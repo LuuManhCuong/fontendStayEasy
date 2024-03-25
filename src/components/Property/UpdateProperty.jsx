@@ -7,8 +7,6 @@ import Category from "../category/Category";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../Services/firebaseService";
 import axios from "axios";
-import { counterSelector } from "../../redux-tookit/selector";
-import { useSelector } from "react-redux";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";

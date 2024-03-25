@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CommonHeader from "../../components/header/CommonHeader";
-
 import Footer from "../../components/footer/Footer";
-import Header from "../../components/header/Header";
 
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
-import { DateRangePicker } from "react-date-range";
 import { addDays } from "date-fns";
 
 import { Card, List, ListItem, ListItemPrefix } from "@material-tailwind/react";
@@ -20,15 +17,13 @@ import {
 } from "@heroicons/react/24/solid";
 
 import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
 
 import Box from "@mui/material/Box";
-import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux-tookit/actions/authActions";
+import { Alert } from "../../components/Alert/Alert";
 
-export default function Host() {
+export default function Host({ role }) {
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -72,87 +67,6 @@ export default function Host() {
         <Cog6ToothIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />
       ),
       link: "/host/setting",
-    },
-  ];
-
-  const request = [
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: "Ali Connors",
     },
   ];
 
@@ -243,14 +157,36 @@ export default function Host() {
     },
   ];
 
-  return (
+  const navigate = useNavigate();
+
+  // method logout
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout(navigate));
+  };
+
+  useEffect(() => {
+    if (role && !role.includes("ROLE_HOST")) {
+      Alert(
+        3000,
+        "Thông báo",
+        "Bạn không có quyền truy cập. Hãy thử đăng nhập tài khoản khác",
+        "error",
+        "OK"
+      );
+      navigate("/");
+    }
+  }, [role]);
+
+  return role && role.includes("ROLE_HOST") ? (
     <>
-      {/* <CommonHeader padding={8} /> */}
-      <Header></Header>
-      <div className="mt-[8.1rem] max-[769px]:mt-0 bg-white max-h-[calc(100vh-0)] flex">
+      <CommonHeader padding={8} />
+
+      <div className="mt-[8.1rem] bg-gray-100 max-[769px]:mt-0 max-h-[calc(100vh-0)] flex">
         {/* <div className='flex w-[100vw]'> */}
-        {/* right menu */}
-        <Card className="h-[81vh] shadow-none fixed rounded-none max-w-[15vw] w-full py-4 px-2">
+        {/* left menu */}
+        <Card className="h-[81vh] shadow-none fixed rounded-none max-w-[15vw] w-full py-4 px-2 border-r-2">
           <List>
             {sideBar.map((e, i) => {
               return (
@@ -262,7 +198,11 @@ export default function Host() {
                 </Link>
               );
             })}
-            <button onClick="">
+            <button
+              onClick={() => {
+                handleLogout();
+              }}
+            >
               <ListItem>
                 <ListItemPrefix>
                   <PowerIcon
@@ -276,16 +216,16 @@ export default function Host() {
           </List>
         </Card>
 
-        <div className="bg-gray-100 px-2 w-[65vw] ml-[15vw]">
+        <div className="px-2 w-[65vw] ml-[15vw] mb-32">
           <Outlet />
         </div>
 
         {/* inbox area */}
-        <div className="h-[calc(100vh-0)] w-[20vw] bg-gray-100 py-4">
-          <Box className="max-w-[100%] h-[84.7rem] rounded-xl shadow-xl bg-white pt-2">
+        <div className="w-[20vw] py-4">
+          <Box className="max-w-[100%] rounded-xl h-[60vh] bg-white pt-2">
             <h2 className="m-4">Tin nhắn</h2>
             {/* list inbox */}
-            <div className="w-[100%] h-[79rem] overflow-scroll">
+            <div className="w-[100%] h-[51vh] z-10 overflow-scroll">
               {inbox.map((e, i) => {
                 return (
                   <>
@@ -314,7 +254,11 @@ export default function Host() {
         </div>
         {/* </div> */}
       </div>
-      <Footer />
+      <div className="fixed bg-white w-full" style={{ bottom: 0 }}>
+        <Footer />
+      </div>
     </>
+  ) : (
+    <></>
   );
 }

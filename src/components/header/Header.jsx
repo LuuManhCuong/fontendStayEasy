@@ -1,6 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Badge, Dropdown, DropdownButton, DropdownToggle } from "react-bootstrap";
+import {
+  Badge,
+  Dropdown,
+  DropdownButton,
+  DropdownToggle,
+} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { Link } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
@@ -79,7 +84,7 @@ function Header({ page }) {
       setShowHistory(false);
     }
   }, [address]);
-
+  console.log(("admin : ", user));
   // suggest explore
   React.useEffect(() => {
     if (page === "explore") {
@@ -90,7 +95,7 @@ function Header({ page }) {
         .then(function (response) {
           setSuggest(response.data);
         })
-        .catch(function (error) { });
+        .catch(function (error) {});
     } else if (page === "home") {
       axios
         .get(
@@ -118,23 +123,20 @@ function Header({ page }) {
       setPlaceholder("Nhập từ khóa tìm kiếm!!!");
     }
   }
-  const [notificationList, setNotificationList] = useState([])
+  const [notificationList, setNotificationList] = useState([]);
   useEffect(() => {
-    if(user){
-
+    if (user) {
       fetch(`http://localhost:8080/api/v1/stayeasy/notification/user/get`, {
         headers: {
-          "Authorization": `BEARER ${localStorage.getItem('access_token')}`,
-        }
+          Authorization: `BEARER ${localStorage.getItem("access_token")}`,
+        },
       })
-        .then(data => data.json())
-        .then(data => {
-          setNotificationList(data)
-        })
+        .then((data) => data.json())
+        .then((data) => {
+          setNotificationList(data);
+        });
     }
-
-  }, [user])
-
+  }, [user]);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
@@ -143,11 +145,17 @@ function Header({ page }) {
     if (user) {
       client.connect({}, () => {
         if (client.connected) {
-          client.subscribe(`/api/v1/stayeasy/notification/${user.id}`, (notification) => {
-            const receivedNotification = JSON.parse(notification.body);
-            console.log(receivedNotification);
-            setNotificationList((prevNotifications) => [...prevNotifications, receivedNotification]);
-          });
+          client.subscribe(
+            `/api/v1/stayeasy/notification/${user.id}`,
+            (notification) => {
+              const receivedNotification = JSON.parse(notification.body);
+              console.log(receivedNotification);
+              setNotificationList((prevNotifications) => [
+                ...prevNotifications,
+                receivedNotification,
+              ]);
+            }
+          );
         }
       });
     }
@@ -159,8 +167,6 @@ function Header({ page }) {
         client.disconnect();
       }
     };
-
-
   }, [user]);
   return (
     <header className="header">
@@ -204,29 +210,11 @@ function Header({ page }) {
           >
             Khám phá
           </NavLink>
-
-          <NavLink
-            to="/admin-dashboard"
-            className={(navData) =>
-              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
-            }
-          >
-            Admin
-          </NavLink>
-
-          <NavLink
-            to="/host/property/statistic"
-            className={(navData) =>
-              navData.isActive ? "font-medium nav-item admin" : "nav-item admin"
-            }
-          >
-            Host
-          </NavLink>
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
           <NavLink
-            to="/property/list"
+            to="/host/register"
             className={(navData) =>
               navData.isActive
                 ? "active hover:bg-gray-100 p-3 rounded-2xl text-[1.5rem]"
@@ -237,7 +225,7 @@ function Header({ page }) {
           </NavLink>
           <button
             className="hover:bg-gray-100 p-3 mt-1 rounded-[100%]"
-            onClick={() => { }}
+            onClick={() => {}}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -251,35 +239,48 @@ function Header({ page }) {
             </svg>
           </button>
           {/* Thông Báo */}
-          {
-            isAuthenticated ?
-              <div className="flex mr-4">
-                <Dropdown>
-                  <DropdownToggle
-                    bsPrefix="false"
-                    className="bg-transparent border-white p-2"
-                    id="dropdown-basic"
-                  >
-                    <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                      <i style={{ color: 'black', fontSize: '17px' }} className="fa-regular fa-bell"></i> <Badge bg="secondary">{notificationList.length > 99 ? '99+' : notificationList.length}</Badge>
-                    </div>
-                  </DropdownToggle>
-                  <Dropdown.Menu style={{ height: '300px', width: '200px', overflowY: 'scroll' }}>
-                    {
-                      notificationList <= 0 ? <p>Hiện chưa có thông báo nào</p> :
-                        [...notificationList].reverse().map(e => (
-                          <Dropdown.Item href="#" key={e.id}>
-                            <p>{e.content}</p>
-                          </Dropdown.Item>
-                        ))
-                    }
-
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div> :
-              <></>
-
-          }
+          {isAuthenticated ? (
+            <div className="flex mr-4">
+              <Dropdown>
+                <DropdownToggle
+                  bsPrefix="false"
+                  className="bg-transparent border-white p-2"
+                  id="dropdown-basic"
+                >
+                  <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
+                    <i
+                      style={{ color: "black", fontSize: "17px" }}
+                      className="fa-regular fa-bell"
+                    ></i>{" "}
+                    <Badge bg="secondary">
+                      {notificationList.length > 99
+                        ? "99+"
+                        : notificationList.length}
+                    </Badge>
+                  </div>
+                </DropdownToggle>
+                <Dropdown.Menu
+                  style={{
+                    height: "300px",
+                    width: "200px",
+                    overflowY: "scroll",
+                  }}
+                >
+                  {notificationList <= 0 ? (
+                    <p>Hiện chưa có thông báo nào</p>
+                  ) : (
+                    [...notificationList].reverse().map((e) => (
+                      <Dropdown.Item href="#" key={e.id}>
+                        <p>{e.content}</p>
+                      </Dropdown.Item>
+                    ))
+                  )}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          ) : (
+            <></>
+          )}
           {/* Menu */}
           <div className="flex mr-4">
             <Dropdown>
@@ -289,10 +290,32 @@ function Header({ page }) {
                 id="dropdown-basic"
               >
                 <div className="flex justify-center items-center gap-3 px-[0.6rem] py-2 bg-transparent border border-transparent rounded-full hover:shadow-md">
-                  <svg className="ml-3 h-7 w-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="#000000" d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
-                  {/* <p style={{ margin:"0", color:"black", fontSize:"1.6rem", fontWeight:"500"}}>{user?.lastName || ""}</p> */}
+                  <svg
+                    className="ml-3 h-7 w-7"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                  >
+                    <path
+                      fill="#000000"
+                      d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+                    />
+                  </svg>
+                  <p
+                    style={{
+                      margin: "0",
+                      color: "black",
+                      fontSize: "1.6rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {user?.lastName + user?.firstName || ""}
+                  </p>
                   {user && user?.avatar ? (
-                    <img className="w-[3.3rem] h-[3.3rem] rounded-full" alt="avatar" src={user?.avatar} />
+                    <img
+                      className="w-[3.3rem] h-[3.3rem] rounded-full"
+                      alt="avatar"
+                      src={user?.avatar}
+                    />
                   ) : user && !user?.avatar ? (
                     <div class="relative inline-flex items-center justify-center w-[3.3rem] h-[3.3rem] overflow-hidden bg-black rounded-full dark:bg-gray-600">
                       <span class="font-medium text-2xl text-white dark:text-gray-300">

@@ -62,6 +62,8 @@ function BookingModal(props) {
         console.error("Error fetching data:", error);
       });
   }, [props.propertyId]);
+
+  
   const bookedDates = place
     .map((booking) => {
       let disabledDates = [];

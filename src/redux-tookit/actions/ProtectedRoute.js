@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React  from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export const ProtectedRoute = ({ ...rest }) => {
+export const ProtectedRoute = () => {
   const isAuthenticated = localStorage.getItem("access_token")?true:false;
 
   const location = useLocation();
