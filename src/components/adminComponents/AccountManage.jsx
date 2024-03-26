@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
-import { updateInformation, updateRole } from "../../redux-tookit/actions/userActions";
+import {
+  updateInformation,
+  updateRole,
+} from "../../redux-tookit/actions/userActions";
 import { counterSelector } from "../../redux-tookit/selector";
 import { Alert } from "../Alert/Alert";
 
@@ -46,12 +49,12 @@ function AccountManage() {
   };
 
   const handleUpdateRole = (id) => {
-    if(selected.length!==0){
-      const roles = selected.map(select => select.value);
+    if (selected.length !== 0) {
+      const roles = selected.map((select) => select.value);
       dispatch(updateRole(id, roles, setIsMultiSelectOpen));
     }
-    Alert(2000, 'Thông báo', 'Không được bỏ trống','error', 'OK');
-  }
+    Alert(2000, "Thông báo", "Không được bỏ trống", "error", "OK");
+  };
 
   const [selected, setSelected] = useState([]);
   return (
@@ -64,47 +67,73 @@ function AccountManage() {
             <th>họ</th>
             <th>tên</th>
             <th>email</th>
-            <th>quyền</th>
             <th>địa chỉ</th>
+            <th>quyền</th>
           </tr>
         </thead>
         <tbody>
           {dataUser.map((e, i) => {
-            if(!e.roles.includes("ROLE_ADMIN")){
-              return(
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{e.lastName}</td>
-                <td>{e.firstName}</td>
-                <td>{e.email}</td>
-                <td className="w-[43rem] pr-10">
-                  <div className="flex justify-between">
-                    <p>{e.roles.map(role => role.replace("ROLE_", "")).join(", ")}</p>
-                    {
-                      isEditingIndex === i && isMultiSelectOpen
-                      ?<button className="w-[10rem] py-2 bg-red-500 rounded-md" onClick={() => closeMultiSelect(i)}>Hủy</button>
-                      :<button className="w-[10rem] py-2 bg-gray-300 rounded-md" onClick={() => openEditing(i)}>Chỉnh sửa</button>
-                    }
-                  </div>
-                  {isEditingIndex === i && isMultiSelectOpen && (// Kiểm tra nếu hàng này đang được chỉnh sửa và MultiSelect đang mở
-                    <>
-                      <hr/>
-                      <div className="flex gap-4 mt-3">
-                          <MultiSelect
-                            className="w-full"
-                            options={options}
-                            value={selected}
-                            onChange={(value) =>{setSelected(value);}}
-                            labelledBy="Select"
-                          />
-                        <button className="w-[14rem] bg-gray-300 rounded-md" onClick={()=>{handleUpdateRole(e.id)}}>Lưu</button> {/* Nút để đóng MultiSelect */}
-                      </div>
-                    </>
-                  )}
-                </td>
-                <td>{e.address?e.address.city:""}</td>
-              </tr>
-            )}
+            if (!e.roles.includes("ROLE_ADMIN")) {
+              return (
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{e.lastName}</td>
+                  <td>{e.firstName}</td>
+                  <td>{e.email}</td>
+                  <td>{e.address ? e.address.city : ""}</td>
+                  <td className=" pr-10">
+                    <div className="flex justify-between">
+                      <p>
+                        {e.roles
+                          .map((role) => role.replace("ROLE_", ""))
+                          .join(", ")}
+                      </p>
+                      {isEditingIndex === i && isMultiSelectOpen ? (
+                        <button
+                          className="w-[10rem] py-2 bg-red-500 rounded-md"
+                          onClick={() => closeMultiSelect(i)}
+                        >
+                          Hủy
+                        </button>
+                      ) : (
+                        <button
+                          className="w-[10rem] py-2 bg-gray-300 rounded-md"
+                          onClick={() => openEditing(i)}
+                        >
+                          Chỉnh sửa
+                        </button>
+                      )}
+                    </div>
+                    {isEditingIndex === i &&
+                      isMultiSelectOpen && ( // Kiểm tra nếu hàng này đang được chỉnh sửa và MultiSelect đang mở
+                        <>
+                          <hr />
+                          <div className="flex gap-4 mt-3">
+                            <MultiSelect
+                              className="w-full"
+                              options={options}
+                              value={selected}
+                              onChange={(value) => {
+                                setSelected(value);
+                              }}
+                              labelledBy="Select"
+                            />
+                            <button
+                              className="w-[14rem] bg-gray-300 rounded-md"
+                              onClick={() => {
+                                handleUpdateRole(e.id);
+                              }}
+                            >
+                              Lưu
+                            </button>{" "}
+                            {/* Nút để đóng MultiSelect */}
+                          </div>
+                        </>
+                      )}
+                  </td>
+                </tr>
+              );
+            }
           })}
         </tbody>
       </Table>

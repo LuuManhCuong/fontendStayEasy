@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card } from "./Statistical";
 import axios from "axios";
 
-function PropertyStatistical({ propertyId }) {
+function PropertyStatistical({ propertyId, zoom }) {
   const [thisMonth, setThisMonth] = useState([]);
   const [lastMonth, setLastMonth] = useState([]);
 
@@ -39,7 +39,7 @@ function PropertyStatistical({ propertyId }) {
     100;
   console.log("cp: ", compareRevenue || thisMonth?.revenue);
   return (
-    <>
+    <div style={{ zoom: zoom }}>
       <h1>Thống kê từ đầu tháng</h1>
       <div className="flex justify-between py-10">
         <Card
@@ -72,7 +72,7 @@ function PropertyStatistical({ propertyId }) {
           lastMonth={lastMonth.totalLike}
         />
       </div>
-    </>
+    </div>
   );
 }
 
