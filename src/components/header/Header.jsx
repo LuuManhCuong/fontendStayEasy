@@ -213,7 +213,7 @@ function Header({ page }) {
         </div>
 
         <div className="justify-end items-center w-[33%] max-[1204px]:w-[20%] gap-2 font-medium text-2xl flex">
-          <NavLink
+          {/* <NavLink
             to="/host/register"
             className={(navData) =>
               navData.isActive
@@ -222,7 +222,7 @@ function Header({ page }) {
             }
           >
             Cho thuê chỗ ở qua Stayeasy
-          </NavLink>
+          </NavLink> */}
           <button
             className="hover:bg-gray-100 p-3 mt-1 rounded-[100%]"
             onClick={() => {}}

@@ -16,9 +16,6 @@ import {
   PowerIcon,
 } from "@heroicons/react/24/solid";
 
-import Divider from "@mui/material/Divider";
-
-import Box from "@mui/material/Box";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux-tookit/actions/authActions";
 import { Alert } from "../../components/Alert/Alert";
@@ -67,93 +64,6 @@ export default function Host({ role }) {
         <Cog6ToothIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />
       ),
       link: "/host/setting",
-    },
-  ];
-
-  const inbox = [
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
     },
   ];
 
@@ -216,22 +126,21 @@ export default function Host({ role }) {
           </List>
         </Card>
 
-        <div className="px-2 w-[65vw] ml-[15vw] mb-32">
+        <div className="px-2 ml-[15vw] mb-32">
           <Outlet />
         </div>
 
         {/* inbox area */}
-        <div className="w-[20vw] py-4">
+        {/* <div className="w-[20vw] py-4">
           <Box className="max-w-[100%] rounded-xl h-[60vh] bg-white pt-2">
             <h2 className="m-4">Tin nhắn</h2>
-            {/* list inbox */}
+            
             <div className="w-[100%] h-[51vh] z-10 overflow-scroll">
               {inbox.map((e, i) => {
                 return (
                   <>
-                    {/* sửa lại thành thẻ Link để xem chi tiết tin nhắn */}
                     <button className="flex items-center gap-3 py-2 px-4 w-full">
-                      {/* <img src={e.avatar} /> */}
+                   
                       <div class="relative inline-flex items-center justify-center w-[5rem] h-[3.7rem] overflow-hidden bg-gray-100 rounded-full dark:bg-gray-400">
                         <span class="font-medium text-3xl text-gray-200 dark:text-gray-300">
                           U
@@ -251,7 +160,7 @@ export default function Host({ role }) {
               })}
             </div>
           </Box>
-        </div>
+        </div> */}
         {/* </div> */}
       </div>
       <div className="fixed bg-white w-full" style={{ bottom: 0 }}>

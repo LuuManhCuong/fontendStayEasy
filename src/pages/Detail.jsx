@@ -1,4 +1,3 @@
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
 import dayjs from "dayjs";
@@ -299,7 +298,7 @@ function Detail() {
   }
 
   function sendMessageHost() {
-    if (message && user) {
+    if (message.trim() && user) {
       const idHost = dataDetail.owner.id;
       const data = {
         userId: user.id,
@@ -399,9 +398,13 @@ function Detail() {
             {/* info-host */}
             <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2 border-black/30 box-border">
               <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
-                <img src={dataDetail.owner?.avatar ||
-                `https://bootdey.com/img/Content/avatar/avatar7.png`
-              } alt="" />
+                <img
+                  src={
+                    dataDetail.owner?.avatar ||
+                    `https://bootdey.com/img/Content/avatar/avatar7.png`
+                  }
+                  alt=""
+                />
               </div>
               <div className="p-3">
                 <div className="text-base font-semibold">
@@ -421,7 +424,9 @@ function Detail() {
             {/* info-rules */}
             <Rules rulesList={dataDetail.rulesList}></Rules>
 
-            <UtilitiesDetail utilities={dataDetail.propertyUtilitis}></UtilitiesDetail>
+            <UtilitiesDetail
+              utilities={dataDetail.propertyUtilitis}
+            ></UtilitiesDetail>
 
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
