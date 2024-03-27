@@ -34,6 +34,7 @@ import CommentForm from "../components/comment/CommentForm";
 import { differenceInCalendarDays, format } from "date-fns";
 import Rules from "../components/rules/Rules";
 import { LicenseInfo } from "@mui/x-license-pro";
+import UtilitiesDetail from "../components/utilies/UtilitiesDetail";
 LicenseInfo.setLicenseKey(
   "e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y"
 );
@@ -372,19 +373,12 @@ function Detail() {
               <div className="text-3xl font-medium mt-2">
                 <p>{dataDetail.address}</p>
               </div>
-              <div className="flex mt-2 text-[17px] font-normal justify-between ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
+              <div className="flex mt-2 text-[17px] font-normal gap-2 ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
                 <span>-</span>
-                {dataDetail.propertyUtilitis?.map((item, index) => (
-                  <p key={index}>
-                    {item.quantity} {item.utilitiesName}
-                    {index !== dataDetail.propertyUtilitis.length - 1 ? (
-                      <span> - </span>
-                    ) : (
-                      ""
-                    )}
-                  </p>
-                ))}
+                <p>{dataDetail.numBedRoom} phòng ngủ</p>
+                <span>-</span>
+                <p>{dataDetail.numBathRoom} phòng tắm</p>
               </div>
               <div className="w-[50%] rating text-lg font-semibold flex pt-4">
                 <div className="flex">
@@ -405,7 +399,9 @@ function Detail() {
             {/* info-host */}
             <div className="w-full pt-6 pb-2 flex justify-items-center border-b-2 border-black/30 box-border">
               <div className="w-[6rem] h-[6rem] rounded-[50%] overflow-hidden">
-                <img src={dataDetail.owner?.avatar} alt="" />
+                <img src={dataDetail.owner?.avatar ||
+                `https://bootdey.com/img/Content/avatar/avatar7.png`
+              } alt="" />
               </div>
               <div className="p-3">
                 <div className="text-base font-semibold">
@@ -424,6 +420,8 @@ function Detail() {
 
             {/* info-rules */}
             <Rules rulesList={dataDetail.rulesList}></Rules>
+
+            <UtilitiesDetail utilities={dataDetail.propertyUtilitis}></UtilitiesDetail>
 
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
