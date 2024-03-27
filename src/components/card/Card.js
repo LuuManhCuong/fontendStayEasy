@@ -29,18 +29,16 @@ function Card(props) {
     (like) => like?.idUser === user?.id
   );
 
-  console.log("isActive: ", isActive);
-  console.log(props.item.likeList);
+  // console.log("isActive: ", isActive);
+  // console.log(props.item.likeList);
 
   // Kiểm tra xem người dùng đã like property này hay chưa => true/false
 
   useEffect(() => {
-
     const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
     const client = Stomp.over(socket);
     client.debug = null;
-    client.connect({}, () => {
-    });
+    client.connect({}, () => {});
 
     setStompClient(client);
 
@@ -49,12 +47,9 @@ function Card(props) {
         client.disconnect();
       }
     };
-
-
   }, []);
   const handleLike = (e, idPost) => {
     e.stopPropagation();
-
 
     // console.log(props.item.owner.id);
     // like
@@ -74,15 +69,14 @@ function Card(props) {
             let data = {
               senderId: user?.id,
               receiverId: props.item.owner.id,
-              content: `${user.firstName} ${user.lastName} vừa thích bài đăng của bạn!`
-            }
+              content: `${user.firstName} ${user.lastName} vừa thích bài đăng của bạn!`,
+            };
             stompClient.send(
               `/api/v1/stayeasy/app/notification/${data.receiverId}`,
               {},
               JSON.stringify(data)
             );
           }
-
         })
         .catch(function (error) {
           console.log(error);
@@ -174,7 +168,7 @@ function Card(props) {
           position: "absolute",
           left: "10px",
           top: "55%",
-          zIndex: "1",
+          zIndex: "0.5",
         }}
         onClick={handleClick}
       />
@@ -222,7 +216,7 @@ function Card(props) {
         >
           <FontAwesomeIcon
             style={{ stroke: "white" }}
-            className="text-4xl z-10 text-customColor transition-all ease-in duration-200"
+            className="text-4xl text-customColor transition-all ease-in duration-200"
             icon={icon({ name: "heart", family: "classic", style: "solid" })}
           />
         </div>

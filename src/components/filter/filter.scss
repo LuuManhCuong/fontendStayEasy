@@ -46,3 +46,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.active-cate {
+  div {
+    svg {
+      color: #ff385c !important;
+    }
+  }
+}

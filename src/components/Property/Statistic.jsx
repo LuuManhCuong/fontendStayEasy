@@ -17,7 +17,8 @@ import UpComing from "./roomStatus/UpComing";
 import Happenning from "./roomStatus/Happenning";
 import Finished from "./roomStatus/Finished";
 import { Link } from "react-router-dom";
-
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 export default function Statistic() {
   // GET USER
   const user = useContext(UserContext).user;
@@ -49,36 +50,80 @@ export default function Statistic() {
     }
   };
 
+  const [stompClient, setStompClient] = useState(null);
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
+    const client = Stomp.over(socket);
+    client.debug = null;
+    client.connect({}, () => {});
+
+    setStompClient(client);
+
+    return () => {
+      if (client.connected) {
+        client.disconnect();
+      }
+    };
+  }, []);
+
+  function acceptRoom(params) {
+    let data = {
+      senderId: user.id,
+      receiverId: params.userId,
+      content: `${user.firstName} ${user.lastName} vừa chấp nhận lịch đặt phòng của bạn`,
+    };
+    stompClient.send(
+      `/api/v1/stayeasy/app/notification/${data.receiverId.toLowerCase()}`,
+      {},
+      JSON.stringify(data)
+    );
+  }
+  function cancelRoom(params) {
+    let data = {
+      senderId: user.id,
+      receiverId: params.userId,
+      content: `${user.firstName} ${user.lastName} vừa từ chối lịch đặt phòng của bạn`,
+    };
+    stompClient.send(
+      `/api/v1/stayeasy/app/notification/${data.receiverId.toLowerCase()}`,
+      {},
+      JSON.stringify(data)
+    );
+  }
+
   // handle confirm
   const handleConfirm = async (index) => {
-    try {
-      const result = await axios.put(
-        `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&CONFIRMED`
-      );
+    acceptRoom(index);
 
-      if (result.status === 200) {
-        Alert(2000, "Xác nhận đặt phòng", "thành công!", "success", "OK");
-        getBooking();
-      }
-    } catch (error) {
-      console.log("error1");
-    }
+    // try {
+    //   const result = await axios.put(
+    //     `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&CONFIRMED`
+    //   );
+    //   if (result.status === 200) {
+    //     Alert(2000, "Xác nhận đặt phòng", "thành công!", "success", "OK");
+
+    //     getBooking();
+    //   }
+    // } catch (error) {
+    //   console.log("error1");
+    // }
   };
 
   // handle reject
   const handleReject = async (index) => {
-    try {
-      const result = await axios.put(
-        `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&REJECTED`
-      );
+    cancelRoom(index);
+    // try {
+    //   const result = await axios.put(
+    //     `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&REJECTED`
+    //   );
 
-      if (result.status === 200) {
-        Alert(2000, "Từ chối đặt phòng", "Đã từ chối!", "success", "OK");
-        getBooking();
-      }
-    } catch (error) {
-      console.log("error!");
-    }
+    //   if (result.status === 200) {
+    //     Alert(2000, "Từ chối đặt phòng", "Đã từ chối!", "success", "OK");
+    //     getBooking();
+    //   }
+    // } catch (error) {
+    //   console.log("error!");
+    // }
   };
 
   useEffect(() => {
@@ -151,9 +196,10 @@ export default function Statistic() {
         </div>
 
         {/* request area */}
-        <Box
-          className="flex flex-col h-[41.5rem] rounded-xl shadow-xl bg-white "
-          sx={{ flexGrow: 4 }}
+        <div
+          style={{ overflow: "hidden" }}
+          className="w-[65vw] rounded-xl flex flex-col h-[41.5rem] shadow-xl bg-white "
+          // sx={{ flexGrow: 4 }}
         >
           <h2 className="m-4">Yêu cầu đặt phòng</h2>
           {/* list request */}
@@ -167,25 +213,32 @@ export default function Statistic() {
                       className="flex justify-between gap-3 py-2 px-4 w-full border-b-2"
                     >
                       {/* <img src={e.avatar} /> */}
-                      <div className="flex gap-4">
-                        <div class="">
-                          <img
-                            className="w-48 rounded-md"
-                            src={index.propertyDTOS.thumbnail}
-                            alt="avt"
-                          />
-                        </div>
-                        <div className="text-start">
-                          <h4>{index.propertyDTOS.propertyName}</h4>
-                          <div className="flex gap-2">
-                            <span>Yêu cầu từ</span>
-                            <span className="font-medium gap-2 flex">
-                              <span>{index.userDTOS.firstName}</span>
-                              <span>{index.userDTOS.lastName}</span>
-                            </span>
-                          </div>
+                      {/* <div className="flex gap-4"> */}
+                      <div class="w-[16%]">
+                        <img
+                          className="w-full h-32 rounded-md"
+                          src={index.propertyDTOS.thumbnail}
+                          alt="avt"
+                        />
+                      </div>
+                      <div className="text-start w-[68%]">
+                        <h4>
+                          {index.propertyDTOS.propertyName.length > 150
+                            ? index.propertyDTOS.propertyName.substring(
+                                0,
+                                150
+                              ) + "..."
+                            : index.propertyDTOS.propertyName}
+                        </h4>
+                        <div className="flex gap-2">
+                          <span>Yêu cầu từ</span>
+                          <span className="font-medium gap-2 flex">
+                            <span>{index.userDTOS.firstName}</span>
+                            <span>{index.userDTOS.lastName}</span>
+                          </span>
                         </div>
                       </div>
+                      {/* </div> */}
 
                       <div className="flex gap-4">
                         <button
@@ -211,11 +264,11 @@ export default function Statistic() {
               )}
             </>
           </div>
-        </Box>
+        </div>
       </div>
 
       {/* check status area */}
-      <div className="border w-[calc(100vw-16.8vw)] bg-white rounded-xl shadow-md p-3 flex flex-col gap-4">
+      <div className="border w-[calc(100vw-15vw - 2rem)] bg-white rounded-xl shadow-md p-3 flex flex-col gap-4">
         {/* nav */}
         <div className="flex w-full gap-4 items-center">
           {menu?.map((i) => (

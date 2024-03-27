@@ -74,7 +74,7 @@ export default function UpComing() {
   }, [propertyId]);
 
   return (
-    <div className="flex gap-4 w-full">
+    <div className="flex w-full">
       <div className="w-1/2 border-r-2 pr-4">
         {data?.length > 0 ? (
           <div className="flex flex-col gap-4">
@@ -85,17 +85,20 @@ export default function UpComing() {
                 className="flex justify-between gap-3 border-b-2 pb-4 cursor-pointer"
               >
                 <div
-                  className="flex gap-3"
+                  className="flex gap-3 w-[90%]"
                   onClick={() => setPropertyId(index.propertyDTOS.propertyId)}
                 >
                   <img
-                    className="w-48 rounded-md"
+                    className="w-48 h-32 rounded-md"
                     src={index.propertyDTOS.thumbnail}
                     alt="thumbnail"
                   />
                   <div className="flex flex-col gap-2">
                     <span className="font-medium">
-                      {index.propertyDTOS.propertyName}
+                      {index.propertyDTOS.propertyName.length > 50
+                        ? index.propertyDTOS.propertyName.substring(0, 50) +
+                          "..."
+                        : index.propertyDTOS.propertyName}
                     </span>
                     <div className="flex items-center gap-2">
                       <span>
@@ -128,7 +131,7 @@ export default function UpComing() {
           minDate={new Date()} // vô hiệu hóa ngày quá khứ
           direction="horizontal"
           className="w-[50%]"
-          style={{ width: "255px" }}
+          style={{ width: "250px" }}
         />
       </div>
     </div>

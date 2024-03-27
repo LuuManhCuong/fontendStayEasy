@@ -18,11 +18,10 @@ export default function ListProperty() {
   // get user
   const isAuthenticated = useContext(UserContext).isAuthenticated;
   const user = useContext(UserContext).user;
- 
+
   const userId = user?.id;
 
   const [data, setData] = useState([]);
-
 
   // get data
 
@@ -45,6 +44,8 @@ export default function ListProperty() {
     fetchData();
   }, []);
 
+  console.log("data: ", data);
+
   // handle delete property
   const handleDelete = async (propertyId) => {
     try {
@@ -66,7 +67,7 @@ export default function ListProperty() {
   return (
     <>
       {isAuthenticated ? (
-        <div className="mx-4 my-4">
+        <div className="mx-4 my-4 min-h-[70vh] min-w-[82vw]">
           <div className="flex mb-4 justify-content-between">
             <h2>Danh sách tài sản</h2>
             <div className="flex">
@@ -162,10 +163,7 @@ export default function ListProperty() {
           ) : (
             <div className="flex flex-col items-center">
               <span>
-                <img
-                  src={image}
-                  alt="not found"
-                />
+                <img src={image} alt="not found" />
               </span>
               <span className="block font-medium">Chưa có tài sản.</span>
             </div>

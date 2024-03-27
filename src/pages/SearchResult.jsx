@@ -30,15 +30,15 @@ function SearchResult() {
   const [dataSearch, setDataSearch] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log("checkin: " + checkin);
-  console.log("checkout: " + checkout);
-  console.log("address: " + address);
+  // console.log("checkin: " + checkin);
+  // console.log("checkout: " + checkout);
+  // console.log("address: " + address);
   // console.log("keysearch: ", keySearch);
   // console.log("page: ", page);
 
   useEffect(() => {
     let url;
-    if (page === "home") {
+    if (page === "home" && address.trim().length > 0) {
       setIsLoading(true);
       axios
         .get(
@@ -55,7 +55,7 @@ function SearchResult() {
 
           console.log(error);
         });
-    } else if (page === "explore" && keySearch.length > 0) {
+    } else if (page === "explore" && keySearch.trim().length > 0) {
       url = `${page}/search?keySearch=${keySearch}&page=${0}&size=${50}`;
       searchExplore(url);
     }

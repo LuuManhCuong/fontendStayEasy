@@ -49,21 +49,21 @@ export default function Host({ role }) {
       icon: (
         <InboxIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />
       ),
-      link: "/host/inbox",
+      link: "/inbox",
     },
     {
       title: "Thông tin cá nhân",
       icon: (
         <UserCircleIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />
       ),
-      link: "/host/profile",
+      link: "/account-settings/personal-info",
     },
     {
       title: "Cài đặt",
       icon: (
         <Cog6ToothIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />
       ),
-      link: "/host/setting",
+      link: "/account-settings",
     },
   ];
 

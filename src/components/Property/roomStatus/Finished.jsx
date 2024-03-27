@@ -80,6 +80,14 @@ export default function Finished({ setRevenue, setNumGuest }) {
                     </span>
                     <span>{index.propertyDTOS.address}</span>
                   </div>
+                  <span>
+                    <span className="font-medium me-2">Nhận phòng:</span>{" "}
+                    <span className="italic">{index.checkIn}</span>
+                  </span>
+                  <span>
+                    <span className="font-medium me-2">Trả phòng:</span>{" "}
+                    <span className="italic">{index.checkOut}</span>
+                  </span>
                 </div>
               </div>
 

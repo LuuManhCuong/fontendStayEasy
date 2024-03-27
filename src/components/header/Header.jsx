@@ -54,10 +54,10 @@ function Header({ page }) {
     setShowHistory(false);
     const formattedCheckin = formatDateToYYMMDD(new Date(checkin));
     const formattedCheckout = formatDateToYYMMDD(new Date(checkout));
-    if (address?.length > 0) {
+    if (address.trim()?.length > 0) {
       navigate("/search/result");
       dispatch(keySearchSlice.actions.setPageSearch(page));
-      dispatch(keySearchSlice.actions.setAdderss(address));
+      dispatch(keySearchSlice.actions.setAdderss(address.trim()));
       dispatch(keySearchSlice.actions.setCheckinDate(formattedCheckin));
       dispatch(keySearchSlice.actions.setCheckoutDate(formattedCheckout));
     }
@@ -74,32 +74,32 @@ function Header({ page }) {
   }, [checkin]);
 
   React.useEffect(() => {
-    if (keySearch?.length === 0) {
+    if (keySearch.trim()?.length === 0) {
       setShowHistory(false);
     }
-  }, [keySearch]);
+  }, [keySearch.trim()]);
 
   React.useEffect(() => {
-    if (address?.length === 0) {
+    if (address.trim()?.length === 0) {
       setShowHistory(false);
     }
-  }, [address]);
-  console.log(("admin : ", user));
+  }, [address.trim()]);
+  // console.log(("admin : ", user));
   // suggest explore
   React.useEffect(() => {
-    if (page === "explore") {
+    if (page === "explore" && keySearch.trim().length > 0) {
       axios
         .get(
-          `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch}`
+          `http://localhost:8080/api/v1/stayeasy/explore/search/suggest?keySearch=${keySearch.trim()}`
         )
         .then(function (response) {
           setSuggest(response.data);
         })
         .catch(function (error) {});
-    } else if (page === "home") {
+    } else if (page === "home" && address.trim().length > 0) {
       axios
         .get(
-          `http://localhost:8080/api/v1/stayeasy/property/search/suggest?address=${address}`
+          `http://localhost:8080/api/v1/stayeasy/property/search/suggest?address=${address.trim()}`
         )
         .then(function (response) {
           setSuggest([...new Set(response.data.map((e) => e.address))]);
@@ -111,13 +111,13 @@ function Header({ page }) {
           console.log(error);
         });
     }
-  }, [keySearch, page, address]);
+  }, [keySearch.trim(), page, address.trim()]);
 
   function handleSearch(page) {
     setShowHistory(false);
-    if (keySearch.length > 0) {
+    if (keySearch.trim().length > 0) {
       navigate("/search/result");
-      dispatch(keySearchSlice.actions.setKeySearch(keySearch));
+      dispatch(keySearchSlice.actions.setKeySearch(keySearch.trim()));
       dispatch(keySearchSlice.actions.setPageSearch(page));
     } else {
       setPlaceholder("Nhập từ khóa tìm kiếm!!!");
@@ -136,7 +136,7 @@ function Header({ page }) {
           setNotificationList(data);
         });
     }
-  }, [user]);
+  }, [user, notificationList]);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
@@ -365,6 +365,7 @@ function Header({ page }) {
             ></input>
             {showHistory & (suggest?.length > 0) ? (
               <div
+                style={{ zIndex: "10" }}
                 tabindex="1"
                 className="search-history"
                 onBlur={() => {
@@ -376,7 +377,7 @@ function Header({ page }) {
                 <ul className="suggest">
                   {suggest.map((e, i) => (
                     <h3
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", borderBottom: "1px solid" }}
                       onClick={() => {
                         setAddress(e);
                         setShowHistory(false);
@@ -459,7 +460,7 @@ function Header({ page }) {
               ""
             )}
 
-            {suggest?.length === 0 ? (
+            {/* {suggest.trim()?.length === 0 ? (
               <div
                 tabindex="1"
                 className="search-history"
@@ -471,7 +472,7 @@ function Header({ page }) {
               </div>
             ) : (
               ""
-            )}
+            )} */}
           </div>
           <div
             className="clear"
@@ -496,7 +497,9 @@ function Header({ page }) {
               className="search-text"
               value={keySearch}
               onChange={(e) => {
-                dispatch(keySearchSlice.actions.setKeySearch(e.target.value));
+                dispatch(
+                  keySearchSlice.actions.setKeySearch(e.target.value.trim())
+                );
                 setShowHistory(true);
               }}
               id="keySerch"

@@ -253,7 +253,7 @@ export default function AddProperty() {
         setDataSave(response.data);
       }
     } catch (error) {
-      console.log("error!", error);
+      Alert(2000, "Tạo tài sản thất bại", "Vui lòng thử lại!", "error", "OK");
     }
   };
   // end save property
@@ -268,7 +268,7 @@ export default function AddProperty() {
       const listImage = await uploadMultipleFiles(images);
       await saveProperty(listImage);
     } catch (error) {
-      alert("Đã xãy ra lỗi.");
+      console.log("error");
     } finally {
       setIsLoading(false);
     }
@@ -280,7 +280,7 @@ export default function AddProperty() {
 
       const timeoutId = setTimeout(() => {
         navigate("/host/property/list");
-      }, 2500);
+      }, 2000);
 
       // Cleanup effect để tránh lỗi memory leak
       return () => clearTimeout(timeoutId);

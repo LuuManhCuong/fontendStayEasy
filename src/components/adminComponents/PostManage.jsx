@@ -177,14 +177,14 @@ export default function PostManage() {
                           alt=""
                         />
                       ) : (
-                        <div class="relative inline-flex items-center justify-center overflow-hidden bg-black rounded-full dark:bg-gray-600">
-                          <span class="font-medium text-2xl text-white dark:text-gray-300">
-                            {index.owner.lastName.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
+                        <img
+                          className="object-cover rounded-full"
+                          src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                          alt=""
+                        />
                       )}
                     </div>
-                    <p className="w-[100px] text-[13px] font-semibold mb-4">{`${index.owner.firstName} ${index.owner.lastName}`}</p>
+                    <p className=" text-[13px] font-semibold mb-4">{`${index.owner.firstName} ${index.owner.lastName}`}</p>
                   </div>
                 </td>
                 <td className="align-middle">

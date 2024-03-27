@@ -28,12 +28,14 @@ function Home() {
         console.log("response: ", response.data.properties);
         setTotal(response.data.totalCount);
         dispatch(counterSlice.actions.totalRecord(response.data.totalCount));
-        dispatch(dataHomeSlice.actions.getDataHomeSuccess(response.data.properties));
+        dispatch(
+          dataHomeSlice.actions.getDataHomeSuccess(response.data.properties)
+        );
       })
       .catch(function (error) {
         dispatch(dataHomeSlice.actions.getDataHomeFailure());
       });
-  }, [reloadLike,size]);
+  }, [reloadLike, size]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -42,7 +44,7 @@ function Home() {
 
   const handleScroll = () => {
     const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight / 2) {
+    if (scrollTop + clientHeight >= scrollHeight) {
       if (dataHome.length < total) {
         console.log("data.length: ", dataHome.length);
         setSize((prev) => prev + 8);
