@@ -45,6 +45,8 @@ export default function ListProperty() {
     fetchData();
   }, []);
 
+  console.log("data: ", data);
+
   // handle delete property
   const handleDelete = async (propertyId) => {
     try {
@@ -66,7 +68,7 @@ export default function ListProperty() {
   return (
     <>
       {isAuthenticated ? (
-        <div className="mx-4 my-4">
+        <div className="mx-4 my-4 min-h-[70vh]">
           <div className="flex mb-4 justify-content-between">
             <h2>Danh sách tài sản</h2>
             <div className="flex">

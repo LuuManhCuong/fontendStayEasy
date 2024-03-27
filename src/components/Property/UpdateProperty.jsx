@@ -237,7 +237,7 @@ export default function UpdateProperty() {
 
       const timeoutId = setTimeout(() => {
         navigate("/host/property/list");
-      }, 2500);
+      }, 2000);
 
       // Cleanup effect để tránh lỗi memory leak
       return () => clearTimeout(timeoutId);
@@ -510,6 +510,7 @@ export default function UpdateProperty() {
                 <button
                   onClick={() => handleRemoveImage(index)}
                   className="bg-pink-600 absolute right-0"
+                  type="button"
                 >
                   <XMarkIcon className="w-7 text-white" />
                 </button>
@@ -523,7 +524,7 @@ export default function UpdateProperty() {
         <div className="flex items-center justify-end gap-x-4">
           <Link to="/property/list">
             <button
-              type="submit"
+              type="button"
               className="block rounded-lg px-3 py-2 font-semibold border ring-2 shadow-md hover:bg-[#ff385c] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-3"
             >
               Hủy

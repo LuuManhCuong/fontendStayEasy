@@ -77,63 +77,63 @@ export default function Happenning() {
   }, [propertyId]);
 
   return (
-    <div className="flex gap-4 w-full">
-      <div className="w-1/2 border-r-2 pr-4">
-        {data?.length > 0 ? (
-          <div className="flex flex-col gap-4">
-            <div>Đang diễn ra: {count}</div>
-            {data?.map((index) => (
+    <div className="flex w-full">
+    <div className="w-1/2 border-r-2 pr-4">
+      {data?.length > 0 ? (
+        <div className="flex flex-col gap-4">
+          <div>Đang diễn ra: {count} </div>
+          {data?.map((index) => (
+            <div
+              key={index.bookingId}
+              className="flex justify-between gap-3 border-b-2 pb-4 cursor-pointer"
+            >
               <div
-                key={index.bookingId}
-                className="flex justify-between gap-3 border-b-2 pb-4 cursor-pointer"
+                className="flex gap-3 w-[90%]"
+                onClick={() => setPropertyId(index.propertyDTOS.propertyId)}
               >
-                <div
-                  className="flex gap-3"
-                  onClick={() => setPropertyId(index.propertyDTOS.propertyId)}
-                >
-                  <img
-                    className="w-48 rounded-md"
-                    src={index.propertyDTOS.thumbnail}
-                    alt="thumbnail"
-                  />
-                  <div className="flex flex-col gap-2">
-                    <span className="font-medium">
-                      {index.propertyDTOS.propertyName}
+                <img
+                  className="w-48 h-32 rounded-md"
+                  src={index.propertyDTOS.thumbnail}
+                  alt="thumbnail"
+                />
+                <div className="flex flex-col gap-2">
+                  <span className="font-medium">
+                    {index.propertyDTOS.propertyName.length > 50 ? index.propertyDTOS.propertyName.substring(0,50) + '...' : index.propertyDTOS.propertyName}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span>
+                      <MapPinIcon className="w-7" />
                     </span>
-                    <div className="flex items-center gap-2">
-                      <span>
-                        <MapPinIcon className="w-7" />
-                      </span>
-                      <span>{index.propertyDTOS.address}</span>
-                    </div>
+                    <span>{index.propertyDTOS.address}</span>
                   </div>
                 </div>
-
-                <button className="ring-1 p-2 h-14 text-[0.8em] rounded-md hover:bg-cyan-500 hover:text-white">
-                  Chi tiết
-                </button>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div>Hiện tại đang trống.</div>
-        )}
-      </div>
-      {/* date area */}
-      <div className="w-1/2 border-l-2">
-        <DateRangePicker
-          onChange={(item) => setState([{ ...State, ...item }])}
-          showSelectionPreview={true}
-          moveRangeOnFirstSelection={false}
-          onRangeFocusChange={(item) => item}
-          months={2}
-          ranges={date}
-          minDate={new Date()} // vô hiệu hóa ngày quá khứ
-          direction="horizontal"
-          className="w-[50%]"
-          style={{ width: "255px" }}
-        />
-      </div>
+
+              <button className="ring-1 p-2 h-14 text-[0.8em] rounded-md hover:bg-cyan-500 hover:text-white">
+                Chi tiết
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>Hiện tại đang trống.</div>
+      )}
     </div>
+    {/* date area */}
+    <div className="w-1/2 border-l-2">
+      <DateRangePicker
+        onChange={(item) => setState([{ ...State, ...item }])}
+        showSelectionPreview={true}
+        moveRangeOnFirstSelection={false}
+        onRangeFocusChange={(item) => item}
+        months={2}
+        ranges={date}
+        minDate={new Date()} // vô hiệu hóa ngày quá khứ
+        direction="horizontal"
+        className="w-[50%]"
+        style={{ width: "250px" }}
+      />
+    </div>
+  </div>
   );
 }
