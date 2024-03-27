@@ -1,6 +1,11 @@
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import {
   useParams,
   useLocation,
@@ -17,20 +22,21 @@ import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/header/Header";
 import React from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import Slider from "react-slick";
 import NumGuest from "../components/numguest/NumGuest";
 import { dataDetailSlice } from "../redux-tookit/reducer/dataDetailSlice";
 import { dataDetailSelector } from "../redux-tookit/selector";
 import Popup from "../components/popup/PopUp";
-
-import { parseISO } from "date-fns";
 import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { grouptSlice } from "../redux-tookit/reducer/grouptSlice";
 import CommentForm from "../components/comment/CommentForm";
 import { differenceInCalendarDays, format } from "date-fns";
 import Rules from "../components/rules/Rules";
-import UtilitiesDetail from "../components/utilies/UtilitiesDetail";
+import { LicenseInfo } from "@mui/x-license-pro";
+LicenseInfo.setLicenseKey(
+  "e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y"
+);
 
 function Detail() {
   const user = useContext(UserContext).user;
@@ -45,7 +51,6 @@ function Detail() {
   var url = new URL(currentURL);
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
-
   const today = new Date();
   let timeStamp = today.getTime() + 86400000;
   const [message, setMessage] = useState("");
@@ -53,6 +58,9 @@ function Detail() {
   const [checkin, setCheckin] = useState(
     urlParams.get("checkin") ? new Date(urlParams.get("checkin")) : today
   );
+  const [checkInDate, setCheckInDate] = useState(dayjs());
+  const [checkOutDate, setCheckOutDate] = useState(dayjs().add(2, "day"));
+  const [value, setValue] = useState([checkInDate, checkOutDate]);
   const idUser = user ? user.id : null;
   const [checkout, setCheckout] = useState(
     urlParams.get("checkout")
@@ -89,9 +97,24 @@ function Detail() {
   );
   const [dataLoaded, setDataLoaded] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
-
+  const [place, setPlace] = useState([]);
   const toggleShowCheckout = () => setShowCheckout(!showCheckout);
-
+  useEffect(() => {
+    if (!id) return;
+    axios
+      .get(`http://localhost:8080/api/v1/stayeasy/booking/listing/${id}`)
+      .then((response) => {
+        if (response) {
+          setPlace(response.data);
+          console.log(response.data);
+          // Logging response data instead of place
+        }
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error fetching data:", error);
+      });
+  }, [id]);
   const fetchData = async () => {
     try {
       dispatch(dataDetailSlice.actions.getDataDetailRequest());
@@ -119,9 +142,11 @@ function Detail() {
 
   useEffect(() => {
     // Tính số ngày giữa checkin và checkout
-    const newTotalDays = Math.ceil(
-      (checkout.getTime() - checkin.getTime()) / 86400000
-    ); // Đảm bảo rằng giá trị totalDays đã được tính toán đúng
+    const newTotalDays = differenceInCalendarDays(
+      new Date(checkOutDate),
+      new Date(checkInDate)
+    );
+
     // Cập nhật totalDaysState
     setTotalDays(newTotalDays);
   }, [checkin, checkout]);
@@ -131,34 +156,48 @@ function Detail() {
   }, [adults, children]);
 
   useEffect(() => {
-    setCheckout(new Date(checkin.getTime() + 86400000));
+    setCheckout(checkin);
   }, [checkin]);
 
   const onChangeCheckin = (date) => {
-    const formattedDate = date.toISOString().split("T")[0];
-
-    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
-    const checkinDate = new Date(formattedDate);
-
-    setCheckin(checkinDate);
-    url.searchParams.set("checkin", formattedDate);
-    url.searchParams.set(
-      "checkout",
-      new Date(checkinDate.getTime() + 86400000).toISOString().split("T")[0]
-    );
+    setCheckin(date);
+    url.searchParams.set("checkin", date);
     window.history.replaceState({}, "", url);
   };
 
   const onChangeCheckout = (date) => {
-    const formattedDate = date.toISOString().split("T")[0];
-
-    // Chuyển đổi chuỗi ngày tháng thành đối tượng Date
-    const checkoutDate = new Date(formattedDate);
-
-    setCheckout(checkoutDate);
-    url.searchParams.set("checkout", formattedDate);
+    setCheckout(date);
+    url.searchParams.set("checkout", date);
     window.history.replaceState({}, "", url);
   };
+  const shouldDisableDate = (date) => {
+    return disabledDates.some((disabledDate) =>
+      dayjs(disabledDate).isSame(date, "day")
+    );
+  };
+  const changePicker = (newvalue) => {
+    if (dayjs(newvalue[0]).isValid() && dayjs(newvalue[1]).isValid()) {
+      setValue(newvalue); // Cập nhật mảng giá trị mới
+      setCheckInDate(dayjs(newvalue[0]).format("YYYY-MM-DD")); // Cập nhật ngày check-in
+      onChangeCheckin(dayjs(newvalue[0]).format("YYYY-MM-DD"));
+      setCheckOutDate(dayjs(newvalue[1]).format("YYYY-MM-DD"));
+      onChangeCheckout(dayjs(newvalue[1]).format("YYYY-MM-DD"));
+      console.log("Check-in:", dayjs(newvalue[0]).format("YYYY-MM-DD"));
+      console.log("Check-out:", dayjs(newvalue[1]).format("YYYY-MM-DD"));
+    }
+  };
+
+  const disabledDates = place
+    .map((booking) => {
+      let disabledDates = [];
+      let currentDate = new Date(booking.checkIn);
+      while (currentDate <= new Date(booking.checkOut)) {
+        disabledDates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return disabledDates;
+    })
+    .flat();
 
   const onChangeDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -173,9 +212,6 @@ function Detail() {
     }
     setOpenPopup(true);
   };
-
-  const hasPetRule = dataDetail.rulesList?.some(item => item.rulesType === 'pet');
-  console.log(hasPetRule);
 
   const styleImg = {
     width: "100%",
@@ -239,8 +275,8 @@ function Detail() {
   }
   function handleSubmit() {
     console.log("isAuthenticated: " + isAuthenticated);
-    const checkIn = format(new Date(checkin), "yyyy-MM-dd");
-    const checkOut = format(new Date(checkout), "yyyy-MM-dd");
+    const checkIn = dayjs(checkInDate).format("YYYY-MM-DD");
+    const checkOut = dayjs(checkOutDate).format("YYYY-MM-DD");
 
     if (isAuthenticated) {
       // Sử dụng backticks cho template literals
@@ -336,12 +372,19 @@ function Detail() {
               <div className="text-3xl font-medium mt-2">
                 <p>{dataDetail.address}</p>
               </div>
-              <div className="flex mt-2 text-[17px] font-normal justify-start ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
+              <div className="flex mt-2 text-[17px] font-normal justify-between ssm:w-[20rem] sm:w-[30rem] md:w-[36rem] lg:w-[38rem] 2lg:w-[38rem]">
                 <p>{dataDetail.numGuests} khách</p>
-                <span className="pl-2 pr-2">-</span>
-                <p>{dataDetail.numBedRoom} Giường</p>
-                <span className="pl-2 pr-2">-</span>
-                <p>{dataDetail.numBathRoom} Phòng tắm</p>
+                <span>-</span>
+                {dataDetail.propertyUtilitis?.map((item, index) => (
+                  <p key={index}>
+                    {item.quantity} {item.utilitiesName}
+                    {index !== dataDetail.propertyUtilitis.length - 1 ? (
+                      <span> - </span>
+                    ) : (
+                      ""
+                    )}
+                  </p>
+                ))}
               </div>
               <div className="w-[50%] rating text-lg font-semibold flex pt-4">
                 <div className="flex">
@@ -382,9 +425,6 @@ function Detail() {
             {/* info-rules */}
             <Rules rulesList={dataDetail.rulesList}></Rules>
 
-            {/* info-utilities */}
-            <UtilitiesDetail utilities={dataDetail.propertyUtilitis}></UtilitiesDetail>
-
             {/* info-detail */}
             <div className="w-full pt-6 pb-6 border-b-2 border-black/30 box-border">
               <div>
@@ -422,28 +462,17 @@ function Detail() {
                 </div>
                 <div className="pt-6 pb-6  relative h-[15rem]">
                   <div className="flex border-solid border-2 border-black/30 rounded-t-2xl overflow-hidden p-2 justify-between">
-                    <div className="pl-0 checkin w-[45%] ml-4  border-r-2 overflow-hidden">
-                      <label htmlFor="">Nhận phòng</label>
-
-                      <DatePicker
-                        className="search-text"
-                        selected={checkin}
-                        onChange={onChangeCheckin}
-                        minDate={today}
-                        dateFormat="yyyy/MM/dd"
-                      />
-                    </div>
-                    <div className="pl-0  checkout w-[40%]">
-                      <label htmlFor="">Trả phòng</label>
-
-                      <DatePicker
-                        className="search-text"
-                        selected={checkout}
-                        onChange={onChangeCheckout}
-                        minDate={new Date(checkin.getTime() + 86400000)}
-                        dateFormat="yyyy/MM/dd"
-                      />
-                    </div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["DateRangePicker"]}>
+                        <DateRangePicker
+                          localeText={{ start: "Check-in", end: "Check-out" }}
+                          value={value}
+                          onChange={changePicker}
+                          shouldDisableDate={shouldDisableDate}
+                          disablePast
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </div>
                   <div
                     onClick={onChangeDropdown}
@@ -503,15 +532,13 @@ function Detail() {
                         setTotalGuest={setInfants}
                       />
                     </div>
-                    {!hasPetRule && (
-                      <div className="flex justify-between p-2">
-                        <NumGuest
-                          type="pet"
-                          totalGuest={pet}
-                          setTotalGuest={setPet}
-                        />
-                      </div>
-                    )}
+                    <div className="flex justify-between p-2">
+                      <NumGuest
+                        type="pet"
+                        totalGuest={pet}
+                        setTotalGuest={setPet}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col justify-between text-center">
@@ -524,7 +551,9 @@ function Detail() {
                       Đặt phòng
                     </p>
                   </button>
-                    <p className="text-black text-2xl pt-2">Bạn vẫn chưa bị trừ tiền</p>
+                  <p className="text-black text-2xl pt-2">
+                    Bạn vẫn chưa bị trừ tiền
+                  </p>
                 </div>
                 <div className="pt-6 pb-4 border-b-2">
                   <div className="flex justify-between text-lg">
@@ -542,9 +571,7 @@ function Detail() {
                 </div>
                 <div className="flex justify-between text-lg pt-6 font-semibold">
                   <p className="text-[17px]">Tổng trước thuế</p>
-                  <p className="text-[17px]">
-                    {dataDetail.price * totalDays}$
-                  </p>
+                  <p className="text-[17px]">{dataDetail.price * totalDays}$</p>
                 </div>
               </div>
             </div>
@@ -580,7 +607,7 @@ function Detail() {
         {/* <h2>host: {dataDetail.owner?.id}</h2>
         <h2>user: {idUser}</h2> */}
 
-        {idUser !== dataDetail.owner.id && (
+        {idUser !== dataDetail.owner?.id && (
           <div className="flex justify-center w-full">
             <div className="border-black/30 border-b-2 w-[89%] p-12 box-border flex justify-center">
               <Col className="col-5">

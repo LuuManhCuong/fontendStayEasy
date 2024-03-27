@@ -7,9 +7,7 @@ import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import Calendar from "./Calendar";
 import PropertyStatistical from "./PropertyStatistical";
-import {
-  TrashIcon
-} from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/solid";
 
 export default function PostManage() {
   const [data, setData] = useState([]);
@@ -106,13 +104,7 @@ export default function PostManage() {
 
   return (
     <Row>
-      <PropertyStatistical propertyId={active}></PropertyStatistical>
-      <Col xs={6} className="relative">
-        <div className={`${isFixed ? "fixed top-0" : ""}`}>
-        <Calendar propertyId={active}></Calendar>
-        </div>
-      </Col>
-      <Col xs={6}>
+      <Col xs={6} style={{ height: "90vh", overflowY: "auto" }}>
         <h1 className="text-3xl pt-4">Danh sách phòng</h1>
         <div className="py-2 mb-2">
           <div className="flex justify-start border-2 border-black w-full rounded-full p-2 bg-white">
@@ -179,7 +171,11 @@ export default function PostManage() {
                   <div className="flex flex-col justify-center items-center w-full">
                     <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
                       {index.owner.avatar ? (
-                        <img className="object-cover rounded-full" src={index.owner.avatar} alt="" />
+                        <img
+                          className="object-cover rounded-full"
+                          src={index.owner.avatar}
+                          alt=""
+                        />
                       ) : (
                         <div class="relative inline-flex items-center justify-center overflow-hidden bg-black rounded-full dark:bg-gray-600">
                           <span class="font-medium text-2xl text-white dark:text-gray-300">
@@ -203,15 +199,26 @@ export default function PostManage() {
                 </td>
                 <td className="align-middle">
                   <div className="w-[100px] flex justify-center items-center">
-                    
-                      <TrashIcon onClick={() => handleDelete(index.propertyId)} className="w-8 text-red-600" />
-
+                    <TrashIcon
+                      onClick={() => handleDelete(index.propertyId)}
+                      className="w-8 text-red-600"
+                    />
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </Col>
+
+      <Col xs={6} className="relative">
+        <PropertyStatistical
+          zoom={0.5}
+          propertyId={active}
+        ></PropertyStatistical>
+        <div className={`${isFixed ? "fixed top-0" : ""}`}>
+          <Calendar propertyId={active}></Calendar>
+        </div>
       </Col>
     </Row>
   );

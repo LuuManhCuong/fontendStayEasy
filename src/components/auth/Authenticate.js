@@ -7,11 +7,13 @@ import { grouptSelector } from "../../redux-tookit/selector";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPassword from "./ForgotPassword";
+import { useNavigate } from "react-router-dom";
 
 // Component show menu when not authenticate yet
 // Show Popup for Login and register
 export default function AuthModal() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Lấy phần path name của URL hiện tại
   const currentPath = window.location.pathname;
@@ -37,6 +39,7 @@ export default function AuthModal() {
   }
 
   const loginState = {
+    navigate: navigate
   }
 
   const forgotPassState = {

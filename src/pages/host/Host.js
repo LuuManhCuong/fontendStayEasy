@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CommonHeader from "../../components/header/CommonHeader";
 import Footer from "../../components/footer/Footer";
-import { Link, Outlet } from "react-router-dom";
 
-import { DateRangePicker } from "react-date-range";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+
 import { addDays } from "date-fns";
 
 import { Card, List, ListItem, ListItemPrefix } from "@material-tailwind/react";
@@ -17,15 +17,13 @@ import {
 } from "@heroicons/react/24/solid";
 
 import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
 
 import Box from "@mui/material/Box";
-import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux-tookit/actions/authActions";
+import { Alert } from "../../components/Alert/Alert";
 
-export default function Host() {
+export default function Host({ role }) {
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -72,7 +70,6 @@ export default function Host() {
     },
   ];
 
-  
   const inbox = [
     {
       avatar: "/static/images/avatar/1.jpg",
@@ -160,9 +157,32 @@ export default function Host() {
     },
   ];
 
-  return (
+  const navigate = useNavigate();
+
+  // method logout
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout(navigate));
+  };
+
+  useEffect(() => {
+    if (role && !role.includes("ROLE_HOST")) {
+      Alert(
+        3000,
+        "Thông báo",
+        "Bạn không có quyền truy cập. Hãy thử đăng nhập tài khoản khác",
+        "error",
+        "OK"
+      );
+      navigate("/");
+    }
+  }, [role]);
+
+  return role && role.includes("ROLE_HOST") ? (
     <>
       <CommonHeader padding={8} />
+
       <div className="mt-[8.1rem] bg-gray-100 max-[769px]:mt-0 max-h-[calc(100vh-0)] flex">
         {/* <div className='flex w-[100vw]'> */}
         {/* left menu */}
@@ -178,7 +198,11 @@ export default function Host() {
                 </Link>
               );
             })}
-            <button onClick="">
+            <button
+              onClick={() => {
+                handleLogout();
+              }}
+            >
               <ListItem>
                 <ListItemPrefix>
                   <PowerIcon
@@ -229,7 +253,11 @@ export default function Host() {
         </div> */}
         {/* </div> */}
       </div>
-      <div className="fixed bg-white w-full" style={{bottom: 0}}><Footer/></div>
+      <div className="fixed bg-white w-full" style={{ bottom: 0 }}>
+        <Footer />
+      </div>
     </>
+  ) : (
+    <></>
   );
 }

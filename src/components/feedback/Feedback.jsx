@@ -161,6 +161,7 @@ const Feedback = ({ userId,propertyId}) => {
                   <div className="flex gap-4">
                     <button
                         onClick={() => {
+                        setContent(feedbacks.content);
                         setIsEdit(true);
                         setEditFeedback(feedbacks);
                         }}
