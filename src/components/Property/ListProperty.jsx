@@ -68,7 +68,7 @@ export default function ListProperty() {
   return (
     <>
       {isAuthenticated ? (
-        <div className="mx-4 my-4 min-h-[70vh]">
+        <div className="mx-4 my-4 min-h-[70vh] min-w-[82vw]">
           <div className="flex mb-4 justify-content-between">
             <h2>Danh sách tài sản</h2>
             <div className="flex">

@@ -16,9 +16,7 @@ import {
   PowerIcon,
 } from "@heroicons/react/24/solid";
 
-import Divider from "@mui/material/Divider";
 
-import Box from "@mui/material/Box";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux-tookit/actions/authActions";
 import { Alert } from "../../components/Alert/Alert";
@@ -67,93 +65,6 @@ export default function Host({ role }) {
         <Cog6ToothIcon className="h-7 w-7 max-[1270px]:h-12 max-[1270px]:w-12" />
       ),
       link: "/host/setting",
-    },
-  ];
-
-  const inbox = [
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
-    },
-    {
-      avatar: "/static/images/avatar/1.jpg",
-      title: "Brunch this weekend?",
-      name: "Ali Connors",
-      content: " — I'll be in your neighborhood doing errands this…",
     },
   ];
 
