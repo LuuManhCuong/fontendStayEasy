@@ -216,7 +216,7 @@ function Card(props) {
         >
           <FontAwesomeIcon
             style={{ stroke: "white" }}
-            className="text-4xl text-customColor transition-all ease-in duration-200"
+            className="text-4xl z-10 text-customColor transition-all ease-in duration-200"
             icon={icon({ name: "heart", family: "classic", style: "solid" })}
           />
         </div>

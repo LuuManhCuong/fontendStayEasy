@@ -136,13 +136,13 @@ function Header({ page }) {
           setNotificationList(data);
         });
     }
-  }, [user, notificationList]);
+  }, [user]);
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
-    const client = Stomp.over(socket);
-    client.debug = null;
     if (user) {
+      const socket = new SockJS("http://localhost:8080/api/v1/stayeasy/ws");
+      const client = Stomp.over(socket);
+      client.debug = null;
       client.connect({}, () => {
         if (client.connected) {
           client.subscribe(
@@ -158,15 +158,14 @@ function Header({ page }) {
           );
         }
       });
+      setStompClient(client);
+
+      return () => {
+        if (client.connected) {
+          client.disconnect();
+        }
+      };
     }
-
-    setStompClient(client);
-
-    return () => {
-      if (client.connected) {
-        client.disconnect();
-      }
-    };
   }, [user]);
   return (
     <header className="header">

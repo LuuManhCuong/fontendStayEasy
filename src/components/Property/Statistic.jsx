@@ -67,6 +67,7 @@ export default function Statistic() {
   }, []);
 
   function acceptRoom(params) {
+    console.log(1);
     let data = {
       senderId: user.id,
       receiverId: params.userId,
@@ -79,6 +80,7 @@ export default function Statistic() {
     );
   }
   function cancelRoom(params) {
+    console.log(2);
     let data = {
       senderId: user.id,
       receiverId: params.userId,
@@ -93,37 +95,37 @@ export default function Statistic() {
 
   // handle confirm
   const handleConfirm = async (index) => {
-    acceptRoom(index);
+    try {
+      const result = await axios.put(
+        `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&CONFIRMED`
+      );
+      if (result.status === 200) {
+        Alert(2000, "Xác nhận đặt phòng", "thành công!", "success", "OK");
+        acceptRoom(index);
 
-    // try {
-    //   const result = await axios.put(
-    //     `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&CONFIRMED`
-    //   );
-    //   if (result.status === 200) {
-    //     Alert(2000, "Xác nhận đặt phòng", "thành công!", "success", "OK");
-
-    //     getBooking();
-    //   }
-    // } catch (error) {
-    //   console.log("error1");
-    // }
+        getBooking();
+      }
+    } catch (error) {
+      console.log("error1");
+    }
   };
 
   // handle reject
   const handleReject = async (index) => {
-    cancelRoom(index);
-    // try {
-    //   const result = await axios.put(
-    //     `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&REJECTED`
-    //   );
+    try {
+      const result = await axios.put(
+        `http://localhost:8080/api/v1/stayeasy/host-manager/update/${index.bookingId}&REJECTED`
+      );
 
-    //   if (result.status === 200) {
-    //     Alert(2000, "Từ chối đặt phòng", "Đã từ chối!", "success", "OK");
-    //     getBooking();
-    //   }
-    // } catch (error) {
-    //   console.log("error!");
-    // }
+      if (result.status === 200) {
+        Alert(2000, "Từ chối đặt phòng", "Đã từ chối!", "success", "OK");
+        cancelRoom(index);
+
+        getBooking();
+      }
+    } catch (error) {
+      console.log("error!");
+    }
   };
 
   useEffect(() => {

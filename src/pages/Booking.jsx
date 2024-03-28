@@ -108,7 +108,7 @@ const Booking = () => {
     : {};
 
   const litsPrice = place
-    ? generateHolidayPrices(checkIn, checkOut, numberNight)
+    ? generateHolidayPrices(checkIn, checkOut, place.price)
     : {};
   async function bookThisPlace() {
     try {
